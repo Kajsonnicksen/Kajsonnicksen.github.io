@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050505">
+<meta name="theme-color" content="#080908">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Min rutine">
@@ -11,117 +11,205 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <title>Min rutine</title>
 <style>
-:root{color-scheme:dark;--bg:#050505;--panel:#090909;--line:#292929;--muted:#999;--green:#19bd69;--white:#f5f5f5}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);min-height:100vh}
-main{width:min(100%,760px);margin:auto;padding:24px 20px 40px}
-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:8px 0 22px}
-h1{font-size:clamp(27px,6vw,36px);letter-spacing:-1px;margin:0;font-weight:750}
-.date{color:var(--muted);font-size:14px;margin-top:6px;text-transform:capitalize}
-.counter{font-size:34px;font-weight:800;color:var(--green);white-space:nowrap;letter-spacing:-1px}
-.progress{height:7px;background:#292929;border-radius:99px;overflow:hidden;margin:0 0 26px}
-.fill{height:100%;background:var(--green);width:0%;border-radius:99px;transition:width .2s}
-.tabs{display:flex;gap:8px;margin-bottom:24px;background:#111;padding:5px;border-radius:14px}
-.tab{border:0;background:transparent;color:#aaa;padding:12px 15px;border-radius:10px;font-size:15px;font-weight:650;flex:1}
-.tab.active{background:#252525;color:#fff}
-.section{margin:25px 0 0}
-h2{font-size:23px;margin:0 0 10px;font-weight:750;letter-spacing:-.4px}
-.item{display:flex;align-items:center;gap:14px;min-height:68px;border-bottom:1px solid #171717;padding:10px 2px;font-size:17px;line-height:1.35}
-.item:last-child{border-bottom:0}
-input[type=checkbox]{appearance:none;-webkit-appearance:none;width:27px;height:27px;border:2px solid #414141;border-radius:50%;flex:0 0 27px;margin:0;display:grid;place-items:center}
-input[type=checkbox]:checked{background:var(--green);border-color:var(--green)}
-input[type=checkbox]:checked:after{content:"✓";font-size:17px;color:#06150c;font-weight:900}
-.item.done .label{color:#777;text-decoration:line-through;text-decoration-color:#555}
-.weekrow{display:grid;grid-template-columns:90px 1fr 1fr;gap:12px;padding:17px 0;border-bottom:1px solid #242424;align-items:start}
-.weekrow:last-child{border:0}
-.day{font-weight:700}
-.training{font-weight:600;line-height:1.4}
-.goal{color:#aaa;line-height:1.4;font-size:14px}
-.weekcheck{display:flex;align-items:center;gap:10px;margin-top:10px;color:#999;font-size:13px}
-.weekcheck input{width:21px;height:21px;flex-basis:21px}
-.footer{border-top:1px solid #222;margin-top:30px;padding-top:18px;color:#888;font-size:14px;line-height:1.5}
-button.reset{width:100%;margin-top:22px;border:1.5px solid #414141;background:transparent;color:#aaa;border-radius:999px;padding:13px;font-size:15px;font-weight:650}
-button.reset:active{background:#171717}
-.smallnote{color:#777;font-size:12px;margin-top:10px}
-@media(min-width:600px){main{padding:34px 32px 50px}.item{font-size:19px;min-height:74px}.weekrow{grid-template-columns:120px 1fr 1fr;font-size:18px}}
+:root{color-scheme:dark;--bg:#080908;--surface:#101210;--surface2:#171a17;--line:#292d29;--text:#f4f5f2;--muted:#929891;--green:#24bd70;--green-soft:#14291d;--shadow:0 10px 30px #0002}
+:root.light{color-scheme:light;--bg:#f4f5f1;--surface:#fff;--surface2:#eef0eb;--line:#dfe3dc;--text:#20251f;--muted:#747d73;--green:#159957;--green-soft:#e3f4e9;--shadow:0 8px 25px #23301a0d}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.app{width:min(100%,900px);margin:auto;padding:16px 16px 24px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 14px}
+.brand h1{font-size:26px;letter-spacing:-.8px;margin:0;font-weight:780}.sub{font-size:12px;color:var(--muted);margin-top:3px;text-transform:capitalize}
+.top-actions{display:flex;gap:8px;align-items:center}
+.iconbtn{width:38px;height:38px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:50%;display:grid;place-items:center;font-size:17px}
+.tabs{display:flex;gap:4px;padding:4px;background:var(--surface2);border-radius:13px;margin-bottom:14px}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:10px 8px;border-radius:10px;font-size:14px;font-weight:650}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.view[hidden]{display:none!important}
+.headline{display:flex;justify-content:space-between;align-items:center;margin:3px 1px 10px}
+.headline h2{font-size:19px;letter-spacing:-.4px;margin:0}
+.counter{color:var(--green);font-weight:800;font-size:20px}
+.progress{height:5px;background:var(--surface2);border-radius:9px;overflow:hidden;margin:0 0 13px}.fill{height:100%;background:var(--green);width:0%;transition:width .2s}
+.daily-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:11px 11px 7px;min-width:0}
+.group h3{font-size:13px;color:var(--muted);font-weight:700;margin:0 0 5px;text-transform:uppercase;letter-spacing:.55px}
+.task{display:flex;align-items:center;gap:8px;min-height:38px;border-top:1px solid var(--line);font-size:13px;line-height:1.22;padding:5px 0}
+.task:first-of-type{border-top:0}
+.task input,.weekdone input{appearance:none;width:19px;height:19px;flex:0 0 19px;border:1.7px solid var(--muted);border-radius:50%;margin:0;display:grid;place-items:center}
+.task input:checked,.weekdone input:checked{background:var(--green);border-color:var(--green)}
+.task input:checked:after,.weekdone input:checked:after{content:"✓";font-size:12px;font-weight:900;color:white}
+.task.done span{color:var(--muted);text-decoration:line-through}
+.task span{flex:1;overflow-wrap:anywhere}
+.mini{border:0;background:transparent;color:var(--muted);font-size:17px;padding:2px 3px;line-height:1}
+.addline{width:100%;text-align:left;border:0;background:transparent;color:var(--muted);font-size:12px;padding:8px 0 2px}
+.bottomnote{font-size:11px;color:var(--muted);margin:11px 2px 0}
+.week-list{display:grid;gap:7px}
+.weekrow{display:grid;grid-template-columns:76px minmax(0,1fr) 22px;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 11px}
+.weekday{font-size:13px;font-weight:750}.workout{font-size:13px;font-weight:650;line-height:1.25}.purpose{font-size:11px;color:var(--muted);margin-top:3px}.weekdone{display:grid;place-items:center}.weekdone input{width:20px;height:20px}
+.week-actions{display:flex;justify-content:flex-end;margin:10px 0}
+.primary,.secondary{border-radius:999px;padding:9px 14px;font-size:12px;font-weight:700;border:1px solid var(--line)}
+.primary{background:var(--green);color:white;border-color:var(--green)}.secondary{background:var(--surface);color:var(--text)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px}
+.stat strong{font-size:25px;letter-spacing:-.7px;display:block}.stat span{font-size:11px;color:var(--muted)}
+.history{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:13px}
+.history h3{font-size:14px;margin:0 0 12px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.daystat{text-align:center;font-size:10px;color:var(--muted)}
+.daydot{height:28px;width:28px;max-width:100%;margin:5px auto 0;border-radius:50%;display:grid;place-items:center;background:var(--surface2);font-size:10px;color:var(--muted)}
+.daydot.good{background:var(--green-soft);color:var(--green);font-weight:800}
+.daydot.partial{background:color-mix(in srgb,var(--green) 18%,var(--surface2));color:var(--green)}
+.settings{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;padding:11px 2px;color:var(--muted);font-size:12px}
+.switch{border:1px solid var(--line);background:var(--surface2);border-radius:99px;padding:4px;display:flex;gap:3px}
+.switch button{border:0;background:transparent;color:var(--muted);font-size:11px;border-radius:99px;padding:6px 9px}.switch button.active{background:var(--surface);color:var(--text);font-weight:750}
+.modal-back{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;justify-content:center;padding:12px;z-index:5}
+.modal-back.open{display:flex}.modal{width:min(100%,480px);background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:17px;box-shadow:var(--shadow);max-height:85vh;overflow:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.modal-head h3{margin:0;font-size:17px}
+.field{display:grid;gap:5px;margin:10px 0}.field label{font-size:11px;color:var(--muted);font-weight:700}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:10px;padding:11px;font-size:14px;outline:none}.field textarea{min-height:70px;resize:vertical}
+.modal-actions{display:flex;justify-content:space-between;gap:8px;margin-top:14px}.danger{color:#d86c6c;background:transparent;border:0;font-size:12px;padding:8px}
+.empty{color:var(--muted);font-size:12px;padding:9px 0}
+@media(min-width:650px){.app{padding:24px}.daily-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.task{font-size:14px;min-height:42px}.week-list{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:360px){.app{padding:12px}.task{font-size:12px;min-height:35px}.group{padding:9px}.daily-grid{gap:7px}}
 </style>
 </head>
 <body>
-<main>
-<header>
- <div><h1>Min rutine</h1><div class="date" id="today"></div></div>
- <div class="counter" id="counter">0/8</div>
-</header>
-<div class="progress"><div class="fill" id="dailyFill"></div></div>
-<nav class="tabs">
- <button class="tab active" data-tab="daily">Daglig</button>
- <button class="tab" data-tab="weekly">Ugentlig</button>
-</nav>
-<section id="daily">
- <div id="dailyItems"></div>
- <button class="reset" id="resetDay">Nulstil dagens tjekliste</button>
- <div class="footer">Brug den som en støtte, ikke som endnu et præstationsmål.</div>
-</section>
-<section id="weekly" hidden>
- <div id="weekItems"></div>
- <div class="footer">Træningsplanen er en ramme. Tilpas belastningen efter søvn, energi og restitution.</div>
-</section>
-</main>
+<div class="app">
+ <header class="top">
+  <div class="brand"><h1>Min rutine</h1><div class="sub" id="today"></div></div>
+  <div class="top-actions"><button class="iconbtn" id="themeBtn" aria-label="Skift tema">☼</button></div>
+ </header>
+ <nav class="tabs">
+  <button class="tab active" data-view="daily">Rutine</button>
+  <button class="tab" data-view="weekly">Uge</button>
+  <button class="tab" data-view="overview">Overblik</button>
+ </nav>
+ <section class="view" id="dailyView">
+  <div class="headline"><h2>I dag</h2><div class="counter" id="counter">0/8</div></div>
+  <div class="progress"><div class="fill" id="dailyFill"></div></div>
+  <div class="daily-grid" id="dailyGrid"></div>
+  <div class="bottomnote">Små skridt tæller. Brug rutinen som støtte – ikke som et krav.</div>
+ </section>
+ <section class="view" id="weeklyView" hidden>
+  <div class="headline"><h2>Ugens træning</h2><button class="primary" id="addWeek">＋ Tilføj</button></div>
+  <div class="week-list" id="weekList"></div>
+  <div class="bottomnote">Tilpas planen efter energi og restitution.</div>
+ </section>
+ <section class="view" id="overviewView" hidden>
+  <div class="headline"><h2>Dit overblik</h2><span class="sub">Seneste 7 dage</span></div>
+  <div class="stats">
+   <div class="stat"><strong id="avgStat">0%</strong><span>Daglig rutine i snit</span></div>
+   <div class="stat"><strong id="daysStat">0/7</strong><span>Dage med alle vaner</span></div>
+   <div class="stat"><strong id="weekStat">0</strong><span>Træninger gennemført</span></div>
+   <div class="stat"><strong id="streakStat">0</strong><span>Dages fuld rutine i træk</span></div>
+  </div>
+  <div class="history"><h3>Dag for dag</h3><div class="days" id="historyDays"></div></div>
+  <div class="settings"><span>Udseende</span><div class="switch"><button id="darkChoice">Dark</button><button id="lightChoice">Light</button></div></div>
+  <div class="settings"><span>Data gemmes lokalt på denne enhed</span><button class="secondary" id="resetToday">Nulstil i dag</button></div>
+ </section>
+</div>
+<div class="modal-back" id="modalBack">
+ <div class="modal">
+  <div class="modal-head"><h3 id="modalTitle">Redigér</h3><button class="iconbtn" id="closeModal" aria-label="Luk">×</button></div>
+  <div id="modalFields"></div>
+  <div class="modal-actions"><button class="danger" id="deleteItem">Slet</button><button class="primary" id="saveItem">Gem</button></div>
+ </div>
+</div>
 <script>
-const daily = [
- ["Morgen",["15–20 minutters meditation","Ingen telefon de første 20 minutter"]],
- ["Dag",["20 minutters fokuseret læsning","Mindst én gåtur uden lyd i ørerne","Øv dig i at lytte uden at forberede svar"]],
- ["Aften",["15 minutters læsning","5 minutters refleksion","Undgå skærm lige inden sengetid"]]
+const defaultsDaily=[
+ {id:"d1",group:"Morgen",text:"15–20 minutters meditation"},
+ {id:"d2",group:"Morgen",text:"Ingen telefon de første 20 minutter"},
+ {id:"d3",group:"Dag",text:"20 minutters fokuseret læsning"},
+ {id:"d4",group:"Dag",text:"Mindst én gåtur uden lyd i ørerne"},
+ {id:"d5",group:"Dag",text:"Øv dig i at lytte uden at forberede svar"},
+ {id:"d6",group:"Aften",text:"15 minutters læsning"},
+ {id:"d7",group:"Aften",text:"5 minutters refleksion"},
+ {id:"d8",group:"Aften",text:"Undgå skærm lige inden sengetid"}
 ];
-const weekly = [
- ["Mandag","Styrke, helkrop","Muskel- og nervesystem"],
- ["Tirsdag","Roligt løb, 40 min.","Aerob base"],
- ["Onsdag","Hvile + gåtur","Restitution"],
- ["Torsdag","Styrke, helkrop","Fysisk robusthed"],
- ["Fredag","Interval, 30–40 min.","Kondition"],
- ["Lørdag","Roligt langløb, 50–70 min.","Udholdenhed"],
- ["Søndag","Hvile + let yoga","Restitution"]
+const defaultsWeek=[
+ {id:"w1",day:"Mandag",training:"Styrke, helkrop",purpose:"Muskel- og nervesystem"},
+ {id:"w2",day:"Tirsdag",training:"Roligt løb, 40 min.",purpose:"Aerob base"},
+ {id:"w3",day:"Onsdag",training:"Hvile + gåtur",purpose:"Restitution"},
+ {id:"w4",day:"Torsdag",training:"Styrke, helkrop",purpose:"Fysisk robusthed"},
+ {id:"w5",day:"Fredag",training:"Interval, 30–40 min.",purpose:"Kondition"},
+ {id:"w6",day:"Lørdag",training:"Roligt langløb, 50–70 min.",purpose:"Udholdenhed"},
+ {id:"w7",day:"Søndag",training:"Hvile + let yoga",purpose:"Restitution"}
 ];
-const $=s=>document.querySelector(s);
-const dateKey=()=>new Date().toLocaleDateString("sv-SE");
-function mondayKey(){let d=new Date();d.setHours(12,0,0,0);let day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return d.toLocaleDateString("sv-SE")}
-const dayStore=()=>JSON.parse(localStorage.getItem("routine-day")||"{}");
-const weekStore=()=>JSON.parse(localStorage.getItem("routine-week")||"{}");
+const $=s=>document.querySelector(s), clone=x=>JSON.parse(JSON.stringify(x));
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+let daily=load("mr2-daily",clone(defaultsDaily)),weekly=load("mr2-weekly",clone(defaultsWeek));
+let activeEditor=null;
+const dateKey=(d=new Date())=>{let x=new Date(d);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,"0"),String(x.getDate()).padStart(2,"0")].join("-")};
+const mondayKey=()=>{let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return dateKey(d)};
+const getHistory=()=>load("mr2-history",{});
+const getToday=()=>{let h=getHistory(),k=dateKey();if(!h[k])h[k]={done:{},weekDone:{}};return h[k]};
+function persistRoutines(){localStorage.setItem("mr2-daily",JSON.stringify(daily));localStorage.setItem("mr2-weekly",JSON.stringify(weekly))}
+function saveToday(){let h=getHistory();h[dateKey()]=getToday();localStorage.setItem("mr2-history",JSON.stringify(h))}
+function dailyDone(){return getToday().done||{}}
+function weekDone(){let s=load("mr2-weekdone",{});return s[mondayKey()]||{}}
 function renderDaily(){
- const state=dayStore(), key=dateKey(), root=$("#dailyItems");root.innerHTML="";
- let n=0,total=0;
- daily.forEach(([section,items])=>{
-  const block=document.createElement("div");block.className="section";
-  const h=document.createElement("h2");h.textContent=section;block.append(h);
-  items.forEach(label=>{
-   total++;const id=section+"|"+label, checked=state.date===key&&!!state.done?.[id];if(checked)n++;
-   const row=document.createElement("label");row.className="item"+(checked?" done":"");
-   const cb=document.createElement("input");cb.type="checkbox";cb.checked=checked;
-   cb.addEventListener("change",()=>{let s=dayStore();if(s.date!==key)s={date:key,done:{}};s.done=s.done||{};s.done[id]=cb.checked;localStorage.setItem("routine-day",JSON.stringify(s));renderDaily()});
-   const span=document.createElement("span");span.className="label";span.textContent=label;row.append(cb,span);block.append(row);
-  });root.append(block);
+ let done=dailyDone(),grid=$("#dailyGrid"),count=0;grid.innerHTML="";
+ ["Morgen","Dag","Aften","Andet"].forEach(group=>{
+  let items=daily.filter(x=>x.group===group);if(!items.length)return;
+  let card=document.createElement("div");card.className="group";
+  let h=document.createElement("h3");h.textContent=group;card.append(h);
+  items.forEach(item=>{
+   let row=document.createElement("label");row.className="task"+(done[item.id]?" done":"");
+   let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!done[item.id];
+   cb.addEventListener("change",()=>{let h=getHistory();h[dateKey()].done=h[dateKey()].done||{};h[dateKey()].done[item.id]=cb.checked;localStorage.setItem("mr2-history",JSON.stringify(h));renderDaily();renderOverview()});
+   let span=document.createElement("span");span.textContent=item.text;
+   let edit=document.createElement("button");edit.className="mini";edit.type="button";edit.textContent="···";edit.setAttribute("aria-label","Redigér vane");edit.addEventListener("click",()=>openEditor("daily",item.id));
+   row.append(cb,span,edit);card.append(row);if(done[item.id])count++;
+  });
+  let add=document.createElement("button");add.className="addline";add.textContent="+ Tilføj vane";add.addEventListener("click",()=>openEditor("daily",null,group));card.append(add);grid.append(card);
  });
- $("#counter").textContent=n+"/"+total;$("#dailyFill").style.width=(n/total*100)+"%";
+ let total=daily.length;$("#counter").textContent=count+"/"+total;$("#dailyFill").style.width=(total?count/total*100:0)+"%";
 }
 function renderWeekly(){
- const state=weekStore(),wk=mondayKey(),root=$("#weekItems");root.innerHTML="";
- weekly.forEach(([day,training,goal],i)=>{
-  const row=document.createElement("div");row.className="weekrow";
-  const d=document.createElement("div");d.className="day";d.textContent=day;
-  const t=document.createElement("div");t.innerHTML='<div class="training"></div><label class="weekcheck"><input type="checkbox"><span>Gennemført</span></label>';t.querySelector(".training").textContent=training;
-  const g=document.createElement("div");g.className="goal";g.textContent=goal;
-  const cb=t.querySelector("input");cb.checked=state.week===wk&&!!state.done?.[i];
-  cb.addEventListener("change",()=>{let s=weekStore();if(s.week!==wk)s={week:wk,done:{}};s.done=s.done||{};s.done[i]=cb.checked;localStorage.setItem("routine-week",JSON.stringify(s));});
-  row.append(d,t,g);root.append(row);
+ let list=$("#weekList"),done=weekDone();list.innerHTML="";
+ weekly.forEach(item=>{
+  let row=document.createElement("div");row.className="weekrow";
+  let day=document.createElement("div");day.className="weekday";day.textContent=item.day;
+  let info=document.createElement("div");info.innerHTML='<div class="workout"></div><div class="purpose"></div>';info.querySelector(".workout").textContent=item.training;info.querySelector(".purpose").textContent=item.purpose;
+  let check=document.createElement("label");check.className="weekdone";let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!done[item.id];
+  cb.addEventListener("change",()=>{let all=load("mr2-weekdone",{});all[mondayKey()]=all[mondayKey()]||{};all[mondayKey()][item.id]=cb.checked;localStorage.setItem("mr2-weekdone",JSON.stringify(all));renderOverview()});
+  check.append(cb);row.append(day,info,check);row.addEventListener("click",e=>{if(e.target!==cb)openEditor("weekly",item.id)});list.append(row);
  });
 }
-document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
- document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b===btn));
- $("#daily").hidden=btn.dataset.tab!=="daily";$("#weekly").hidden=btn.dataset.tab!=="weekly";
-}));
-$("#resetDay").addEventListener("click",()=>{localStorage.setItem("routine-day",JSON.stringify({date:dateKey(),done:{}}));renderDaily()});
+function renderOverview(){
+ let h=getHistory(),keys=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);keys.push(dateKey(d))}
+ let percentages=[],full=0,streak=0,started=false;
+ keys.forEach(k=>{let n=daily.filter(x=>h[k]?.done?.[x.id]).length;let p=daily.length?n/daily.length:0;percentages.push(p);if(p===1)full++});
+ let avg=percentages.reduce((a,b)=>a+b,0)/7;$("#avgStat").textContent=Math.round(avg*100)+"%";$("#daysStat").textContent=full+"/7";
+ let wd=load("mr2-weekdone",{}),thisWeek=wd[mondayKey()]||{};$("#weekStat").textContent=weekly.filter(x=>thisWeek[x.id]).length;
+ for(let i=keys.length-1;i>=0;i--){if(percentages[i]===1)streak++;else if(started)break;else if(i===keys.length-1)break}
+ $("#streakStat").textContent=streak;
+ let root=$("#historyDays");root.innerHTML="";keys.forEach((k,i)=>{let d=new Date(k+"T12:00:00"),wrap=document.createElement("div");wrap.className="daystat";wrap.textContent=new Intl.DateTimeFormat("da-DK",{weekday:"short"}).format(d).replace(".","");let dot=document.createElement("div");dot.className="daydot"+(percentages[i]===1?" good":percentages[i]>0?" partial":"");dot.textContent=Math.round(percentages[i]*100)+"%";wrap.append(dot);root.append(wrap)});
+}
+function openEditor(type,id,group){
+ activeEditor={type,id,group};let item=id?(type==="daily"?daily:weekly).find(x=>x.id===id):null;
+ $("#modalTitle").textContent=(item?"Redigér ":"Tilføj ")+(type==="daily"?"vane":"ugentlig aktivitet");
+ let fields=$("#modalFields");fields.innerHTML="";
+ const addField=(label,name,value,placeholder="")=>{let f=document.createElement("div");f.className="field";let l=document.createElement("label");l.textContent=label;let inp=document.createElement("input");inp.name=name;inp.value=value||"";inp.placeholder=placeholder;f.append(l,inp);fields.append(f)};
+ if(type==="daily"){let f=document.createElement("div");f.className="field";let l=document.createElement("label");l.textContent="Tidspunkt";let sel=document.createElement("select");sel.name="group";["Morgen","Dag","Aften","Andet"].forEach(g=>{let o=document.createElement("option");o.value=g;o.textContent=g;sel.append(o)});sel.value=item?.group||group||"Dag";f.append(l,sel);fields.append(f);addField("Vane","text",item?.text,"Fx 10 minutters udstrækning")}
+ else{addField("Ugedag","day",item?.day,"Fx Mandag");addField("Træning / aktivitet","training",item?.training,"Fx Roligt løb, 30 min.");addField("Formål","purpose",item?.purpose,"Fx Aerob base")}
+ $("#deleteItem").style.visibility=item?"visible":"hidden";$("#modalBack").classList.add("open");
+}
+function closeEditor(){$("#modalBack").classList.remove("open");activeEditor=null}
+$("#saveItem").addEventListener("click",()=>{
+ if(!activeEditor)return;let {type,id,group}=activeEditor,fields=$("#modalFields");
+ let val=n=>fields.querySelector(`[name="${n}"]`)?.value.trim()||"";
+ if(type==="daily"){if(!val("text"))return;let obj={id:id||"d"+Date.now(),group:val("group"),text:val("text")};if(id)daily=daily.map(x=>x.id===id?obj:x);else daily.push(obj)}
+ else{if(!val("day")||!val("training"))return;let obj={id:id||"w"+Date.now(),day:val("day"),training:val("training"),purpose:val("purpose")};if(id)weekly=weekly.map(x=>x.id===id?obj:x);else weekly.push(obj)}
+ persistRoutines();closeEditor();renderDaily();renderWeekly();renderOverview();
+});
+$("#deleteItem").addEventListener("click",()=>{if(!activeEditor?.id)return;let {type,id}=activeEditor;if(type==="daily")daily=daily.filter(x=>x.id!==id);else weekly=weekly.filter(x=>x.id!==id);persistRoutines();closeEditor();renderDaily();renderWeekly();renderOverview()});
+$("#closeModal").addEventListener("click",closeEditor);$("#modalBack").addEventListener("click",e=>{if(e.target===$("#modalBack"))closeEditor()});
+$("#addWeek").addEventListener("click",()=>openEditor("weekly",null));
+function setTheme(t){document.documentElement.classList.toggle("light",t==="light");localStorage.setItem("mr2-theme",t);$("#darkChoice").classList.toggle("active",t==="dark");$("#lightChoice").classList.toggle("active",t==="light");$("#themeBtn").textContent=t==="dark"?"☼":"☾";document.querySelector('meta[name="theme-color"]').content=t==="dark"?"#080908":"#f4f5f1"}
+$("#themeBtn").addEventListener("click",()=>setTheme(document.documentElement.classList.contains("light")?"dark":"light"));$("#darkChoice").addEventListener("click",()=>setTheme("dark"));$("#lightChoice").addEventListener("click",()=>setTheme("light"));
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));["daily","weekly","overview"].forEach(v=>$("#"+v+"View").hidden=v!==b.dataset.view)}));
+$("#resetToday").addEventListener("click",()=>{let h=getHistory();h[dateKey()]={done:{},weekDone:{}};localStorage.setItem("mr2-history",JSON.stringify(h));renderDaily();renderOverview()});
 $("#today").textContent=new Intl.DateTimeFormat("da-DK",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
-renderDaily();renderWeekly();
+setTheme(load("mr2-theme","dark"));renderDaily();renderWeekly();renderOverview();
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js");
 </script>
-</body>
-</html>
+</body></html>
