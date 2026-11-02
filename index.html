@@ -30,7 +30,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .counter{color:var(--green);font-weight:800;font-size:20px}
 .progress{height:5px;background:var(--surface2);border-radius:9px;overflow:hidden;margin:0 0 13px}.fill{height:100%;background:var(--green);width:0%;transition:width .2s}
 .daily-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.group{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:11px 11px 7px;min-width:0}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:11px 11px 7px;min-width:0}\n.group.kost{background:color-mix(in srgb,#b18b55 9%,var(--surface));border-color:color-mix(in srgb,#b18b55 35%,var(--line))}\n.group.kost h3{color:#c49b63}\n:root.light .group.kost{background:#f5eee3;border-color:#e4d3b7}\n:root.light .group.kost h3{color:#8c6737}
 .group h3{font-size:13px;color:var(--muted);font-weight:700;margin:0 0 5px;text-transform:uppercase;letter-spacing:.55px}
 .task{display:flex;align-items:center;gap:8px;min-height:38px;border-top:1px solid var(--line);font-size:13px;line-height:1.22;padding:5px 0}
 .task:first-of-type{border-top:0}
@@ -69,6 +69,22 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .empty{color:var(--muted);font-size:12px;padding:9px 0}
 @media(min-width:650px){.app{padding:24px}.daily-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.task{font-size:14px;min-height:42px}.week-list{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:360px){.app{padding:12px}.task{font-size:12px;min-height:35px}.group{padding:9px}.daily-grid{gap:7px}}
+
+.nutrition-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.nutri-card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px}
+.nutri-card strong{display:block;font-size:20px;letter-spacing:-.4px}.nutri-card span{font-size:11px;color:var(--muted)}
+.nutri-card .smallbar{height:4px;background:var(--surface2);border-radius:9px;margin-top:8px;overflow:hidden}.nutri-card .smallbar i{display:block;height:100%;background:var(--green);width:0}
+.food-search{display:flex;gap:7px;margin:12px 0}.food-search input{min-width:0;flex:1;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:11px;padding:11px;font-size:14px}
+.food-results,.food-log{display:grid;gap:7px;margin-top:8px}
+.food-result,.food-entry{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 11px}
+.food-result strong,.food-entry strong{font-size:13px;display:block}.food-result small,.food-entry small{font-size:11px;color:var(--muted)}
+.food-result button{flex:0 0 auto}
+.food-entry .remove{border:0;background:transparent;color:var(--muted);font-size:18px;padding:4px}
+.food-entry .entryinfo{min-width:0;flex:1}
+.food-entry .entrymacros{font-size:11px;color:var(--muted);text-align:right;white-space:nowrap}
+.meal-title{font-size:13px;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 6px}
+.goal-edit{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.goal-edit input{width:90px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:9px;padding:8px;font-size:13px}
+.food-empty{font-size:12px;color:var(--muted);padding:12px 2px}
 </style>
 </head>
 <body>
@@ -80,6 +96,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
  <nav class="tabs">
   <button class="tab active" data-view="daily">Rutine</button>
   <button class="tab" data-view="weekly">Uge</button>
+  <button class="tab" data-view="nutrition">Kost</button>
   <button class="tab" data-view="overview">Overblik</button>
  </nav>
  <section class="view" id="dailyView">
@@ -93,8 +110,25 @@ button,input,textarea{font:inherit}button{cursor:pointer}
   <div class="week-list" id="weekList"></div>
   <div class="bottomnote">Tilpas planen efter energi og restitution.</div>
  </section>
+
+ <section class="view" id="nutritionView" hidden>
+  <div class="headline"><h2>Dagens kost</h2><span class="sub" id="nutritionDate"></span></div>
+  <div class="nutrition-top">
+   <div class="nutri-card"><strong id="kcalTotal">0 <small>kcal</small></strong><span>Kalorier</span><div class="smallbar"><i id="kcalBar"></i></div></div>
+   <div class="nutri-card"><strong id="proteinTotal">0 g</strong><span>Protein</span><div class="smallbar"><i id="proteinBar"></i></div></div>
+   <div class="nutri-card"><strong id="carbTotal">0 g</strong><span>Kulhydrat</span></div>
+   <div class="nutri-card"><strong id="fatTotal">0 g</strong><span>Fedt</span></div>
+  </div>
+  <div class="settings"><span>Dine daglige mål</span><div class="goal-edit"><label><input id="kcalGoal" type="number" min="0" step="50"> <small>kcal</small></label><label><input id="proteinGoal" type="number" min="0" step="5"> <small>protein g</small></label><button class="secondary" id="saveGoals">Gem</button></div></div>
+  <div class="meal-title">Tilføj det, du har spist</div>
+  <div class="food-search"><input id="foodSearch" placeholder="Søg fx skyr, havregryn, banan"><button class="primary" id="searchFood">Søg</button></div>
+  <div class="food-results" id="foodResults"><div class="food-empty">Søg efter en fødevare eller et mærkevareprodukt.</div></div>
+  <div class="meal-title">Dagens registrering</div>
+  <div class="food-log" id="foodLog"></div>
+  <div class="bottomnote">Næringsværdier er estimater fra fødevaredatabasen. Tjek emballagen ved mærkevarer.</div>
+ </section>
  <section class="view" id="overviewView" hidden>
-  <div class="headline"><h2>Dit overblik</h2><span class="sub">Seneste 7 dage</span></div>
+  <div class="headline"><h2>Dit overblik</h2><div class="switch"><button id="period7" class="active">7 dage</button><button id="period30">30 dage</button></div></div>
   <div class="stats">
    <div class="stat"><strong id="avgStat">0%</strong><span>Daglig rutine i snit</span></div>
    <div class="stat"><strong id="daysStat">0/7</strong><span>Dage med alle vaner</span></div>
@@ -104,6 +138,8 @@ button,input,textarea{font:inherit}button{cursor:pointer}
   <div class="history"><h3>Dag for dag</h3><div class="days" id="historyDays"></div></div>
   <div class="settings"><span>Udseende</span><div class="switch"><button id="darkChoice">Dark</button><button id="lightChoice">Light</button></div></div>
   <div class="settings"><span>Data gemmes lokalt på denne enhed</span><button class="secondary" id="resetToday">Nulstil i dag</button></div>
+  <div class="settings"><span>Pas på dine rutiner og din historik</span><div style="display:flex;gap:6px"><button class="secondary" id="exportData">Backup</button><button class="secondary" id="importData">Gendan</button><input id="importFile" type="file" accept="application/json" hidden></div></div>
+  <div class="bottomnote">Tip: Lav en backup, før du skifter telefon eller rydder browserdata.</div>
  </section>
 </div>
 <div class="modal-back" id="modalBack">
@@ -147,9 +183,9 @@ function dailyDone(){return getToday().done||{}}
 function weekDone(){let s=load("mr2-weekdone",{});return s[mondayKey()]||{}}
 function renderDaily(){
  let done=dailyDone(),grid=$("#dailyGrid"),count=0;grid.innerHTML="";
- ["Morgen","Dag","Aften","Andet"].forEach(group=>{
+ ["Morgen","Dag","Aften","Kost","Andet"].forEach(group=>{
   let items=daily.filter(x=>x.group===group);if(!items.length)return;
-  let card=document.createElement("div");card.className="group";
+  let card=document.createElement("div");card.className="group"+(group==="Kost"?" kost":"");
   let h=document.createElement("h3");h.textContent=group;card.append(h);
   items.forEach(item=>{
    let row=document.createElement("label");row.className="task"+(done[item.id]?" done":"");
@@ -174,22 +210,27 @@ function renderWeekly(){
   check.append(cb);row.append(day,info,check);row.addEventListener("click",e=>{if(e.target!==cb)openEditor("weekly",item.id)});list.append(row);
  });
 }
+let overviewDays=7;
 function renderOverview(){
- let h=getHistory(),keys=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);keys.push(dateKey(d))}
- let percentages=[],full=0,streak=0,started=false;
+ let h=getHistory(),keys=[];for(let i=overviewDays-1;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);keys.push(dateKey(d))}
+ let percentages=[],full=0,streak=0;
  keys.forEach(k=>{let n=daily.filter(x=>h[k]?.done?.[x.id]).length;let p=daily.length?n/daily.length:0;percentages.push(p);if(p===1)full++});
- let avg=percentages.reduce((a,b)=>a+b,0)/7;$("#avgStat").textContent=Math.round(avg*100)+"%";$("#daysStat").textContent=full+"/7";
+ let avg=percentages.reduce((a,b)=>a+b,0)/Math.max(1,percentages.length);
+ $("#avgStat").textContent=Math.round(avg*100)+"%";$("#daysStat").textContent=full+"/"+overviewDays;
  let wd=load("mr2-weekdone",{}),thisWeek=wd[mondayKey()]||{};$("#weekStat").textContent=weekly.filter(x=>thisWeek[x.id]).length;
- for(let i=keys.length-1;i>=0;i--){if(percentages[i]===1)streak++;else if(started)break;else if(i===keys.length-1)break}
+ for(let i=keys.length-1;i>=0;i--){if(percentages[i]===1)streak++;else break}
  $("#streakStat").textContent=streak;
- let root=$("#historyDays");root.innerHTML="";keys.forEach((k,i)=>{let d=new Date(k+"T12:00:00"),wrap=document.createElement("div");wrap.className="daystat";wrap.textContent=new Intl.DateTimeFormat("da-DK",{weekday:"short"}).format(d).replace(".","");let dot=document.createElement("div");dot.className="daydot"+(percentages[i]===1?" good":percentages[i]>0?" partial":"");dot.textContent=Math.round(percentages[i]*100)+"%";wrap.append(dot);root.append(wrap)});
+ $("#period7").classList.toggle("active",overviewDays===7);$("#period30").classList.toggle("active",overviewDays===30);
+ let root=$("#historyDays");root.innerHTML="";
+ keys.forEach((k,i)=>{let d=new Date(k+"T12:00:00"),wrap=document.createElement("div");wrap.className="daystat";wrap.textContent=overviewDays===7?new Intl.DateTimeFormat("da-DK",{weekday:"short"}).format(d).replace(".",""):d.getDate()+"/"+(d.getMonth()+1);let dot=document.createElement("div");dot.className="daydot"+(percentages[i]===1?" good":percentages[i]>0?" partial":"");dot.textContent=Math.round(percentages[i]*100)+"%";wrap.append(dot);root.append(wrap)});
+ root.style.gridTemplateColumns=overviewDays===7?"repeat(7,1fr)":"repeat(10,1fr)";
 }
 function openEditor(type,id,group){
  activeEditor={type,id,group};let item=id?(type==="daily"?daily:weekly).find(x=>x.id===id):null;
  $("#modalTitle").textContent=(item?"Redigér ":"Tilføj ")+(type==="daily"?"vane":"ugentlig aktivitet");
  let fields=$("#modalFields");fields.innerHTML="";
  const addField=(label,name,value,placeholder="")=>{let f=document.createElement("div");f.className="field";let l=document.createElement("label");l.textContent=label;let inp=document.createElement("input");inp.name=name;inp.value=value||"";inp.placeholder=placeholder;f.append(l,inp);fields.append(f)};
- if(type==="daily"){let f=document.createElement("div");f.className="field";let l=document.createElement("label");l.textContent="Tidspunkt";let sel=document.createElement("select");sel.name="group";["Morgen","Dag","Aften","Andet"].forEach(g=>{let o=document.createElement("option");o.value=g;o.textContent=g;sel.append(o)});sel.value=item?.group||group||"Dag";f.append(l,sel);fields.append(f);addField("Vane","text",item?.text,"Fx 10 minutters udstrækning")}
+ if(type==="daily"){let f=document.createElement("div");f.className="field";let l=document.createElement("label");l.textContent="Tidspunkt";let sel=document.createElement("select");sel.name="group";["Morgen","Dag","Aften","Kost","Andet"].forEach(g=>{let o=document.createElement("option");o.value=g;o.textContent=g;sel.append(o)});sel.value=item?.group||group||"Dag";f.append(l,sel);fields.append(f);addField("Vane","text",item?.text,"Fx 10 minutters udstrækning")}
  else{addField("Ugedag","day",item?.day,"Fx Mandag");addField("Træning / aktivitet","training",item?.training,"Fx Roligt løb, 30 min.");addField("Formål","purpose",item?.purpose,"Fx Aerob base")}
  $("#deleteItem").style.visibility=item?"visible":"hidden";$("#modalBack").classList.add("open");
 }
@@ -206,10 +247,74 @@ $("#closeModal").addEventListener("click",closeEditor);$("#modalBack").addEventL
 $("#addWeek").addEventListener("click",()=>openEditor("weekly",null));
 function setTheme(t){document.documentElement.classList.toggle("light",t==="light");localStorage.setItem("mr2-theme",t);$("#darkChoice").classList.toggle("active",t==="dark");$("#lightChoice").classList.toggle("active",t==="light");$("#themeBtn").textContent=t==="dark"?"☼":"☾";document.querySelector('meta[name="theme-color"]').content=t==="dark"?"#080908":"#f4f5f1"}
 $("#themeBtn").addEventListener("click",()=>setTheme(document.documentElement.classList.contains("light")?"dark":"light"));$("#darkChoice").addEventListener("click",()=>setTheme("dark"));$("#lightChoice").addEventListener("click",()=>setTheme("light"));
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));["daily","weekly","overview"].forEach(v=>$("#"+v+"View").hidden=v!==b.dataset.view)}));
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));["daily","weekly","nutrition","overview"].forEach(v=>$("#"+v+"View").hidden=v!==b.dataset.view)}));
 $("#resetToday").addEventListener("click",()=>{let h=getHistory();h[dateKey()]={done:{},weekDone:{}};localStorage.setItem("mr2-history",JSON.stringify(h));renderDaily();renderOverview()});
+$("#period7").addEventListener("click",()=>{overviewDays=7;renderOverview()});
+$("#period30").addEventListener("click",()=>{overviewDays=30;renderOverview()});
+$("#exportData").addEventListener("click",()=>{
+ const keys=["mr2-daily","mr2-weekly","mr2-history","mr2-weekdone","mr2-theme","mr2-nutrition","mr2-nutrition-goals"];
+ const backup={app:"Min rutine",version:1,createdAt:new Date().toISOString(),data:{}};
+ keys.forEach(k=>{let v=localStorage.getItem(k);if(v!==null)backup.data[k]=JSON.parse(v)});
+ const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="min-rutine-backup.json";a.click();URL.revokeObjectURL(url);
+});
+$("#importData").addEventListener("click",()=>$("#importFile").click());
+$("#importFile").addEventListener("change",async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ try{const backup=JSON.parse(await file.text());if(backup.app!=="Min rutine"||!backup.data)throw new Error("invalid");
+ Object.entries(backup.data).forEach(([k,v])=>{if(["mr2-daily","mr2-weekly","mr2-history","mr2-weekdone","mr2-theme","mr2-nutrition","mr2-nutrition-goals"].includes(k))localStorage.setItem(k,JSON.stringify(v))});
+ daily=load("mr2-daily",clone(defaultsDaily));weekly=load("mr2-weekly",clone(defaultsWeek));renderDaily();renderWeekly();renderOverview();setTheme(load("mr2-theme","dark"));alert("Din backup er gendannet.");
+ }catch(err){alert("Filen kunne ikke gendannes. Vælg en backup fra Min rutine.");}e.target.value="";
+});
+
+// Nutrition tracker: local daily log + Open Food Facts product lookup.
+const nutritionKey="mr2-nutrition", goalsKey="mr2-nutrition-goals";
+let selectedFood=null, searchBusy=false;
+const defaultGoals={kcal:2200,protein:130};
+function nutritionGoals(){return load(goalsKey,defaultGoals)}
+function nutritionLog(){let all=load(nutritionKey,{});return all[dateKey()]||[]}
+function saveNutritionLog(items){let all=load(nutritionKey,{});all[dateKey()]=items;localStorage.setItem(nutritionKey,JSON.stringify(all));renderNutrition()}
+function nval(obj,keys){for(const k of keys){let v=obj?.[k];if(v!==undefined&&v!==null&&v!==""&&Number.isFinite(Number(v)))return Number(v)}return 0}
+function renderNutrition(){
+ const items=nutritionLog(),tot=items.reduce((a,x)=>({kcal:a.kcal+x.kcal,protein:a.protein+x.protein,carbs:a.carbs+x.carbs,fat:a.fat+x.fat}),{kcal:0,protein:0,carbs:0,fat:0});
+ const goals=nutritionGoals();
+ $("#kcalTotal").innerHTML=Math.round(tot.kcal)+' <small>kcal</small>';$("#proteinTotal").textContent=Math.round(tot.protein)+" g";$("#carbTotal").textContent=Math.round(tot.carbs)+" g";$("#fatTotal").textContent=Math.round(tot.fat)+" g";
+ $("#kcalBar").style.width=Math.min(100,goals.kcal?tot.kcal/goals.kcal*100:0)+"%";$("#proteinBar").style.width=Math.min(100,goals.protein?tot.protein/goals.protein*100:0)+"%";
+ $("#kcalGoal").value=goals.kcal;$("#proteinGoal").value=goals.protein;
+ $("#nutritionDate").textContent=new Intl.DateTimeFormat("da-DK",{day:"numeric",month:"short"}).format(new Date());
+ const log=$("#foodLog");log.innerHTML="";
+ if(!items.length){log.innerHTML='<div class="food-empty">Intet registreret endnu i dag.</div>';return}
+ items.forEach((item,i)=>{let row=document.createElement("div");row.className="food-entry";let info=document.createElement("div");info.className="entryinfo";let name=document.createElement("strong");name.textContent=item.name;let detail=document.createElement("small");detail.textContent=item.grams+" g";info.append(name,detail);let macros=document.createElement("div");macros.className="entrymacros";macros.textContent=Math.round(item.kcal)+" kcal · "+Math.round(item.protein)+" g protein";let del=document.createElement("button");del.className="remove";del.textContent="×";del.addEventListener("click",()=>{let a=nutritionLog();a.splice(i,1);saveNutritionLog(a)});row.append(info,macros,del);log.append(row)});
+}
+async function searchFoods(){
+ const q=$("#foodSearch").value.trim();if(!q||searchBusy)return;searchBusy=true;const root=$("#foodResults");root.innerHTML='<div class="food-empty">Søger i fødevaredatabasen…</div>';
+ try{
+  const url="https://world.openfoodfacts.org/cgi/search.pl?"+new URLSearchParams({search_terms:q,search_simple:"1",action:"process",json:"1",page_size:"8",fields:"product_name,brands,nutriments,code"});
+  const response=await fetch(url,{headers:{"Accept":"application/json"}});
+  if(!response.ok)throw new Error("Search failed");
+  const data=await response.json();root.innerHTML="";
+  const products=(data.products||[]).filter(p=>p.product_name&&p.nutriments);
+  if(!products.length){root.innerHTML='<div class="food-empty">Ingen resultater. Prøv et andet søgeord, eller brug manuel registrering senere.</div>';return}
+  products.forEach(product=>{
+   const n=product.nutriments||{},name=[product.product_name,product.brands].filter(Boolean).join(" · ");
+   const kcal=nval(n,["energy-kcal_100g"])||nval(n,["energy-kj_100g"])/4.184;
+   const protein=nval(n,["proteins_100g"]),carbs=nval(n,["carbohydrates_100g"]),fat=nval(n,["fat_100g"]);
+   const row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.style.minWidth="0";const title=document.createElement("strong");title.textContent=name;const sub=document.createElement("small");sub.textContent=`Pr. 100 g: ${Math.round(kcal)} kcal · ${protein} g protein`;info.append(title,sub);const btn=document.createElement("button");btn.className="primary";btn.textContent="Tilføj";btn.addEventListener("click",()=>addFoodPrompt({name,kcal,protein,carbs,fat}));row.append(info,btn);root.append(row);
+  });
+ }catch(e){root.innerHTML='<div class="food-empty">Kunne ikke hente fødevarer lige nu. Kontrollér internetforbindelsen, eller prøv igen senere.</div>'}
+ finally{searchBusy=false}
+}
+function addFoodPrompt(food){
+ const raw=prompt(`Hvor mange gram ${food.name} har du spist?`, "100");
+ if(raw===null)return;const grams=Number(raw);if(!Number.isFinite(grams)||grams<=0){alert("Indtast en mængde i gram.");return}
+ const factor=grams/100,items=nutritionLog();items.push({name:food.name,grams,kcal:food.kcal*factor,protein:food.protein*factor,carbs:food.carbs*factor,fat:food.fat*factor});
+ saveNutritionLog(items);$("#foodResults").innerHTML='<div class="food-empty">Tilføjet til dagens registrering.</div>';
+}
+$("#searchFood").addEventListener("click",searchFoods);$("#foodSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchFoods()});
+$("#saveGoals").addEventListener("click",()=>{let kcal=Number($("#kcalGoal").value),protein=Number($("#proteinGoal").value);if(kcal>0&&protein>0){localStorage.setItem(goalsKey,JSON.stringify({kcal,protein}));renderNutrition()}});
+
 $("#today").textContent=new Intl.DateTimeFormat("da-DK",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
-setTheme(load("mr2-theme","dark"));renderDaily();renderWeekly();renderOverview();
+setTheme(load("mr2-theme","dark"));renderDaily();renderWeekly();renderNutrition();renderOverview();
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js");
 </script>
 </body></html>
