@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#080908">
+<meta name="theme-color" content="#14201d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Habit Ladder">
@@ -11,8 +11,8 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <title>Habit Ladder</title>
 <style>
-:root{color-scheme:dark;--bg:#080908;--surface:#101210;--surface2:#171a17;--line:#292d29;--text:#f4f5f2;--muted:#929891;--green:#24bd70;--green-soft:#14291d;--shadow:0 10px 30px #0002}
-:root.light{color-scheme:light;--bg:#f4f5f1;--surface:#fff;--surface2:#eef0eb;--line:#dfe3dc;--text:#20251f;--muted:#747d73;--green:#159957;--green-soft:#e3f4e9;--shadow:0 8px 25px #23301a0d}
+:root{color-scheme:dark;--bg:#14201d;--surface:#1d2c28;--surface2:#263832;--line:#3b5149;--text:#f5f1e7;--muted:#aab8ae;--green:#82dda3;--green-soft:#263f33;--accent:#f09a72;--accent-soft:#493127;--shadow:0 12px 30px #09130f55}
+:root.light{color-scheme:light;--bg:#f5f1e8;--surface:#fffdf7;--surface2:#ece8dd;--line:#ddd5c5;--text:#20312a;--muted:#6c7a72;--green:#18825f;--green-soft:#e4f1e8;--accent:#cf6548;--accent-soft:#f7e5dd;--shadow:0 10px 25px #3b44320d}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 button,input,textarea{font:inherit}button{cursor:pointer}
@@ -50,7 +50,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .mini{border:0;background:transparent;color:var(--muted);font-size:17px;padding:2px 3px;line-height:1}
 .addline{width:100%;text-align:left;border:0;background:transparent;color:var(--muted);font-size:12px;padding:8px 0 2px}
 .bottomnote{font-size:11px;color:var(--muted);margin:11px 2px 0}
-.week-list{display:grid;gap:7px}
+.week-list{display:grid;gap:7px}.addline-empty{min-height:44px;padding:12px;border:1px dashed var(--line);border-radius:10px;color:var(--green);font-weight:750}.week-empty{padding:18px;background:var(--surface);border:1px dashed var(--line);border-radius:14px;text-align:center}
 .weekrow{display:grid;grid-template-columns:76px minmax(0,1fr) 22px;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 11px}
 .weekday{font-size:13px;font-weight:750}.workout{font-size:13px;font-weight:650;line-height:1.25}.purpose{font-size:11px;color:var(--muted);margin-top:3px}.weekdone{display:grid;place-items:center}.weekdone input{width:20px;height:20px}
 .week-actions{display:flex;justify-content:flex-end;margin:10px 0}
@@ -77,44 +77,19 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .empty{color:var(--muted);font-size:12px;padding:9px 0}
 @media(min-width:650px){.app{padding:24px}.daily-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.task{font-size:14px;min-height:42px}.week-list{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:360px){.app{padding:12px}.task{font-size:12px;min-height:35px}.group{padding:9px}.daily-grid{gap:7px}}
-
-.nutrition-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
-.nutri-card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px}
-.nutri-card strong{display:block;font-size:20px;letter-spacing:-.4px}.nutri-card span{font-size:11px;color:var(--muted)}
-.nutri-card .smallbar{height:4px;background:var(--surface2);border-radius:9px;margin-top:8px;overflow:hidden}.nutri-card .smallbar i{display:block;height:100%;background:var(--green);width:0}
-.food-search{display:flex;gap:7px;margin:12px 0}.food-search input{min-width:0;flex:1;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:11px;padding:11px;font-size:14px}
-.food-results,.food-log{display:grid;gap:7px;margin-top:8px}
-.food-result,.food-entry{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 11px}
-.food-result strong,.food-entry strong{font-size:13px;display:block}.food-result small,.food-entry small{font-size:11px;color:var(--muted)}
-.food-result button{flex:0 0 auto}
-.food-entry .remove{border:0;background:transparent;color:var(--muted);font-size:18px;padding:4px}
-.food-entry .entryinfo{min-width:0;flex:1}
-.food-entry .entrymacros{font-size:11px;color:var(--muted);text-align:right;white-space:nowrap}
-.meal-title{font-size:13px;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 6px}
-.goal-edit{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.goal-edit input{width:90px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:9px;padding:8px;font-size:13px}
-.food-empty{font-size:12px;color:var(--muted);padding:12px 2px}.camera-panel{margin-top:14px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:13px}.camera-button{display:inline-flex;align-items:center;justify-content:center;margin:4px 0 8px;cursor:pointer}.camera-panel img{display:block;width:100%;max-height:240px;object-fit:cover;border-radius:10px;margin-top:8px}.camera-panel .food-empty{padding:6px 0}
-.food-result{align-items:flex-start}.food-result .food-meta{min-width:0;flex:1}.food-result .grams-control{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;color:var(--muted)}.food-result .grams-control input{width:76px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:7px;font-size:13px}.food-result button{align-self:center}
-.goal-feedback{font-size:11px;color:var(--green);font-weight:700;min-width:76px;text-align:right;opacity:0;transition:opacity .2s}.goal-feedback.show{opacity:1}
-.group.reminders{background:color-mix(in srgb,#7189c7 11%,var(--surface));border-color:color-mix(in srgb,#7189c7 42%,var(--line))}.group.reminders h3{color:#9aaddf}:root.light .group.reminders{background:#edf1fa;border-color:#cbd5ec}:root.light .group.reminders h3{color:#536b9d}.group.reminders .reminder-row{border-top-color:color-mix(in srgb,#7189c7 22%,var(--line))}.group.reminders .reminder-add input{background:color-mix(in srgb,#7189c7 5%,var(--bg));border-color:color-mix(in srgb,#7189c7 28%,var(--line))}.group.reminders .reminder-row input:checked{background:#7189c7;border-color:#7189c7}.reminder-list{display:grid}.reminder-row{display:flex;align-items:center;gap:8px;min-height:38px;border-top:1px solid var(--line);padding:5px 0;font-size:13px;line-height:1.22}.reminder-row input{appearance:none;width:19px;height:19px;flex:0 0 19px;border:1.7px solid var(--muted);border-radius:50%;margin:0;display:grid;place-items:center}.reminder-row input:checked{background:#7189c7;border-color:#7189c7}.reminder-row input:checked:after{content:"✓";font-size:12px;font-weight:900;color:white}.reminder-row span{flex:1;overflow-wrap:anywhere}.reminder-row.done span{color:var(--muted);text-decoration:line-through}.reminder-add{display:grid;gap:6px;margin-top:8px}.reminder-add input{width:100%;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:9px;font-size:12px}.reminder-add button{width:100%;white-space:nowrap;padding:8px}
+.group.reminders{background:color-mix(in srgb,var(--accent) 11%,var(--surface));border-color:color-mix(in srgb,var(--accent) 42%,var(--line))}.group.reminders h3{color:var(--accent)}:root.light .group.reminders{background:var(--accent-soft);border-color:var(--line)}:root.light .group.reminders h3{color:#536b9d}.group.reminders .reminder-row{border-top-color:color-mix(in srgb,var(--accent) 22%,var(--line))}.group.reminders .reminder-add input{background:color-mix(in srgb,var(--accent) 5%,var(--bg));border-color:color-mix(in srgb,var(--accent) 28%,var(--line))}.group.reminders .reminder-row input:checked{background:var(--accent);border-color:var(--accent)}.reminder-list{display:grid}.reminder-row{display:flex;align-items:center;gap:8px;min-height:38px;border-top:1px solid var(--line);padding:5px 0;font-size:13px;line-height:1.22}.reminder-row input{appearance:none;width:19px;height:19px;flex:0 0 19px;border:1.7px solid var(--muted);border-radius:50%;margin:0;display:grid;place-items:center}.reminder-row input:checked{background:var(--accent);border-color:var(--accent)}.reminder-row input:checked:after{content:"✓";font-size:12px;font-weight:900;color:white}.reminder-row span{flex:1;overflow-wrap:anywhere}.reminder-row.done span{color:var(--muted);text-decoration:line-through}.reminder-add{display:grid;gap:6px;margin-top:8px}.reminder-add input{width:100%;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:9px;font-size:12px}.reminder-add button{width:100%;white-space:nowrap;padding:8px}
 
 /* Responsive safeguards: content grows naturally without covering neighboring cards. */
-.app,.view,.daily-grid,.week-list,.food-results,.food-log,.history,.group,.stat,.nutri-card{min-width:0;max-width:100%}
+.app,.view,.daily-grid,.week-list,.history,.group,.stat{min-width:0;max-width:100%}
 .daily-grid{align-items:stretch;grid-auto-rows:minmax(min-content,auto)}
 .group{height:auto;align-self:stretch;overflow-wrap:anywhere}
-.group h3,.task span,.reminder-row span,.weekday,.workout,.purpose,.food-result strong,.food-entry strong,.food-empty{min-width:0;overflow-wrap:anywhere;word-break:normal}
+.group h3,.task span,.reminder-row span,.weekday,.workout,.purpose{min-width:0;overflow-wrap:anywhere;word-break:normal}
 .task,.reminder-row{min-width:0;align-items:flex-start}
 .task input,.reminder-row input{margin-top:1px;flex-shrink:0}
 .task .mini,.reminder-row .mini{flex-shrink:0}
 .week-list{align-items:stretch;grid-auto-rows:minmax(min-content,auto)}
 .weekrow{min-width:0;grid-template-columns:minmax(58px,76px) minmax(0,1fr) 22px;align-items:start}
 .weekrow>*{min-width:0;overflow-wrap:anywhere}
-.food-result,.food-entry{min-width:0;align-items:flex-start}
-.food-result .food-meta,.food-entry .entryinfo{min-width:0;overflow-wrap:anywhere}
-.food-result button,.food-entry .remove{flex-shrink:0}
-.food-entry .entrymacros{white-space:normal;max-width:38%;overflow-wrap:anywhere}
-.food-search{min-width:0}.food-search input{width:0}
-.goal-edit>*{min-width:0;max-width:100%}
-.camera-panel,.camera-panel img{max-width:100%;min-width:0}
 .tabs{min-width:0}.tab{min-width:0;overflow-wrap:anywhere}
 @media(max-width:420px){
  .app{padding-left:12px;padding-right:12px}
@@ -123,12 +98,6 @@ button,input,textarea{font:inherit}button{cursor:pointer}
  .task,.reminder-row{gap:6px;font-size:12px}
  .task input,.reminder-row input{width:18px;height:18px;flex-basis:18px}
  .weekrow{grid-template-columns:minmax(52px,64px) minmax(0,1fr) 20px;gap:7px;padding:9px}
- .food-entry{flex-wrap:wrap}
- .food-entry .entryinfo{flex:1 1 55%}
- .food-entry .entrymacros{flex:1 1 100%;max-width:none;text-align:left;padding-left:0}
- .food-result{flex-wrap:wrap}
- .food-result .food-meta{flex:1 1 100%}
- .food-result button{margin-left:auto}
  .headline h2{font-size:18px}
 }
 @media(max-width:330px){
@@ -162,7 +131,7 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
 .headline{min-height:30px;margin-bottom:11px}
 .headline h2{font-size:18px;font-weight:760;letter-spacing:-.45px}
 .progress{height:6px;margin-bottom:15px}
-.group,.stat,.history,.nutri-card,.weekrow,.food-result,.food-entry,.camera-panel{
+.group,.stat,.history,.weekrow{
  border-radius:var(--radius-card);
  box-shadow:0 1px 0 #ffffff05;
 }
@@ -173,9 +142,9 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
 .task input:focus-visible,.reminder-row input:focus-visible,.weekdone input:focus-visible{outline-offset:3px}
 .addline{min-height:32px;font-weight:650;transition:color .15s ease}
 .addline:hover,.mini:hover{color:var(--text)}
-.group.reminders{background:color-mix(in srgb,#7189c7 10%,var(--surface));border-color:color-mix(in srgb,#7189c7 38%,var(--line))}
-.group.reminders h3{color:#9aaddf}
-:root.light .group.reminders{background:#edf1fa;border-color:#cbd5ec}
+.group.reminders{background:color-mix(in srgb,var(--accent) 10%,var(--surface));border-color:color-mix(in srgb,var(--accent) 38%,var(--line))}
+.group.reminders h3{color:var(--accent)}
+:root.light .group.reminders{background:var(--accent-soft);border-color:var(--line)}
 :root.light .group.reminders h3{color:#536b9d}
 .weekrow{padding:12px;transition:border-color .15s ease,background .15s ease}
 .weekrow:active{background:var(--surface2)}
@@ -190,19 +159,11 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
 .stat strong{line-height:1.1;margin-bottom:5px}
 .history{padding:14px}
 .daydot{width:min(30px,100%);height:auto;aspect-ratio:1}
-.food-search input,.field input,.field textarea,.field select,.goal-edit input,.reminder-add input{
- min-height:42px;border-radius:var(--radius-control)
-}
-.food-result,.food-entry{padding:12px;line-height:1.35}
-.food-result strong,.food-entry strong{line-height:1.35}
-.nutri-card{padding:13px}
-.nutri-card strong{line-height:1.15;margin-bottom:4px}
-.camera-panel{padding:14px}
-.goal-feedback{transition:opacity .2s ease}
 .modal{padding:18px}
 .modal-head{position:sticky;top:-18px;background:var(--surface);padding:4px 0 10px;z-index:1}
-.empty,.food-empty{line-height:1.45}
+.empty{line-height:1.45}
 .bottomnote{line-height:1.5;max-width:65ch}
+.tagline{font-size:10px;line-height:1.2;color:var(--muted);margin:2px 0 0 46px;letter-spacing:.02em}
 @media(max-width:420px){
  .brand h1{font-size:24px}
  .group{padding:10px 10px 7px}
@@ -214,9 +175,36 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
 
- .tagline{font-size:10px;line-height:1.2;color:var(--muted);margin:2px 0 0;letter-spacing:.02em}
-.brandline{display:flex;align-items:center;gap:10px}.brandmark{width:40px;height:40px;flex:0 0 40px;border-radius:14px;background:var(--green-soft);padding:5px}.auth-title{display:flex;align-items:center;gap:10px}
-</style>
+/* Min rutine identity: warm paper, forest ink and a sunrise progress mark. */
+:root{--radius-card:19px;--radius-control:13px;--focus:var(--accent)}
+body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(--green) 10%,transparent),transparent 32rem)}
+.app{width:min(100%,920px);padding-left:18px;padding-right:18px}
+.brandline{display:flex;align-items:center;gap:10px}
+.brandmark{display:block;width:40px;height:40px;flex:0 0 40px;border-radius:14px;box-shadow:0 4px 12px color-mix(in srgb,var(--green) 18%,transparent)}
+.brand h1{font-size:26px;letter-spacing:-1.1px;font-weight:820}
+.streak-flame{display:grid;place-items:center;width:32px;height:36px;flex:0 0 32px;margin-left:1px}.streak-flame svg{display:block;width:32px;height:36px;overflow:visible}.streak-flame text{font-size:12px}
+
+.top-actions{gap:7px}.account-email{max-width:100px}
+.tabs{padding:5px;border-radius:16px;background:var(--surface2);border:1px solid var(--line);box-shadow:none}
+.tab{border-radius:12px;font-size:13px}.tab.active{background:var(--surface);color:var(--text);box-shadow:inset 0 -2px var(--accent),0 3px 10px #07130e14}
+.group,.stat,.history,.weekrow{border-radius:var(--radius-card);box-shadow:var(--shadow);background:var(--surface)}
+.group{padding:14px 14px 9px}.group h3{letter-spacing:1px}
+.daily-grid{gap:11px}.week-list{gap:9px}
+.task input:checked,.weekdone input:checked{background:var(--green);border-color:var(--green)}
+.primary{background:var(--accent);border-color:var(--accent);color:#fffaf2;box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 24%,transparent)}
+.secondary,.iconbtn{background:var(--surface);border-radius:13px}
+.progress{height:7px;border-radius:99px;background:var(--surface2)}.fill{background:linear-gradient(90deg,var(--green),var(--accent));border-radius:99px}
+.counter{color:var(--accent)}.stat strong{letter-spacing:-1px}.history h3{letter-spacing:-.2px}
+.daydot.good{background:var(--green-soft);color:var(--green)}
+.modal{border-radius:24px}.auth-screen{border-radius:24px;box-shadow:var(--shadow)}
+.auth-title{display:flex;align-items:center;gap:10px}
+.empty,.bottomnote{color:var(--muted)}
+@media(max-width:420px){.account-email{display:none}.brand h1{font-size:23px}.brandmark{width:36px;height:36px;flex-basis:36px}.streak-flame{width:28px;height:32px;flex-basis:28px}.streak-flame svg{width:28px;height:32px}.top-actions{gap:6px}.app{padding-left:14px;padding-right:14px}}
+
+.week-card{margin:0 0 16px;padding:15px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);--kaj:#82dda3;--erik:#f09a72}
+.week-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}.week-head h3{font-size:16px;margin:0;letter-spacing:-.2px}.week-head p{margin:3px 0 0;color:var(--muted);font-size:11px;line-height:1.4}.week-days-count{flex:none;padding:6px 9px;border:1px solid var(--line);border-radius:99px;color:var(--muted);font-size:10px;font-weight:700}
+.week-averages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.week-average{min-width:0;padding:10px;border:1px solid var(--line);border-radius:13px;background:var(--surface2)}.week-average.kaj{--person-color:var(--kaj)}.week-average.erik{--person-color:var(--erik)}.week-average strong{display:block;font-size:21px;line-height:1.1;margin:3px 0}.week-average .person-label{font-size:11px;font-weight:800;color:var(--person-color)}.week-average small{font-size:10px;color:var(--muted)}.average-track,.daily-track{height:6px;background:var(--bg);border-radius:9px;overflow:hidden}.average-track i,.daily-track i{display:block;height:100%;width:0;background:var(--person-color);border-radius:inherit;transition:width .25s ease}.week-leader{margin:10px 0 13px;padding:9px 10px;border-radius:11px;background:var(--green-soft);color:var(--text);font-size:12px;font-weight:700;line-height:1.4}.week-chart-title{display:flex;justify-content:space-between;gap:8px;margin:0 0 7px;font-size:11px;font-weight:800}.week-chart-title small{font-weight:500;color:var(--muted)}.daily-head,.daily-row{display:grid;grid-template-columns:48px repeat(2,minmax(0,1fr));gap:8px;align-items:center}.daily-head{padding:0 0 6px;color:var(--muted);font-size:10px;font-weight:800}.daily-head .kaj{color:var(--kaj)}.daily-head .erik{color:var(--erik)}.daily-row{padding:8px 0;border-top:1px solid var(--line)}.daily-date{display:grid;gap:2px}.daily-date strong{font-size:11px}.daily-date small{font-size:9px;color:var(--muted)}.daily-cell{min-width:0;padding:4px 5px;border-radius:8px}.daily-cell.kaj{--person-color:var(--kaj)}.daily-cell.erik{--person-color:var(--erik)}.daily-cell.ahead{background:color-mix(in srgb,var(--person-color) 9%,transparent)}.daily-value{display:flex;justify-content:space-between;gap:3px;align-items:baseline;white-space:nowrap;font-size:10px;line-height:1.2}.daily-value strong{font-size:11px;color:var(--person-color)}.daily-value small{font-size:9px;color:var(--muted)}.daily-track{height:5px;margin-top:4px}.daily-empty{font-size:9px;color:var(--muted)}
+@media(max-width:370px){.week-card{padding:11px}.daily-head,.daily-row{grid-template-columns:42px repeat(2,minmax(0,1fr));gap:5px}.daily-cell{padding:3px}.daily-value strong{font-size:10px}.daily-value small{font-size:8px}}</style>
 </head>
 <body>
 <section class="auth-screen" id="authScreen">
@@ -231,16 +219,29 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
 </section>
 <div class="app" id="appShell" hidden>
  <header class="top">
-  <div class="brand"><div class="brandline"><svg class="brandmark" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(-1 2)" fill="none" stroke="var(--green)" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 37V15M34 37V15M12 27H34M12 20H34M12 34H34"/><path d="M34 27V7M29 13L34 7L39 13"/></g></svg><h1>Habit Ladder</h1></div><div class="tagline">Build habits. Climb together.</div><div class="sub" id="today"></div></div>
+  <div class="brand"><div class="brandline"><svg class="brandmark" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(-1 2)" fill="none" stroke="var(--green)" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 37V15M34 37V15M12 27H34M12 20H34M12 34H34"/><path d="M34 27V7M29 13L34 7L39 13"/></g></svg><h1>Habit Ladder</h1><span class="streak-flame" id="streakBadge" role="img" aria-label="Indlæser streak" title="Dage hvor alle vaner er gennemført"><svg viewBox="0 0 40 44" aria-hidden="true"><path fill="var(--green)" d="M20 2C17 11 8 16 7 26c-1 9 5 16 13 16s14-7 13-16c-1-8-7-13-13-24z"/><text id="streakCount" x="20" y="30" text-anchor="middle" fill="#fff" font-size="12" font-weight="850" font-family="Arial,sans-serif">…</text></svg></span></div><div class="tagline">Build habits. Climb together.</div><div class="sub" id="today"></div></div>
   <div class="top-actions"><span class="account-email" id="accountEmail"></span><button class="secondary" type="button" id="signOut">Log ud</button><button class="iconbtn" type="button" id="themeBtn" aria-label="Skift tema">☼</button></div>
  </header>
  <nav class="tabs" aria-label="Hovednavigation">
   <button class="tab active" type="button" data-view="daily" aria-current="page">Rutine</button>
   <button class="tab" type="button" data-view="weekly">Uge</button>
-  <button class="tab" type="button" data-view="nutrition">Kost</button>
   <button class="tab" type="button" data-view="overview">Overblik</button>
-  <a class="tab" href="./leaderboard.html">Leaderboard</a>
+  <button class="tab" type="button" data-view="leaderboard">Leaderboard</button>
  </nav>
+ <section class="view" id="leaderboardView" hidden>
+  <div class="headline"><div><h2>Leaderboard</h2><div class="sub">Build habits. Climb together.</div></div><div class="period" aria-label="Vælg periode"><button type="button" id="leaderboardPeriod7" class="active">7 dage</button><button type="button" id="leaderboardPeriod30">30 dage</button></div></div>
+  <section class="week-card" aria-labelledby="weekTitle">
+   <div class="week-head"><div><h3 id="weekTitle">De seneste 7 dage</h3><p>Andel af planlagte vaner gennemført</p></div><span class="week-days-count" id="weekDaysCount">Henter…</span></div>
+   <div class="week-averages"><div class="week-average kaj"><span class="person-label" id="weekName0">Kaj</span><strong id="weekAverage0">—</strong><div class="average-track"><i id="weekAverageBar0"></i></div><small class="average-label" id="weekAverageLabel0">Gennemsnit pr. dag</small></div><div class="week-average erik"><span class="person-label" id="weekName1">Erik</span><strong id="weekAverage1">—</strong><div class="average-track"><i id="weekAverageBar1"></i></div><small class="average-label" id="weekAverageLabel1">Gennemsnit pr. dag</small></div></div>
+   <p class="week-leader" id="weekLeader" aria-live="polite">Henter ugeoversigten…</p>
+   <div class="week-chart-title"><span>Dag for dag</span><small>Gennemført / planlagt</small></div>
+   <div class="daily-head"><span>Dag</span><span class="kaj" id="weekColumn0">Kaj</span><span class="erik" id="weekColumn1">Erik</span></div>
+   <div id="weekDays" class="daily-days" aria-label="Daglig sammenligning af vanegennemførelse"></div>
+  </section>
+  <div class="headline"><h2>Samlet placering</h2></div>
+  <section class="card" aria-live="polite"><div id="leaderboardRows" class="leaderboard"><div class="message loading"><span class="spinner"></span>Henter ranglisten…</div></div></section>
+  <p class="foot">Dagsprocenten viser hvor stor en del af dagens vaner, der blev gennemført. Vaner og personlige mål er private.</p>
+ </section>
  <section class="view" id="dailyView">
   <div class="headline"><h2>I dag</h2><div class="counter" id="counter">0/8</div></div>
   <div class="progress"><div class="fill" id="dailyFill"></div></div>
@@ -253,30 +254,6 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
   <div class="bottomnote">Tilpas planen efter energi og restitution.</div>
  </section>
 
- <section class="view" id="nutritionView" hidden>
-  <div class="headline"><h2>Dagens kost</h2><span class="sub" id="nutritionDate"></span></div>
-  <div class="nutrition-top">
-   <div class="nutri-card"><strong id="kcalTotal">0 <small>kcal</small></strong><span>Kalorier</span><div class="smallbar"><i id="kcalBar"></i></div></div>
-   <div class="nutri-card"><strong id="proteinTotal">0 g</strong><span>Protein</span><div class="smallbar"><i id="proteinBar"></i></div></div>
-   <div class="nutri-card"><strong id="carbTotal">0 g</strong><span>Kulhydrat</span></div>
-   <div class="nutri-card"><strong id="fatTotal">0 g</strong><span>Fedt</span></div>
-  </div>
-  <div class="settings"><span>Dine daglige mål</span><div class="goal-edit"><label><input id="kcalGoal" type="number" min="0" step="50"> <small>kcal</small></label><label><input id="proteinGoal" type="number" min="0" step="5"> <small>protein g</small></label><button class="secondary" type="button" id="saveGoals">Gem</button><span class="goal-feedback" id="goalFeedback" role="status" aria-live="polite">✓ Gemt</span></div></div>
-  <div class="meal-title">Tilføj det, du har spist</div>
-  <div class="food-search"><input id="foodSearch" placeholder="Søg fx skyr, havregryn, banan"><button class="primary" type="button" id="searchFood">Søg</button></div>
-  <div class="food-results" id="foodResults"><div class="food-empty">Søg efter en fødevare, ret eller et mærkevareprodukt på dansk eller engelsk.</div></div>
-  <div class="camera-panel">
-   <div class="meal-title">Tag et billede af din mad</div>
-   <label class="secondary camera-button" for="foodPhoto">▣ Åbn kamera / vælg billede</label>
-   <input id="foodPhoto" type="file" accept="image/*" capture="environment" hidden>
-   <img id="foodPhotoPreview" alt="Forhåndsvisning af madfoto" hidden>
-   <button class="primary" type="button" id="analyzeFoodPhoto" disabled>Analyser madfoto</button>
-   <div class="food-empty" id="photoStatus">Vælg et billede og tryk på Analyser. Analysen kræver en aktiveret Supabase-funktion og en AI-nøgle gemt sikkert i Supabase.</div>
-  </div>
-  <div class="meal-title">Dagens registrering</div>
-  <div class="food-log" id="foodLog"></div>
-  <div class="bottomnote">Næringsværdier er estimater fra fødevaredatabasen. Tjek emballagen ved mærkevarer.</div>
- </section>
  <section class="view" id="overviewView" hidden>
   <div class="headline"><h2>Dit overblik</h2><div class="switch"><button type="button" id="period7" class="active">7 dage</button><button type="button" id="period30">30 dage</button></div></div>
   <div class="stats">
@@ -325,7 +302,7 @@ const $=s=>document.querySelector(s), clone=x=>JSON.parse(JSON.stringify(x));
 const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
 const supabaseConfig=window.MIN_RUTINE_SUPABASE||{};
 const supabaseClient=window.supabase?.createClient(supabaseConfig.url,supabaseConfig.publishableKey);
-let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],foodEntriesCache=[],nutritionGoalsCache={kcal:2200,protein:130},sessionUserLoadedId=null,sessionLoadingUserId=null,sessionLoadingPromise=null;
+let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],routineStreak=0,sessionUserLoadedId=null,sessionLoadingUserId=null,sessionLoadingPromise=null;
 let activeEditor=null;
 const dateKey=(d=new Date())=>{let x=new Date(d);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,"0"),String(x.getDate()).padStart(2,"0")].join("-")};
 const mondayKey=()=>{let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return dateKey(d)};
@@ -354,14 +331,14 @@ async function saveHabitCheck(habitId,completed){
 }
 function renderDaily(){
  let done=dailyDone(),grid=$("#dailyGrid"),count=0;grid.innerHTML="";
- ["Morgen","Dag","Aften","Kost","Andet"].forEach(group=>{
-  let items=daily.filter(x=>x.group===group);if(!items.length)return;
+ ["Morgen","Dag","Aften"].forEach(group=>{
+  let items=daily.filter(x=>x.group===group);if(!items.length){let card=document.createElement("div");card.className="group";let h=document.createElement("h3");h.textContent=group;let empty=document.createElement("button");empty.className="addline addline-empty";empty.type="button";empty.textContent="Tilføj vane for at komme i gang";empty.addEventListener("click",()=>openEditor("daily",null,group));card.append(h,empty);grid.append(card);return;}
   let card=document.createElement("div");card.className="group"+(group==="Kost"?" kost":"");
   let h=document.createElement("h3");h.textContent=group;card.append(h);
   items.forEach(item=>{
    let row=document.createElement("label");row.className="task"+(done[item.id]?" done":"");
    let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!done[item.id];
-   cb.addEventListener("change",async()=>{cb.disabled=true;try{await saveHabitCheck(item.id,cb.checked);renderDaily();renderOverview()}catch(e){cb.checked=!cb.checked;alert("Afkrydsningen kunne ikke gemmes. Tjek internetforbindelsen.")}finally{cb.disabled=false}});
+   cb.addEventListener("change",async()=>{cb.disabled=true;try{await saveHabitCheck(item.id,cb.checked);renderDaily();renderOverview();await refreshStreak()}catch(e){cb.checked=!cb.checked;alert("Afkrydsningen kunne ikke gemmes. Tjek internetforbindelsen.")}finally{cb.disabled=false}});
    let span=document.createElement("span");span.textContent=item.text;
    let edit=document.createElement("button");edit.className="mini";edit.type="button";edit.textContent="···";edit.setAttribute("aria-label","Redigér vane");edit.addEventListener("click",()=>openEditor("daily",item.id));
    row.append(cb,span,edit);card.append(row);if(done[item.id])count++;
@@ -391,7 +368,7 @@ function renderReminders(){
 async function addReminder(){let input=$("#reminderInput"),text=input.value.trim();if(!text)return;let items=[...getReminders(),{id:crypto.randomUUID(),text,done:false}];try{await saveReminders(items);const next=$("#reminderInput");if(next)next.focus()}catch(e){alert("Huskelisten kunne ikke gemmes.")}}
 
 function renderWeekly(){
- let list=$("#weekList"),done=weekDone();list.innerHTML="";
+ let list=$("#weekList"),done=weekDone();list.innerHTML="";if(!weekly.length){let empty=document.createElement("div");empty.className="empty week-empty";empty.textContent="Ingen ugeplan endnu. Tilføj et mål for at komme i gang.";list.append(empty);return;}
  weekly.forEach(item=>{
   let row=document.createElement("div");row.className="weekrow";
   let day=document.createElement("div");day.className="weekday";day.textContent=item.day;
@@ -404,24 +381,25 @@ function renderWeekly(){
 let overviewDays=7;
 function renderOverview(){
  let h=getHistory(),keys=[];for(let i=overviewDays-1;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);keys.push(dateKey(d))}
- let percentages=[],full=0,streak=0;
+ let percentages=[],full=0;
  keys.forEach(k=>{let habits=allHabits.filter(x=>dateKey(new Date(x.created_at))<=k&&(!x.archived_at||dateKey(new Date(x.archived_at))>=k));let n=habits.filter(x=>h[k]?.done?.[x.id]).length;let p=habits.length?n/habits.length:0;percentages.push(p);if(habits.length&&p===1)full++});
  let avg=percentages.reduce((a,b)=>a+b,0)/Math.max(1,percentages.length);
  $("#avgStat").textContent=Math.round(avg*100)+"%";$("#daysStat").textContent=full+"/"+overviewDays;
  $("#weekStat").textContent=weekly.filter(x=>weeklyDoneCache[x.id]).length;
- for(let i=keys.length-1;i>=0;i--){if(percentages[i]===1)streak++;else break}
- $("#streakStat").textContent=streak;
+ $("#streakStat").textContent=routineStreak;
  $("#period7").classList.toggle("active",overviewDays===7);$("#period30").classList.toggle("active",overviewDays===30);
  let root=$("#historyDays");root.innerHTML="";
  keys.forEach((k,i)=>{let d=new Date(k+"T12:00:00"),wrap=document.createElement("div");wrap.className="daystat";wrap.textContent=overviewDays===7?new Intl.DateTimeFormat("da-DK",{weekday:"short"}).format(d).replace(".",""):d.getDate()+"/"+(d.getMonth()+1);let dot=document.createElement("div");dot.className="daydot"+(percentages[i]===1?" good":percentages[i]>0?" partial":"");dot.textContent=Math.round(percentages[i]*100)+"%";wrap.append(dot);root.append(wrap)});
  root.style.gridTemplateColumns=overviewDays===7?"repeat(7,1fr)":"repeat(10,1fr)";
 }
+function renderStreak(){const count=$("#streakCount"),badge=$("#streakBadge");if(!count||!badge)return;count.textContent=String(routineStreak);badge.setAttribute("aria-label",`${routineStreak} ${routineStreak===1?"dag":"dage"} med alle vaner gennemført i træk`);$("#streakStat").textContent=String(routineStreak)}
+async function refreshStreak(){try{const {data,error}=await supabaseClient.rpc("get_my_routine_streak");if(error)throw error;routineStreak=Math.max(0,Number(data)||0);renderStreak()}catch(e){const count=$("#streakCount"),badge=$("#streakBadge");if(count)count.textContent="–";if(badge)badge.setAttribute("aria-label","Streak kunne ikke indlæses")}}
 function openEditor(type,id,group){
  activeEditor={type,id,group};let item=id?(type==="daily"?daily:weekly).find(x=>x.id===id):null;
  $("#modalTitle").textContent=(item?"Redigér ":"Tilføj ")+(type==="daily"?"vane":"ugentlig aktivitet");
  let fields=$("#modalFields");fields.innerHTML="";
  const addField=(label,name,value,placeholder="")=>{let f=document.createElement("div");f.className="field";let l=document.createElement("label");l.textContent=label;let inp=document.createElement("input");inp.name=name;inp.value=value||"";inp.placeholder=placeholder;f.append(l,inp);fields.append(f)};
- if(type==="daily"){let f=document.createElement("div");f.className="field";let l=document.createElement("label");l.textContent="Tidspunkt";let sel=document.createElement("select");sel.name="group";["Morgen","Dag","Aften","Kost","Andet"].forEach(g=>{let o=document.createElement("option");o.value=g;o.textContent=g;sel.append(o)});sel.value=item?.group||group||"Dag";f.append(l,sel);fields.append(f);addField("Vane","text",item?.text,"Fx 10 minutters udstrækning")}
+ if(type==="daily"){let f=document.createElement("div");f.className="field";let l=document.createElement("label");l.textContent="Kategori";let sel=document.createElement("select");sel.name="group";["Morgen","Dag","Aften"].forEach(g=>{let o=document.createElement("option");o.value=g;o.textContent=g;sel.append(o)});sel.value=item?.group||group||"Dag";f.append(l,sel);fields.append(f);addField("Vane","text",item?.text,"Fx 10 minutters udstrækning")}
  else{addField("Ugedag","day",item?.day,"Fx Mandag");addField("Træning / aktivitet","training",item?.training,"Fx Roligt løb, 30 min.");addField("Formål","purpose",item?.purpose,"Fx Aerob base")}
  $("#deleteItem").style.visibility=item?"visible":"hidden";$("#modalBack").classList.add("open");
 }
@@ -434,17 +412,39 @@ $("#saveItem").addEventListener("click",async()=>{
  else{if(!val("day")||!val("training"))return;let day=val("day"),n=weekdayNumber(day);if(!/^(mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag)$/i.test(day)){alert("Vælg en ugedag fra mandag til søndag.");return}let obj={id:id||crypto.randomUUID(),day:weekdayName(n),training:val("training"),purpose:val("purpose")};if(id)weekly=weekly.map(x=>x.id===id?obj:x);else weekly.push(obj)}
  try{await persistRoutines();closeEditor();renderDaily();renderWeekly();renderOverview()}catch(e){daily=oldDaily;weekly=oldWeekly;alert("Ændringen kunne ikke gemmes. Tjek om app-integrationens SQL-query er kørt.")}
 });
-$("#deleteItem").addEventListener("click",async()=>{if(!activeEditor?.id)return;let {type,id}=activeEditor;try{if(type==="daily"){const {error}=await supabaseClient.from("habits").update({archived_at:new Date().toISOString()}).eq("id",id).eq("user_id",currentUser.id);if(error)throw error;const h=allHabits.find(x=>x.id===id);if(h)h.archived_at=new Date().toISOString();daily=daily.filter(x=>x.id!==id)}else{const {error}=await supabaseClient.from("training_plans").delete().eq("id",id).eq("user_id",currentUser.id);if(error)throw error;weekly=weekly.filter(x=>x.id!==id);delete weeklyDoneCache[id]}closeEditor();renderDaily();renderWeekly();renderOverview()}catch(e){alert("Elementet kunne ikke slettes eller arkiveres.")}});
+$("#deleteItem").addEventListener("click",async()=>{if(!activeEditor?.id)return;let {type,id}=activeEditor;try{if(type==="daily"){const {error}=await supabaseClient.from("habits").update({archived_at:new Date().toISOString()}).eq("id",id).eq("user_id",currentUser.id);if(error)throw error;const h=allHabits.find(x=>x.id===id);if(h)h.archived_at=new Date().toISOString();daily=daily.filter(x=>x.id!==id)}else{const {error}=await supabaseClient.from("training_plans").update({archived_at:new Date().toISOString()}).eq("id",id).eq("user_id",currentUser.id);if(error)throw error;weekly=weekly.filter(x=>x.id!==id);delete weeklyDoneCache[id]}closeEditor();renderDaily();renderWeekly();renderOverview()}catch(e){alert("Elementet kunne ikke slettes eller arkiveres.")}});
 $("#closeModal").addEventListener("click",closeEditor);$("#modalBack").addEventListener("click",e=>{if(e.target===$("#modalBack"))closeEditor()});
 $("#addWeek").addEventListener("click",()=>openEditor("weekly",null));
-function setTheme(t){document.documentElement.classList.toggle("light",t==="light");localStorage.setItem("mr2-theme",t);$("#darkChoice").classList.toggle("active",t==="dark");$("#lightChoice").classList.toggle("active",t==="light");$("#themeBtn").textContent=t==="dark"?"☼":"☾";document.querySelector('meta[name="theme-color"]').content=t==="dark"?"#080908":"#f4f5f1"}
+function setTheme(t){document.documentElement.classList.toggle("light",t==="light");localStorage.setItem("mr2-theme",t);$("#darkChoice").classList.toggle("active",t==="dark");$("#lightChoice").classList.toggle("active",t==="light");$("#themeBtn").textContent=t==="dark"?"☼":"☾";document.querySelector('meta[name="theme-color"]').content=t==="dark"?"#14201d":"#f5f1e8"}
 $("#themeBtn").addEventListener("click",()=>setTheme(document.documentElement.classList.contains("light")?"dark":"light"));$("#darkChoice").addEventListener("click",()=>setTheme("dark"));$("#lightChoice").addEventListener("click",()=>setTheme("light"));
-document.querySelectorAll("button.tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("button.tab").forEach(x=>x.classList.toggle("active",x===b));["daily","weekly","nutrition","overview"].forEach(v=>$("#"+v+"View").hidden=v!==b.dataset.view)}));
+let leaderboardPeriod=7;
+function renderDailyComparison(data){
+ const names=["Kaj","Erik"],days=[],byDate={};const today=new Date();today.setHours(12,0,0,0);
+ for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);const key=dateKey(d);days.push({date:d,key});byDate[key]={}}
+ for(const item of data||[]){if(byDate[item.score_date])byDate[item.score_date][item.display_name]=item}
+ const activeDays=Object.fromEntries(names.map(name=>[name,days.map(d=>byDate[d.key][name]).filter(x=>x&&Number(x.total_habits)>0)]));
+ const shared=days.map(d=>({date:d,...byDate[d.key]})).filter(d=>names.every(name=>d[name]&&Number(d[name].total_habits)>0));
+ const basis=shared.length?shared:null;
+ names.forEach((name,i)=>{const rows=basis?basis.map(d=>d[name]):activeDays[name];const avg=rows.length?rows.reduce((sum,x)=>sum+Number(x.completion_percent||0),0)/rows.length:null;$("#weekName"+i).textContent=name;$("#weekColumn"+i).textContent=name;$("#weekAverage"+i).textContent=avg===null?"—":avg.toFixed(0)+"%";$("#weekAverageBar"+i).style.width=avg===null?"0%":Math.max(0,Math.min(100,avg))+"%";$("#weekAverageLabel"+i).textContent=basis?`${shared.length} fælles dage`:`${rows.length} aktive dage`});
+ const dateCount=new Set((data||[]).map(x=>x.score_date)).size;$("#weekDaysCount").textContent=`${dateCount} / 7 dage med data`;
+ const container=$("#weekDays");container.innerHTML="";const weekday=new Intl.DateTimeFormat("da-DK",{weekday:"short"});
+ for(const day of days){const row=document.createElement("div");row.className="daily-row";const label=document.createElement("div");label.className="daily-date";const dayName=document.createElement("strong");dayName.textContent=weekday.format(day.date).replace(".","");const dayDate=document.createElement("small");dayDate.textContent=day.date.getDate()+"/"+(day.date.getMonth()+1);label.append(dayName,dayDate);row.append(label);
+  names.forEach((name,i)=>{const item=byDate[day.key][name],cell=document.createElement("div");cell.className="daily-cell "+(i===0?"kaj":"erik");if(item&&Number(item.total_habits)>0){const pct=Math.max(0,Math.min(100,Number(item.completion_percent)||0));const partner=byDate[day.key][names[1-i]];if(partner&&Number(partner.total_habits)>0&&pct>Number(partner.completion_percent||0))cell.classList.add("ahead");const value=document.createElement("div");value.className="daily-value";const percent=document.createElement("strong");percent.textContent=pct.toFixed(0)+"%";const fraction=document.createElement("small");fraction.textContent=`${Number(item.completed_habits)}/${Number(item.total_habits)}`;value.append(percent,fraction);const track=document.createElement("div");track.className="daily-track";const fill=document.createElement("i");fill.style.width=pct+"%";track.append(fill);cell.append(value,track)}else{const empty=document.createElement("span");empty.className="daily-empty";empty.textContent=item?"Ingen vaner":"—";cell.append(empty)}row.append(cell)});container.append(row)}
+ const leader=$("#weekLeader");if(shared.length){const averages=names.map(name=>shared.reduce((sum,d)=>sum+Number(d[name].completion_percent||0),0)/shared.length);const diff=Math.abs(averages[0]-averages[1]);let wins=[0,0];for(const d of shared){const a=Number(d[names[0]].completion_percent||0),b=Number(d[names[1]].completion_percent||0);if(a>b)wins[0]++;else if(b>a)wins[1]++}if(diff<0.05)leader.textContent=`Kaj og Erik ligger lige på ${shared.length} fælles dage.`;else{const winner=averages[0]>averages[1]?0:1;leader.textContent=`${names[winner]} fører med ${diff.toFixed(1)} procentpoint. Bedst på ${wins[winner]} af ${shared.length} fælles dage.`}}else{const active=names.filter(name=>activeDays[name].length);leader.textContent=active.length===1?`${active[0]} har rutiner i perioden. Den anden profil har endnu ingen vaner at sammenligne med.`:active.length===0?"Der er endnu ingen rutiner at sammenligne i perioden.":"I har endnu ingen fælles dage med rutiner at sammenligne."}
+}
+async function loadLeaderboard(){
+ const results=$("#leaderboardRows"),leader=$("#weekLeader");results.innerHTML='<div class="message loading"><span class="spinner"></span>Henter ranglisten…</div>';
+ $("#leaderboardPeriod7").classList.toggle("active",leaderboardPeriod===7);$("#leaderboardPeriod30").classList.toggle("active",leaderboardPeriod===30);
+ try{if(!supabaseClient||!currentUser)throw new Error("Log ind for at se leaderboardet.");const {data:competitions,error}=await supabaseClient.rpc("get_my_routine_competitions");if(error)throw error;if(!competitions?.length){results.textContent="Denne konto er ikke tilknyttet en konkurrence endnu.";leader.textContent="Konkurrencen er ikke sat op endnu.";return}const competitionId=competitions[0].competition_id;const [dailyResult,scoreResult]=await Promise.all([supabaseClient.rpc("get_routine_daily_comparison",{p_competition_id:competitionId}),supabaseClient.rpc("get_routine_leaderboard_v2",{p_competition_id:competitionId,p_days:leaderboardPeriod})]);if(dailyResult.error)leader.textContent="Ugeoversigten kunne ikke indlæses.";else renderDailyComparison(dailyResult.data||[]);if(scoreResult.error)throw scoreResult.error;results.innerHTML="";for(const [i,item] of (scoreResult.data||[]).entries()){const row=document.createElement("div");row.className="leaderboard-row";const rank=document.createElement("span");rank.className="leaderboard-rank";rank.textContent=String(i+1)+".";const person=document.createElement("div");const name=document.createElement("strong");name.textContent=item.display_name;const detail=document.createElement("small");detail.className="breakdown";detail.textContent=`Vaner ${Number(item.habit_percent).toFixed(1)}% · Træning ${item.training_total?`${item.training_completed}/${item.training_total} (${Number(item.training_percent).toFixed(0)}%)`:"ingen planlagt"}`;person.append(name,detail);const score=document.createElement("strong");score.className="leaderboard-percent";score.textContent=Number(item.overall_percent).toFixed(1)+"%";row.append(rank,person,score);results.append(row)}if(!scoreResult.data?.length)results.textContent="Der er endnu ingen resultater for perioden.";
+ }catch(e){results.textContent=e?.message||"Leaderboardet kunne ikke indlæses.";leader.textContent="Kontrollér forbindelsen, og prøv igen.";console.error("Leaderboard load failed",e)}
+}
+$("#leaderboardPeriod7").addEventListener("click",()=>{leaderboardPeriod=7;loadLeaderboard()});$("#leaderboardPeriod30").addEventListener("click",()=>{leaderboardPeriod=30;loadLeaderboard()});
+document.querySelectorAll("button.tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("button.tab").forEach(x=>x.classList.toggle("active",x===b));const view=b.dataset.view;["daily","weekly","overview","leaderboard"].forEach(v=>$("#"+v+"View").hidden=v!==view);if(view==="leaderboard")loadLeaderboard()}));
 $("#resetToday").addEventListener("click",async()=>{const {error}=await supabaseClient.from("habit_checks").delete().eq("user_id",currentUser.id).eq("check_date",dateKey());if(error){alert("Dagen kunne ikke nulstilles.");return}historyCache[dateKey()]={done:{},weekDone:{}};renderDaily();renderOverview()});
 $("#period7").addEventListener("click",()=>{overviewDays=7;renderOverview()});
 $("#period30").addEventListener("click",()=>{overviewDays=30;renderOverview()});
 $("#exportData").addEventListener("click",()=>{
- const backup={app:"Min rutine",version:2,createdAt:new Date().toISOString(),data:{habits:allHabits,trainingPlans:weekly,history:historyCache,weeklyDone:weeklyDoneCache,reminders:remindersCache,foodEntries:foodEntriesCache,nutritionGoals:nutritionGoalsCache,theme:load("mr2-theme","dark")}};
+ const backup={app:"Min rutine",version:2,createdAt:new Date().toISOString(),data:{habits:allHabits,trainingPlans:weekly,history:historyCache,weeklyDone:weeklyDoneCache,reminders:remindersCache,theme:load("mr2-theme","dark")}};
  const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="min-rutine-backup.json";a.click();URL.revokeObjectURL(url);
 });
@@ -458,8 +458,6 @@ $("#importFile").addEventListener("change",async e=>{
    const planRows=(d.trainingPlans||[]).map(x=>({id:x.id,user_id:currentUser.id,weekday:weekdayNumber(x.day),title:x.training,details:x.purpose}));if(planRows.length){const {error}=await supabaseClient.from("training_plans").upsert(planRows,{onConflict:"id"});if(error)throw error}
    const checkRows=[];for(const [day,value] of Object.entries(d.history||{}))for(const id of Object.keys(value.done||{}))checkRows.push({user_id:currentUser.id,habit_id:id,check_date:day,completed:true});if(checkRows.length){const {error}=await supabaseClient.from("habit_checks").upsert(checkRows,{onConflict:"user_id,habit_id,check_date"});if(error)throw error}
    const reminderRows=(d.reminders||[]).map(x=>({id:x.id,user_id:currentUser.id,title:x.text,completed:!!x.done}));if(reminderRows.length){const {error}=await supabaseClient.from("reminders").upsert(reminderRows,{onConflict:"id"});if(error)throw error}
-   const foodRows=(d.foodEntries||[]).map(x=>({id:x.id,user_id:currentUser.id,food_name:x.name,amount_grams:x.grams,calories:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat,entry_date:dateKey()}));if(foodRows.length){const {error}=await supabaseClient.from("food_entries").upsert(foodRows,{onConflict:"id"});if(error)throw error}
-   if(d.nutritionGoals){const {error}=await supabaseClient.from("nutrition_goals").upsert({user_id:currentUser.id,calorie_goal:d.nutritionGoals.kcal,protein_goal:d.nutritionGoals.protein},{onConflict:"user_id"});if(error)throw error}
    const weeklyChecks=Object.keys(d.weeklyDone||{}).filter(id=>d.weeklyDone[id]).map(id=>({user_id:currentUser.id,training_plan_id:id,week_start:mondayKey(),completed:true}));if(weeklyChecks.length){const {error}=await supabaseClient.from("training_checks").upsert(weeklyChecks,{onConflict:"user_id,training_plan_id,week_start"});if(error)throw error}
    if(d.theme)setTheme(d.theme);
   }else if(backup.version===1){
@@ -469,8 +467,6 @@ $("#importFile").addEventListener("change",async e=>{
    if(habitRows.length){const {error}=await supabaseClient.from("habits").insert(habitRows);if(error)throw error}if(planRows.length){const {error}=await supabaseClient.from("training_plans").insert(planRows);if(error)throw error}
    const checkRows=[];for(const [day,value] of Object.entries(d["mr2-history"]||{}))for(const oldId of Object.keys(value.done||{}))if(habitIds.has(oldId))checkRows.push({user_id:currentUser.id,habit_id:habitIds.get(oldId),check_date:day,completed:true});if(checkRows.length){const {error}=await supabaseClient.from("habit_checks").upsert(checkRows,{onConflict:"user_id,habit_id,check_date"});if(error)throw error}
    const reminderRows=(d["mr2-reminders"]||[]).map(x=>({id:crypto.randomUUID(),user_id:currentUser.id,title:x.text,completed:!!x.done}));if(reminderRows.length){const {error}=await supabaseClient.from("reminders").insert(reminderRows);if(error)throw error}
-   const foods=[];for(const [day,items] of Object.entries(d["mr2-nutrition"]||{}))for(const x of items)foods.push({id:crypto.randomUUID(),user_id:currentUser.id,food_name:x.name,amount_grams:x.grams,calories:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat,entry_date:day});if(foods.length){const {error}=await supabaseClient.from("food_entries").insert(foods);if(error)throw error}
-   const goals=d["mr2-nutrition-goals"]||defaultGoals;const {error:goalError}=await supabaseClient.from("nutrition_goals").upsert({user_id:currentUser.id,calorie_goal:goals.kcal,protein_goal:goals.protein},{onConflict:"user_id"});if(goalError)throw goalError;
    const weekChecks=[];for(const [week,done] of Object.entries(d["mr2-weekdone"]||{}))for(const oldId of Object.keys(done||{}))if(done[oldId]&&planIds.has(oldId))weekChecks.push({user_id:currentUser.id,training_plan_id:planIds.get(oldId),week_start:week,completed:true});if(weekChecks.length){const {error}=await supabaseClient.from("training_checks").upsert(weekChecks,{onConflict:"user_id,training_plan_id,week_start"});if(error)throw error}
    if(d["mr2-theme"])setTheme(d["mr2-theme"]);
   }else throw new Error("unsupported-version");
@@ -478,107 +474,27 @@ $("#importFile").addEventListener("change",async e=>{
  }catch(err){alert("Backup kunne ikke indlæses. Kontrollér filen og at app-integrationens SQL-query er kørt.");}e.target.value="";
 });
 
-// Nutrition tracker: USDA FoodData Central + Open Food Facts. Search accepts Danish and English.
-const nutritionKey="mr2-nutrition", goalsKey="mr2-nutrition-goals";
-let searchBusy=false;
-const defaultGoals={kcal:2200,protein:130};
-function nutritionGoals(){return nutritionGoalsCache}
-function nutritionLog(){return foodEntriesCache}
-async function saveNutritionLog(items){
- const nextIds=new Set(items.map(x=>x.id));
- for(const old of foodEntriesCache){if(!nextIds.has(old.id)){const {error}=await supabaseClient.from("food_entries").delete().eq("id",old.id).eq("user_id",currentUser.id);if(error)throw error}}
- for(const item of items){const row={id:item.id,user_id:currentUser.id,food_name:item.name,amount_grams:item.grams,calories:item.kcal,protein:item.protein,carbs:item.carbs,fat:item.fat,entry_date:dateKey()};const {error}=await supabaseClient.from("food_entries").upsert(row,{onConflict:"id"});if(error)throw error}
- foodEntriesCache=items;renderNutrition();
-}
-function renderNutrition(){
- const items=nutritionLog(),tot=items.reduce((a,x)=>({kcal:a.kcal+x.kcal,protein:a.protein+x.protein,carbs:a.carbs+x.carbs,fat:a.fat+x.fat}),{kcal:0,protein:0,carbs:0,fat:0});
- const goals=nutritionGoals();
- $("#kcalTotal").innerHTML=Math.round(tot.kcal)+' <small>kcal</small>';$("#proteinTotal").textContent=Math.round(tot.protein)+" g";$("#carbTotal").textContent=Math.round(tot.carbs)+" g";$("#fatTotal").textContent=Math.round(tot.fat)+" g";
- $("#kcalBar").style.width=Math.min(100,goals.kcal?tot.kcal/goals.kcal*100:0)+"%";$("#proteinBar").style.width=Math.min(100,goals.protein?tot.protein/goals.protein*100:0)+"%";
- $("#kcalGoal").value=goals.kcal;$("#proteinGoal").value=goals.protein;
- $("#nutritionDate").textContent=new Intl.DateTimeFormat("da-DK",{day:"numeric",month:"short"}).format(new Date());
- const log=$("#foodLog");log.innerHTML="";
- if(!items.length){log.innerHTML='<div class="food-empty">Intet registreret endnu i dag.</div>';return}
- items.forEach((item,i)=>{let row=document.createElement("div");row.className="food-entry";let info=document.createElement("div");info.className="entryinfo";let name=document.createElement("strong");name.textContent=item.name;let detail=document.createElement("small");detail.textContent=item.grams+" g";info.append(name,detail);let macros=document.createElement("div");macros.className="entrymacros";macros.textContent=Math.round(item.kcal)+" kcal · "+Math.round(item.protein)+" g protein";let del=document.createElement("button");del.className="remove";del.textContent="×";del.addEventListener("click",()=>{let a=[...nutritionLog()];a.splice(i,1);saveNutritionLog(a).catch(()=>alert("Madregistreringen kunne ikke opdateres."))});row.append(info,macros,del);log.append(row)});
-}
-const danishFoodTerms={"kyllingebryst":"chicken breast","kylling":"chicken","havregryn":"oats","havre":"oats","banan":"banana","æg":"egg","aeg":"egg","skyr":"skyr","hytteost":"cottage cheese","kartoffel":"potato","kartofler":"potatoes","ris":"rice","laks":"salmon","oksekød":"beef","svinekød":"pork","rugbrød":"rye bread","brød":"bread","mælk":"milk","ost":"cheese","yoghurt":"yogurt","græsk yoghurt":"greek yogurt","pasta":"pasta","lasagne":"lasagna","frikadeller":"meatballs","kødsovs":"bolognese sauce","havregrød":"oatmeal","risengrød":"rice pudding","kylling i karry":"chicken curry","smørrebrød":"open sandwich","pizza":"pizza","burger":"burger","suppe":"soup","salat":"salad","havremælk":"oat milk","mandler":"almonds","jordbær":"strawberries","blåbær":"blueberries","avocado":"avocado","tun":"tuna","rejer":"shrimp","broccoli":"broccoli","gulerod":"carrot","tomat":"tomato","agurk":"cucumber","bønner":"beans","linser":"lentils"};
-// Reliable fallback values for common ingredients. Values are approximate per 100 g.
-const commonFoods=[
- {name:"Banan, rå",terms:["banan","banana"],kcal:89,protein:1.1,carbs:22.8,fat:0.3},
- {name:"Havregryn",terms:["havregryn","oats","havre"],kcal:379,protein:13.2,carbs:67.7,fat:6.5},
- {name:"Æg, helt, rå",terms:["æg","aeg","egg"],kcal:143,protein:12.6,carbs:0.7,fat:9.5},
- {name:"Kyllingebryst, tilberedt",terms:["kyllingebryst","chicken breast","kylling"],kcal:165,protein:31,carbs:0,fat:3.6},
- {name:"Ris, kogt",terms:["ris","rice"],kcal:130,protein:2.7,carbs:28.2,fat:0.3},
- {name:"Kartoffel, kogt",terms:["kartoffel","kartofler","potato"],kcal:87,protein:1.9,carbs:20.1,fat:0.1},
- {name:"Laks, tilberedt",terms:["laks","salmon"],kcal:206,protein:22.1,carbs:0,fat:12.4},
- {name:"Avocado",terms:["avocado"],kcal:160,protein:2,carbs:8.5,fat:14.7},
- {name:"Broccoli, rå",terms:["broccoli"],kcal:34,protein:2.8,carbs:6.6,fat:0.4},
- {name:"Æble, rå",terms:["æble","apple"],kcal:52,protein:0.3,carbs:13.8,fat:0.2},
- {name:"Mandler",terms:["mandel","almond"],kcal:579,protein:21.2,carbs:21.6,fat:49.9},
- {name:"Skyr, naturel",terms:["skyr"],kcal:63,protein:11,carbs:4,fat:0.2},
- {name:"Mælk, letmælk",terms:["mælk","milk"],kcal:46,protein:3.5,carbs:4.8,fat:1.5},
- {name:"Gulerod, rå",terms:["gulerod","carrot"],kcal:41,protein:0.9,carbs:9.6,fat:0.2},
- {name:"Tomat, rå",terms:["tomat","tomato"],kcal:18,protein:0.9,carbs:3.9,fat:0.2},
- {name:"Hytteost",terms:["hytteost","cottage cheese"],kcal:98,protein:11.1,carbs:3.4,fat:4.3},
- {name:"Pasta, kogt",terms:["pasta"],kcal:158,protein:5.8,carbs:30.9,fat:0.9},
- {name:"Brød, rugbrød",terms:["rugbrød","rye bread"],kcal:250,protein:8.5,carbs:47,fat:3.3}
-].map(x=>({...x,source:"Estimat · standardråvare"}));
-function translatedQueries(q){let low=q.toLocaleLowerCase("da");for(const [da,en] of Object.entries(danishFoodTerms)){if(low.includes(da))return [...new Set([q,low.replace(da,en)])]}return [q]}
-function validNutrients(kcal,protein,carbs,fat){return [kcal,protein,carbs,fat].every(v=>Number.isFinite(v)&&v>=0&&v<=900)&&protein<=100&&carbs<=100&&fat<=100}
-function validUSDA(food){const ns=food.foodNutrients||[];const get=id=>{let n=ns.find(x=>Number(x.nutrientId??x.nutrient?.id)===id);return n?Number(n.value??n.amount):NaN};let kcal=get(1008),protein=get(1003),carbs=get(1005),fat=get(1004);if(!food.description||!validNutrients(kcal,protein,carbs,fat)||kcal>900)return null;return {name:food.description,kcal,protein,carbs,fat,fdcId:food.fdcId,source:"USDA FoodData Central"}}
-function validOFF(p){const n=p.nutriments||{};let kcal=Number(n['energy-kcal_100g']);if(!Number.isFinite(kcal)&&Number.isFinite(Number(n.energy_100g)))kcal=Number(n.energy_100g)/4.184;let protein=Number(n.proteins_100g),carbs=Number(n.carbohydrates_100g),fat=Number(n.fat_100g);if(!p.product_name||!validNutrients(kcal,protein,carbs,fat)||kcal>900)return null;let name=p.product_name_da||p.product_name||p.product_name_en;if(!name||name.length<2)return null;return {name,kcal,protein,carbs,fat,barcode:p.code,source:"Open Food Facts"}}
-async function searchUSDA(q){const params=new URLSearchParams({api_key:"DEMO_KEY",query:q,pageSize:"30"});const r=await fetch("https://api.nal.usda.gov/fdc/v1/foods/search?"+params);if(!r.ok)throw new Error("USDA unavailable");const d=await r.json();return (d.foods||[]).map(validUSDA).filter(Boolean)}
-async function searchOFF(q){const params=new URLSearchParams({search_terms:q,page_size:"20",fields:"code,product_name,product_name_da,product_name_en,nutriments,brands"});const r=await fetch("https://world.openfoodfacts.org/cgi/search.pl?"+params+"&json=1");if(!r.ok)throw new Error("Open Food Facts unavailable");const d=await r.json();return (d.products||[]).map(validOFF).filter(Boolean)}
-async function searchFoods(){
- const q=$("#foodSearch").value.trim();if(!q||searchBusy)return;searchBusy=true;const root=$("#foodResults");root.innerHTML='<div class="food-empty">Søger efter fødevarer, retter og mærkevarer…</div>';
- try{
-  const terms=translatedQueries(q),local=commonFoods.filter(f=>f.terms.some(t=>q.toLocaleLowerCase("da").includes(t))),requests=[searchUSDA(terms[0]),searchOFF(q)];
-  if(terms[1]&&local.length===0)requests.push(searchUSDA(terms[1]));
-  const results=await Promise.allSettled(requests),all=[...local,...results.flatMap(x=>x.status==="fulfilled"?x.value:[])],seen=new Set(),products=all.filter(f=>{const k=(f.name+"|"+Math.round(f.kcal)+"|"+Math.round(f.protein)).toLowerCase();if(seen.has(k))return false;seen.add(k);return true}).slice(0,12);root.innerHTML="";
-  if(!products.length){root.innerHTML='<div class="food-empty">Ingen match med komplette næringsværdier. Prøv et andet dansk eller engelsk søgeord, eller søg på mærkevaren.</div>';return}
-  products.forEach(food=>{const row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.className="food-meta";const title=document.createElement("strong");title.textContent=food.name;const sub=document.createElement("small");sub.textContent=`${food.source} · pr. 100 g: ${Math.round(food.kcal)} kcal · ${food.protein.toFixed(1)} g protein`;const gramsWrap=document.createElement("label");gramsWrap.className="grams-control";gramsWrap.textContent="Mængde";const grams=document.createElement("input");grams.type="number";grams.min="1";grams.max="5000";grams.step="1";grams.value="100";grams.inputMode="numeric";grams.setAttribute("aria-label","Mængde i gram");const unit=document.createElement("span");unit.textContent="gram";gramsWrap.append(grams,unit);info.append(title,sub,gramsWrap);const btn=document.createElement("button");btn.className="primary";btn.textContent="Tilføj";btn.addEventListener("click",()=>addFood(food,grams.value));row.append(info,btn);root.append(row)});
- }catch(e){root.innerHTML='<div class="food-empty">Søgningen fejlede. Tjek internetforbindelsen, eller prøv et andet søgeord.</div>'}
- finally{searchBusy=false}
-}
-function addFood(food,rawGrams){
- const grams=Number(rawGrams);if(!Number.isFinite(grams)||grams<=0||grams>5000){alert("Indtast en mængde mellem 1 og 5000 gram.");return}
- const factor=grams/100,items=nutritionLog();items.push({id:crypto.randomUUID(),name:food.name,grams,kcal:food.kcal*factor,protein:food.protein*factor,carbs:food.carbs*factor,fat:food.fat*factor,source:food.source||"Fødevaredatabase",fdcId:food.fdcId,barcode:food.barcode});
- saveNutritionLog(items).then(()=>{$("#foodResults").innerHTML='<div class="food-empty">Tilføjet til dagens registrering.</div>'}).catch(()=>alert("Fødevare kunne ikke gemmes."));
-}
-
-const foodPhotoInput=$("#foodPhoto");
-foodPhotoInput.addEventListener("change",()=>{const file=foodPhotoInput.files?.[0];if(!file)return;const preview=$("#foodPhotoPreview");if(preview.dataset.url)URL.revokeObjectURL(preview.dataset.url);const url=URL.createObjectURL(file);preview.src=url;preview.dataset.url=url;preview.hidden=false;$("#analyzeFoodPhoto").disabled=false;$("#photoStatus").textContent="Billedet er klar til analyse. Billedet sendes sikkert til din Supabase-funktion, når du trykker Analyser.";});
-async function compressFoodPhoto(file){if(!file.type.startsWith("image/"))throw new Error("Vælg en billedfil.");const img=new Image(),url=URL.createObjectURL(file);try{img.src=url;await img.decode();const scale=Math.min(1,1400/Math.max(img.naturalWidth,img.naturalHeight)),canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);return canvas.toDataURL("image/jpeg",0.82)}finally{URL.revokeObjectURL(url)}}
-$("#analyzeFoodPhoto").addEventListener("click",async()=>{const file=foodPhotoInput.files?.[0],button=$("#analyzeFoodPhoto"),status=$("#photoStatus");if(!file)return;button.disabled=true;status.textContent="Analyserer billedet…";try{const image=await compressFoodPhoto(file),{data,error}=await supabaseClient.functions.invoke("analyze-food",{body:{image}});if(error)throw error;if(!Array.isArray(data?.foods)||!data.foods.length)throw new Error("Fandt ingen tydelige fødevarer. Prøv et skarpere billede.");const root=$("#foodResults");root.innerHTML="";for(const item of data.foods){const grams=Math.max(1,Number(item.grams)||100),food={name:String(item.name||"Mad fra foto"),kcal:Math.max(0,Number(item.kcal)||0)*100/grams,protein:Math.max(0,Number(item.protein)||0)*100/grams,carbs:Math.max(0,Number(item.carbs)||0)*100/grams,fat:Math.max(0,Number(item.fat)||0)*100/grams,source:"AI-estimat fra madfoto"},row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.className="food-meta";const title=document.createElement("strong");title.textContent=food.name;const sub=document.createElement("small");sub.textContent=`AI-estimat · ca. ${grams} g · ${Math.round(Number(item.kcal)||0)} kcal`;const gramsWrap=document.createElement("label");gramsWrap.className="grams-control";gramsWrap.textContent="Mængde";const amount=document.createElement("input");amount.type="number";amount.min="1";amount.max="5000";amount.value=String(grams);amount.inputMode="numeric";const unit=document.createElement("span");unit.textContent="gram";gramsWrap.append(amount,unit);info.append(title,sub,gramsWrap);const add=document.createElement("button");add.className="primary";add.textContent="Tilføj";add.addEventListener("click",()=>addFood(food,amount.value));row.append(info,add);root.append(row)}status.textContent="Fandt forslag. Tjek mængden og næringsestimaterne, før du tilføjer."}catch(e){const statusCode=e?.context?.status;status.textContent=statusCode===404?"Madfoto-funktionen er ikke installeret i Supabase endnu. Se README for opsætning.":statusCode===503?"AI-nøglen mangler i Supabase Secrets. Tilføj OPENAI_API_KEY.":"Billedanalysen fejlede. Kontrollér at Supabase-funktionen og OPENAI_API_KEY er sat op."}finally{button.disabled=!foodPhotoInput.files?.length}});
-
-$("#searchFood").addEventListener("click",searchFoods);$("#foodSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchFoods()});
-$("#saveGoals").addEventListener("click",async()=>{let kcal=Number($("#kcalGoal").value),protein=Number($("#proteinGoal").value),feedback=$("#goalFeedback");if(kcal>0&&protein>0){const {error}=await supabaseClient.from("nutrition_goals").upsert({user_id:currentUser.id,calorie_goal:kcal,protein_goal:protein},{onConflict:"user_id"});if(error){feedback.classList.add("show");feedback.textContent="Kunne ikke gemme";return}nutritionGoalsCache={kcal,protein};renderNutrition();feedback.classList.add("show");feedback.textContent="✓ Mål gemt";setTimeout(()=>feedback.classList.remove("show"),2600)}else{feedback.classList.add("show");feedback.textContent="Indtast gyldige mål";setTimeout(()=>feedback.classList.remove("show"),2600)}});
-
 function showAuthMessage(message,isError=false){const el=$("#authStatus");el.textContent=message||"";el.classList.toggle("error",!!isError)}
 async function loadRows(query){const {data,error}=await query;if(error)throw error;return data||[]}
 async function loadCloudData(){
  const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError)throw authError;currentUser=user;
  let habitRows=await loadRows(supabaseClient.from("habits").select("id,user_id,title,category,position,created_at,archived_at").eq("user_id",user.id).order("position"));
- if(!habitRows.length){const seed=defaultsDaily.map((x,i)=>({user_id:user.id,title:x.text,category:x.group,position:i}));const {error}=await supabaseClient.from("habits").insert(seed);if(error)throw error;habitRows=await loadRows(supabaseClient.from("habits").select("id,user_id,title,category,position,created_at,archived_at").eq("user_id",user.id).order("position"))}
- allHabits=habitRows;daily=habitRows.filter(x=>!x.archived_at).map(x=>({id:x.id,group:x.category,text:x.title}));
- let planRows=await loadRows(supabaseClient.from("training_plans").select("id,user_id,weekday,title,details,created_at").eq("user_id",user.id).order("weekday"));
- if(!planRows.length){const seed=defaultsWeek.map(x=>({user_id:user.id,weekday:weekdayNumber(x.day),title:x.training,details:x.purpose}));const {error}=await supabaseClient.from("training_plans").insert(seed);if(error)throw error;planRows=await loadRows(supabaseClient.from("training_plans").select("id,user_id,weekday,title,details,created_at").eq("user_id",user.id).order("weekday"))}
- weekly=planRows.map(x=>({id:x.id,day:weekdayName(x.weekday),training:x.title,purpose:x.details||""}));
+ 
+ allHabits=habitRows;daily=habitRows.filter(x=>!x.archived_at).map(x=>({id:x.id,group:["Morgen","Dag","Aften"].includes(x.category)?x.category:"Dag",text:x.title}));
+ let planRows=await loadRows(supabaseClient.from("training_plans").select("id,user_id,weekday,title,details,created_at,archived_at").eq("user_id",user.id).order("weekday"));
+ 
+ weekly=planRows.filter(x=>!x.archived_at).map(x=>({id:x.id,day:weekdayName(x.weekday),training:x.title,purpose:x.details||""}));
  const start=new Date();start.setDate(start.getDate()-29);const startKey=dateKey(start);
- const [checkRows,weekRows,reminderRows,foodRows,goalRows]=await Promise.all([
+ const [checkRows,weekRows,reminderRows]=await Promise.all([
   loadRows(supabaseClient.from("habit_checks").select("habit_id,check_date,completed").eq("user_id",user.id).gte("check_date",startKey)),
   loadRows(supabaseClient.from("training_checks").select("training_plan_id,completed").eq("user_id",user.id).eq("week_start",mondayKey())),
-  loadRows(supabaseClient.from("reminders").select("id,title,completed,created_at").eq("user_id",user.id).order("created_at")),
-  loadRows(supabaseClient.from("food_entries").select("id,food_name,amount_grams,calories,protein,carbs,fat,entry_date").eq("user_id",user.id).eq("entry_date",dateKey()).order("created_at")),
-  loadRows(supabaseClient.from("nutrition_goals").select("calorie_goal,protein_goal").eq("user_id",user.id).limit(1))
+  loadRows(supabaseClient.from("reminders").select("id,title,completed,created_at").eq("user_id",user.id).order("created_at"))
  ]);
  historyCache={};for(const row of checkRows){if(!historyCache[row.check_date])historyCache[row.check_date]={done:{},weekDone:{}};if(row.completed)historyCache[row.check_date].done[row.habit_id]=true}
  weeklyDoneCache={};for(const row of weekRows)if(row.completed)weeklyDoneCache[row.training_plan_id]=true;
  remindersCache=reminderRows.map(x=>({id:x.id,text:x.title,done:x.completed}));
- foodEntriesCache=foodRows.map(x=>({id:x.id,name:x.food_name,grams:Number(x.amount_grams),kcal:Number(x.calories),protein:Number(x.protein),carbs:Number(x.carbs),fat:Number(x.fat)}));
- if(goalRows.length)nutritionGoalsCache={kcal:goalRows[0].calorie_goal,protein:goalRows[0].protein_goal};else{const {error}=await supabaseClient.from("nutrition_goals").insert({user_id:user.id,calorie_goal:defaultGoals.kcal,protein_goal:defaultGoals.protein});if(error)throw error;nutritionGoalsCache={...defaultGoals}}
  $("#today").textContent=new Intl.DateTimeFormat("da-DK",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
- $("#accountEmail").textContent=user.email||"";setTheme(load("mr2-theme","dark"));renderDaily();renderWeekly();renderNutrition();renderOverview();
+ $("#accountEmail").textContent=user.email||"";setTheme(load("mr2-theme","dark"));renderDaily();renderWeekly();renderOverview();await refreshStreak();
 }
 $("#loginForm").addEventListener("submit",async e=>{e.preventDefault();if(!supabaseClient){showAuthMessage("Supabase-klienten kunne ikke indlæses. Tjek internetforbindelsen.",true);return}const button=$("#loginButton");button.disabled=true;showAuthMessage("Logger ind…");let timer;try{const result=await Promise.race([supabaseClient.auth.signInWithPassword({email:$("#loginEmail").value.trim(),password:$("#loginPassword").value}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error("timeout")),20000)})]);if(result.error)throw result.error;if(result.data?.session)await applySession(result.data.session);else showAuthMessage("Der kom ingen aktiv session tilbage. Kontrollér om e-mailen er bekræftet.",true)}catch(err){const m=String(err?.message||"").toLowerCase();showAuthMessage(m==="timeout"?"Login tog for lang tid. Tjek forbindelsen til Supabase, og prøv igen.":m.includes("not confirmed")?"E-mailen er ikke bekræftet endnu. Bekræft den via Supabase Auth.":"Login fejlede: "+(err?.message||"ukendt fejl"),true)}finally{clearTimeout(timer);button.disabled=false}});
 $("#signOut").addEventListener("click",async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert("Kunne ikke logge ud.")});
@@ -587,7 +503,7 @@ async function applySession(session){
  if(!session?.user){sessionUserLoadedId=null;sessionLoadingUserId=null;sessionLoadingPromise=null;currentUser=null;appShell.hidden=true;authScreen.hidden=false;$("#loginPassword").value="";return}
  const userId=session.user.id;if(sessionUserLoadedId===userId&&!appShell.hidden)return;if(sessionLoadingUserId===userId&&sessionLoadingPromise)return sessionLoadingPromise;
  authScreen.hidden=true;appShell.hidden=false;
- sessionLoadingUserId=userId;const pending=(async()=>{try{await loadCloudData();sessionUserLoadedId=userId;showAuthMessage("")}catch(e){appShell.hidden=true;authScreen.hidden=false;showAuthMessage("Login lykkedes, men data kunne ikke hentes: "+(e?.message||"ukendt databasefejl"),true)}finally{if(sessionLoadingPromise===pending){sessionLoadingPromise=null;sessionLoadingUserId=null}}})();sessionLoadingPromise=pending;return pending;
+ sessionLoadingUserId=userId;const pending=(async()=>{try{await loadCloudData();sessionUserLoadedId=userId;showAuthMessage("");if(new URLSearchParams(location.search).get("view")==="leaderboard")document.querySelector("[data-view=leaderboard]")?.click()}catch(e){appShell.hidden=true;authScreen.hidden=false;showAuthMessage("Login lykkedes, men data kunne ikke hentes: "+(e?.message||"ukendt databasefejl"),true)}finally{if(sessionLoadingPromise===pending){sessionLoadingPromise=null;sessionLoadingUserId=null}}})();sessionLoadingPromise=pending;return pending;
 }
 async function boot(){
  if(!supabaseClient){showAuthMessage("Supabase-klienten er ikke konfigureret.",true);return}
