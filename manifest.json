@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#14201d",
   "theme_color": "#14201d",
-  "lang": "da",
+  "lang": "en",
   "icons": [
     {
       "src": "icon.svg",
