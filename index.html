@@ -22,7 +22,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .top-actions{display:flex;gap:8px;align-items:center}
 .iconbtn{width:38px;height:38px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:50%;display:grid;place-items:center;font-size:17px}
 .tabs{display:flex;gap:4px;padding:4px;background:var(--surface2);border-radius:13px;margin-bottom:14px}
-.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:10px 8px;border-radius:10px;font-size:14px;font-weight:650}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:10px 8px;border-radius:10px;font-size:14px;font-weight:650;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center}
 .tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
 .view[hidden]{display:none!important}
 .app[hidden],.auth-screen[hidden]{display:none!important}
@@ -237,18 +237,13 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
   <button class="tab" type="button" data-view="weekly">Uge</button>
   <button class="tab" type="button" data-view="nutrition">Kost</button>
   <button class="tab" type="button" data-view="overview">Overblik</button>
-  <button class="tab" type="button" data-view="leaderboard">Rangliste</button>
+  <a class="tab" href="./leaderboard.html">Rangliste</a>
  </nav>
  <section class="view" id="dailyView">
   <div class="headline"><h2>I dag</h2><div class="counter" id="counter">0/8</div></div>
   <div class="progress"><div class="fill" id="dailyFill"></div></div>
   <div class="daily-grid" id="dailyGrid"></div>
   <div class="bottomnote">Små skridt tæller. Brug rutinen som støtte – ikke som et krav.</div>
- </section>
- <section class="view" id="leaderboardView" hidden>
-  <div class="headline"><h2>Jeres konkurrence</h2><div class="switch"><button type="button" id="leaderboard7" class="active">7 dage</button><button type="button" id="leaderboard30">30 dage</button></div></div>
-  <div class="leaderboard" id="leaderboardRows"><div class="empty">Henter ranglisten…</div></div>
-  <div class="bottomnote">Kun gennemførelsesprocenten deles. Jeres rutiner, kost og mål forbliver private.</div>
  </section>
  <section class="view" id="weeklyView" hidden>
   <div class="headline"><h2>Ugens træning</h2><button class="primary" type="button" id="addWeek">＋ Tilføj</button></div>
@@ -273,7 +268,8 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
    <label class="secondary camera-button" for="foodPhoto">▣ Åbn kamera / vælg billede</label>
    <input id="foodPhoto" type="file" accept="image/*" capture="environment" hidden>
    <img id="foodPhotoPreview" alt="Forhåndsvisning af madfoto" hidden>
-   <div class="food-empty" id="photoStatus">Du kan tage et billede direkte med kameraet. Automatisk genkendelse kræver en sikker AI-forbindelse, som ikke kan lægges direkte i en offentlig GitHub-side.</div>
+   <button class="primary" type="button" id="analyzeFoodPhoto" disabled>Analyser madfoto</button>
+   <div class="food-empty" id="photoStatus">Vælg et billede og tryk på Analyser. Analysen kræver en aktiveret Supabase-funktion og en AI-nøgle gemt sikkert i Supabase.</div>
   </div>
   <div class="meal-title">Dagens registrering</div>
   <div class="food-log" id="foodLog"></div>
@@ -327,7 +323,7 @@ const $=s=>document.querySelector(s), clone=x=>JSON.parse(JSON.stringify(x));
 const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
 const supabaseConfig=window.MIN_RUTINE_SUPABASE||{};
 const supabaseClient=window.supabase?.createClient(supabaseConfig.url,supabaseConfig.publishableKey);
-let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],foodEntriesCache=[],nutritionGoalsCache={kcal:2200,protein:130},leaderboardDays=7;
+let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],foodEntriesCache=[],nutritionGoalsCache={kcal:2200,protein:130},sessionUserLoadedId=null,sessionLoadingUserId=null,sessionLoadingPromise=null;
 let activeEditor=null;
 const dateKey=(d=new Date())=>{let x=new Date(d);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,"0"),String(x.getDate()).padStart(2,"0")].join("-")};
 const mondayKey=()=>{let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return dateKey(d)};
@@ -363,7 +359,7 @@ function renderDaily(){
   items.forEach(item=>{
    let row=document.createElement("label");row.className="task"+(done[item.id]?" done":"");
    let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!done[item.id];
-   cb.addEventListener("change",async()=>{cb.disabled=true;try{await saveHabitCheck(item.id,cb.checked);renderDaily();renderOverview();if(document.querySelector('[data-view="leaderboard"].active'))loadLeaderboard()}catch(e){cb.checked=!cb.checked;alert("Afkrydsningen kunne ikke gemmes. Tjek internetforbindelsen.")}finally{cb.disabled=false}});
+   cb.addEventListener("change",async()=>{cb.disabled=true;try{await saveHabitCheck(item.id,cb.checked);renderDaily();renderOverview()}catch(e){cb.checked=!cb.checked;alert("Afkrydsningen kunne ikke gemmes. Tjek internetforbindelsen.")}finally{cb.disabled=false}});
    let span=document.createElement("span");span.textContent=item.text;
    let edit=document.createElement("button");edit.className="mini";edit.type="button";edit.textContent="···";edit.setAttribute("aria-label","Redigér vane");edit.addEventListener("click",()=>openEditor("daily",item.id));
    row.append(cb,span,edit);card.append(row);if(done[item.id])count++;
@@ -441,8 +437,8 @@ $("#closeModal").addEventListener("click",closeEditor);$("#modalBack").addEventL
 $("#addWeek").addEventListener("click",()=>openEditor("weekly",null));
 function setTheme(t){document.documentElement.classList.toggle("light",t==="light");localStorage.setItem("mr2-theme",t);$("#darkChoice").classList.toggle("active",t==="dark");$("#lightChoice").classList.toggle("active",t==="light");$("#themeBtn").textContent=t==="dark"?"☼":"☾";document.querySelector('meta[name="theme-color"]').content=t==="dark"?"#080908":"#f4f5f1"}
 $("#themeBtn").addEventListener("click",()=>setTheme(document.documentElement.classList.contains("light")?"dark":"light"));$("#darkChoice").addEventListener("click",()=>setTheme("dark"));$("#lightChoice").addEventListener("click",()=>setTheme("light"));
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));["daily","weekly","nutrition","overview","leaderboard"].forEach(v=>$("#"+v+"View").hidden=v!==b.dataset.view);if(b.dataset.view==="leaderboard")loadLeaderboard()}));
-$("#resetToday").addEventListener("click",async()=>{const {error}=await supabaseClient.from("habit_checks").delete().eq("user_id",currentUser.id).eq("check_date",dateKey());if(error){alert("Dagen kunne ikke nulstilles.");return}historyCache[dateKey()]={done:{},weekDone:{}};renderDaily();renderOverview();loadLeaderboard()});
+document.querySelectorAll("button.tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("button.tab").forEach(x=>x.classList.toggle("active",x===b));["daily","weekly","nutrition","overview"].forEach(v=>$("#"+v+"View").hidden=v!==b.dataset.view)}));
+$("#resetToday").addEventListener("click",async()=>{const {error}=await supabaseClient.from("habit_checks").delete().eq("user_id",currentUser.id).eq("check_date",dateKey());if(error){alert("Dagen kunne ikke nulstilles.");return}historyCache[dateKey()]={done:{},weekDone:{}};renderDaily();renderOverview()});
 $("#period7").addEventListener("click",()=>{overviewDays=7;renderOverview()});
 $("#period30").addEventListener("click",()=>{overviewDays=30;renderOverview()});
 $("#exportData").addEventListener("click",()=>{
@@ -504,20 +500,42 @@ function renderNutrition(){
  items.forEach((item,i)=>{let row=document.createElement("div");row.className="food-entry";let info=document.createElement("div");info.className="entryinfo";let name=document.createElement("strong");name.textContent=item.name;let detail=document.createElement("small");detail.textContent=item.grams+" g";info.append(name,detail);let macros=document.createElement("div");macros.className="entrymacros";macros.textContent=Math.round(item.kcal)+" kcal · "+Math.round(item.protein)+" g protein";let del=document.createElement("button");del.className="remove";del.textContent="×";del.addEventListener("click",()=>{let a=[...nutritionLog()];a.splice(i,1);saveNutritionLog(a).catch(()=>alert("Madregistreringen kunne ikke opdateres."))});row.append(info,macros,del);log.append(row)});
 }
 const danishFoodTerms={"kyllingebryst":"chicken breast","kylling":"chicken","havregryn":"oats","havre":"oats","banan":"banana","æg":"egg","aeg":"egg","skyr":"skyr","hytteost":"cottage cheese","kartoffel":"potato","kartofler":"potatoes","ris":"rice","laks":"salmon","oksekød":"beef","svinekød":"pork","rugbrød":"rye bread","brød":"bread","mælk":"milk","ost":"cheese","yoghurt":"yogurt","græsk yoghurt":"greek yogurt","pasta":"pasta","lasagne":"lasagna","frikadeller":"meatballs","kødsovs":"bolognese sauce","havregrød":"oatmeal","risengrød":"rice pudding","kylling i karry":"chicken curry","smørrebrød":"open sandwich","pizza":"pizza","burger":"burger","suppe":"soup","salat":"salad","havremælk":"oat milk","mandler":"almonds","jordbær":"strawberries","blåbær":"blueberries","avocado":"avocado","tun":"tuna","rejer":"shrimp","broccoli":"broccoli","gulerod":"carrot","tomat":"tomato","agurk":"cucumber","bønner":"beans","linser":"lentils"};
-function translatedQueries(q){let low=q.toLocaleLowerCase("da");let terms=[q];for(const [da,en] of Object.entries(danishFoodTerms)){if(low.includes(da))terms.push(low.replace(da,en))}return [...new Set(terms)].slice(0,3)}
+// Reliable fallback values for common ingredients. Values are approximate per 100 g.
+const commonFoods=[
+ {name:"Banan, rå",terms:["banan","banana"],kcal:89,protein:1.1,carbs:22.8,fat:0.3},
+ {name:"Havregryn",terms:["havregryn","oats","havre"],kcal:379,protein:13.2,carbs:67.7,fat:6.5},
+ {name:"Æg, helt, rå",terms:["æg","aeg","egg"],kcal:143,protein:12.6,carbs:0.7,fat:9.5},
+ {name:"Kyllingebryst, tilberedt",terms:["kyllingebryst","chicken breast","kylling"],kcal:165,protein:31,carbs:0,fat:3.6},
+ {name:"Ris, kogt",terms:["ris","rice"],kcal:130,protein:2.7,carbs:28.2,fat:0.3},
+ {name:"Kartoffel, kogt",terms:["kartoffel","kartofler","potato"],kcal:87,protein:1.9,carbs:20.1,fat:0.1},
+ {name:"Laks, tilberedt",terms:["laks","salmon"],kcal:206,protein:22.1,carbs:0,fat:12.4},
+ {name:"Avocado",terms:["avocado"],kcal:160,protein:2,carbs:8.5,fat:14.7},
+ {name:"Broccoli, rå",terms:["broccoli"],kcal:34,protein:2.8,carbs:6.6,fat:0.4},
+ {name:"Æble, rå",terms:["æble","apple"],kcal:52,protein:0.3,carbs:13.8,fat:0.2},
+ {name:"Mandler",terms:["mandel","almond"],kcal:579,protein:21.2,carbs:21.6,fat:49.9},
+ {name:"Skyr, naturel",terms:["skyr"],kcal:63,protein:11,carbs:4,fat:0.2},
+ {name:"Mælk, letmælk",terms:["mælk","milk"],kcal:46,protein:3.5,carbs:4.8,fat:1.5},
+ {name:"Gulerod, rå",terms:["gulerod","carrot"],kcal:41,protein:0.9,carbs:9.6,fat:0.2},
+ {name:"Tomat, rå",terms:["tomat","tomato"],kcal:18,protein:0.9,carbs:3.9,fat:0.2},
+ {name:"Hytteost",terms:["hytteost","cottage cheese"],kcal:98,protein:11.1,carbs:3.4,fat:4.3},
+ {name:"Pasta, kogt",terms:["pasta"],kcal:158,protein:5.8,carbs:30.9,fat:0.9},
+ {name:"Brød, rugbrød",terms:["rugbrød","rye bread"],kcal:250,protein:8.5,carbs:47,fat:3.3}
+].map(x=>({...x,source:"Estimat · standardråvare"}));
+function translatedQueries(q){let low=q.toLocaleLowerCase("da");for(const [da,en] of Object.entries(danishFoodTerms)){if(low.includes(da))return [...new Set([q,low.replace(da,en)])]}return [q]}
 function validNutrients(kcal,protein,carbs,fat){return [kcal,protein,carbs,fat].every(v=>Number.isFinite(v)&&v>=0&&v<=900)&&protein<=100&&carbs<=100&&fat<=100}
 function validUSDA(food){const ns=food.foodNutrients||[];const get=id=>{let n=ns.find(x=>Number(x.nutrientId??x.nutrient?.id)===id);return n?Number(n.value??n.amount):NaN};let kcal=get(1008),protein=get(1003),carbs=get(1005),fat=get(1004);if(!food.description||!validNutrients(kcal,protein,carbs,fat)||kcal>900)return null;return {name:food.description,kcal,protein,carbs,fat,fdcId:food.fdcId,source:"USDA FoodData Central"}}
 function validOFF(p){const n=p.nutriments||{};let kcal=Number(n['energy-kcal_100g']);if(!Number.isFinite(kcal)&&Number.isFinite(Number(n.energy_100g)))kcal=Number(n.energy_100g)/4.184;let protein=Number(n.proteins_100g),carbs=Number(n.carbohydrates_100g),fat=Number(n.fat_100g);if(!p.product_name||!validNutrients(kcal,protein,carbs,fat)||kcal>900)return null;let name=p.product_name_da||p.product_name||p.product_name_en;if(!name||name.length<2)return null;return {name,kcal,protein,carbs,fat,barcode:p.code,source:"Open Food Facts"}}
-async function searchUSDA(q){const params=new URLSearchParams({api_key:"DEMO_KEY",query:q,pageSize:"20"});["Foundation","SR Legacy","Survey (FNDDS)","Branded"].forEach(t=>params.append("dataType",t));const r=await fetch("https://api.nal.usda.gov/fdc/v1/foods/search?"+params);if(!r.ok)throw new Error("USDA unavailable");const d=await r.json();return (d.foods||[]).map(validUSDA).filter(Boolean)}
+async function searchUSDA(q){const params=new URLSearchParams({api_key:"DEMO_KEY",query:q,pageSize:"30"});const r=await fetch("https://api.nal.usda.gov/fdc/v1/foods/search?"+params);if(!r.ok)throw new Error("USDA unavailable");const d=await r.json();return (d.foods||[]).map(validUSDA).filter(Boolean)}
 async function searchOFF(q){const params=new URLSearchParams({search_terms:q,page_size:"20",fields:"code,product_name,product_name_da,product_name_en,nutriments,brands"});const r=await fetch("https://world.openfoodfacts.org/cgi/search.pl?"+params+"&json=1");if(!r.ok)throw new Error("Open Food Facts unavailable");const d=await r.json();return (d.products||[]).map(validOFF).filter(Boolean)}
 async function searchFoods(){
  const q=$("#foodSearch").value.trim();if(!q||searchBusy)return;searchBusy=true;const root=$("#foodResults");root.innerHTML='<div class="food-empty">Søger efter fødevarer, retter og mærkevarer…</div>';
  try{
-  const queries=translatedQueries(q),results=await Promise.allSettled(queries.map(async term=>{const [u,o]=await Promise.allSettled([searchUSDA(term),searchOFF(term)]);return [...(u.status==="fulfilled"?u.value:[]),...(o.status==="fulfilled"?o.value:[])]}));
-  const all=results.flatMap(x=>x.status==="fulfilled"?x.value:[]),seen=new Set(),products=all.filter(f=>{const k=(f.name+"|"+Math.round(f.kcal)+"|"+Math.round(f.protein)).toLowerCase();if(seen.has(k))return false;seen.add(k);return true}).slice(0,12);root.innerHTML="";
+  const terms=translatedQueries(q),local=commonFoods.filter(f=>f.terms.some(t=>q.toLocaleLowerCase("da").includes(t))),requests=[searchUSDA(terms[0]),searchOFF(q)];
+  if(terms[1]&&local.length===0)requests.push(searchUSDA(terms[1]));
+  const results=await Promise.allSettled(requests),all=[...local,...results.flatMap(x=>x.status==="fulfilled"?x.value:[])],seen=new Set(),products=all.filter(f=>{const k=(f.name+"|"+Math.round(f.kcal)+"|"+Math.round(f.protein)).toLowerCase();if(seen.has(k))return false;seen.add(k);return true}).slice(0,12);root.innerHTML="";
   if(!products.length){root.innerHTML='<div class="food-empty">Ingen match med komplette næringsværdier. Prøv et andet dansk eller engelsk søgeord, eller søg på mærkevaren.</div>';return}
   products.forEach(food=>{const row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.className="food-meta";const title=document.createElement("strong");title.textContent=food.name;const sub=document.createElement("small");sub.textContent=`${food.source} · pr. 100 g: ${Math.round(food.kcal)} kcal · ${food.protein.toFixed(1)} g protein`;const gramsWrap=document.createElement("label");gramsWrap.className="grams-control";gramsWrap.textContent="Mængde";const grams=document.createElement("input");grams.type="number";grams.min="1";grams.max="5000";grams.step="1";grams.value="100";grams.inputMode="numeric";grams.setAttribute("aria-label","Mængde i gram");const unit=document.createElement("span");unit.textContent="gram";gramsWrap.append(grams,unit);info.append(title,sub,gramsWrap);const btn=document.createElement("button");btn.className="primary";btn.textContent="Tilføj";btn.addEventListener("click",()=>addFood(food,grams.value));row.append(info,btn);root.append(row)});
- }catch(e){root.innerHTML='<div class="food-empty">Fødevaredatabaserne kunne ikke kontaktes lige nu. Prøv igen senere.</div>'}
+ }catch(e){root.innerHTML='<div class="food-empty">Søgningen fejlede. Tjek internetforbindelsen, eller prøv et andet søgeord.</div>'}
  finally{searchBusy=false}
 }
 function addFood(food,rawGrams){
@@ -527,7 +545,9 @@ function addFood(food,rawGrams){
 }
 
 const foodPhotoInput=$("#foodPhoto");
-foodPhotoInput.addEventListener("change",()=>{const file=foodPhotoInput.files?.[0];if(!file)return;const preview=$("#foodPhotoPreview");if(preview.dataset.url)URL.revokeObjectURL(preview.dataset.url);const url=URL.createObjectURL(file);preview.src=url;preview.dataset.url=url;preview.hidden=false;$("#photoStatus").textContent="Billedet er klar. Automatisk identifikation er endnu ikke aktiveret; det kræver en sikker AI-backend, så billedet ikke sendes til en ubeskyttet tredjepart.";});
+foodPhotoInput.addEventListener("change",()=>{const file=foodPhotoInput.files?.[0];if(!file)return;const preview=$("#foodPhotoPreview");if(preview.dataset.url)URL.revokeObjectURL(preview.dataset.url);const url=URL.createObjectURL(file);preview.src=url;preview.dataset.url=url;preview.hidden=false;$("#analyzeFoodPhoto").disabled=false;$("#photoStatus").textContent="Billedet er klar til analyse. Billedet sendes sikkert til din Supabase-funktion, når du trykker Analyser.";});
+async function compressFoodPhoto(file){if(!file.type.startsWith("image/"))throw new Error("Vælg en billedfil.");const img=new Image(),url=URL.createObjectURL(file);try{img.src=url;await img.decode();const scale=Math.min(1,1400/Math.max(img.naturalWidth,img.naturalHeight)),canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);return canvas.toDataURL("image/jpeg",0.82)}finally{URL.revokeObjectURL(url)}}
+$("#analyzeFoodPhoto").addEventListener("click",async()=>{const file=foodPhotoInput.files?.[0],button=$("#analyzeFoodPhoto"),status=$("#photoStatus");if(!file)return;button.disabled=true;status.textContent="Analyserer billedet…";try{const image=await compressFoodPhoto(file),{data,error}=await supabaseClient.functions.invoke("analyze-food",{body:{image}});if(error)throw error;if(!Array.isArray(data?.foods)||!data.foods.length)throw new Error("Fandt ingen tydelige fødevarer. Prøv et skarpere billede.");const root=$("#foodResults");root.innerHTML="";for(const item of data.foods){const grams=Math.max(1,Number(item.grams)||100),food={name:String(item.name||"Mad fra foto"),kcal:Math.max(0,Number(item.kcal)||0)*100/grams,protein:Math.max(0,Number(item.protein)||0)*100/grams,carbs:Math.max(0,Number(item.carbs)||0)*100/grams,fat:Math.max(0,Number(item.fat)||0)*100/grams,source:"AI-estimat fra madfoto"},row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.className="food-meta";const title=document.createElement("strong");title.textContent=food.name;const sub=document.createElement("small");sub.textContent=`AI-estimat · ca. ${grams} g · ${Math.round(Number(item.kcal)||0)} kcal`;const gramsWrap=document.createElement("label");gramsWrap.className="grams-control";gramsWrap.textContent="Mængde";const amount=document.createElement("input");amount.type="number";amount.min="1";amount.max="5000";amount.value=String(grams);amount.inputMode="numeric";const unit=document.createElement("span");unit.textContent="gram";gramsWrap.append(amount,unit);info.append(title,sub,gramsWrap);const add=document.createElement("button");add.className="primary";add.textContent="Tilføj";add.addEventListener("click",()=>addFood(food,amount.value));row.append(info,add);root.append(row)}status.textContent="Fandt forslag. Tjek mængden og næringsestimaterne, før du tilføjer."}catch(e){const statusCode=e?.context?.status;status.textContent=statusCode===404?"Madfoto-funktionen er ikke installeret i Supabase endnu. Se README for opsætning.":statusCode===503?"AI-nøglen mangler i Supabase Secrets. Tilføj OPENAI_API_KEY.":"Billedanalysen fejlede. Kontrollér at Supabase-funktionen og OPENAI_API_KEY er sat op."}finally{button.disabled=!foodPhotoInput.files?.length}});
 
 $("#searchFood").addEventListener("click",searchFoods);$("#foodSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchFoods()});
 $("#saveGoals").addEventListener("click",async()=>{let kcal=Number($("#kcalGoal").value),protein=Number($("#proteinGoal").value),feedback=$("#goalFeedback");if(kcal>0&&protein>0){const {error}=await supabaseClient.from("nutrition_goals").upsert({user_id:currentUser.id,calorie_goal:kcal,protein_goal:protein},{onConflict:"user_id"});if(error){feedback.classList.add("show");feedback.textContent="Kunne ikke gemme";return}nutritionGoalsCache={kcal,protein};renderNutrition();feedback.classList.add("show");feedback.textContent="✓ Mål gemt";setTimeout(()=>feedback.classList.remove("show"),2600)}else{feedback.classList.add("show");feedback.textContent="Indtast gyldige mål";setTimeout(()=>feedback.classList.remove("show"),2600)}});
@@ -558,25 +578,14 @@ async function loadCloudData(){
  $("#today").textContent=new Intl.DateTimeFormat("da-DK",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
  $("#accountEmail").textContent=user.email||"";setTheme(load("mr2-theme","dark"));renderDaily();renderWeekly();renderNutrition();renderOverview();
 }
-async function loadLeaderboard(){
- const root=$("#leaderboardRows");root.innerHTML='<div class="empty">Henter ranglisten…</div>';
- try{
-  const {data:competitions,error}=await supabaseClient.rpc("get_my_routine_competitions");if(error)throw error;
-  if(!competitions?.length){root.innerHTML='<div class="empty">Ingen konkurrence er knyttet til denne konto endnu. Kør app-integrationens SQL-query i Supabase.</div>';return}
-  const {data:score,error:scoreError}=await supabaseClient.rpc("get_routine_leaderboard",{p_competition_id:competitions[0].competition_id,p_days:leaderboardDays});if(scoreError)throw scoreError;
-  root.innerHTML="";for(const [i,row] of (score||[]).entries()){const item=document.createElement("div");item.className="leaderboard-row";const rank=document.createElement("span");rank.className="leaderboard-rank";rank.textContent=String(i+1)+".";const name=document.createElement("strong");name.textContent=row.display_name;const percent=document.createElement("span");percent.className="leaderboard-percent";percent.textContent=Number(row.completion_percent).toFixed(1)+"%";item.append(rank,name,percent);root.append(item)}
-  if(!score?.length)root.innerHTML='<div class="empty">Der er endnu ingen resultater for perioden.</div>';
- }catch(e){root.innerHTML='<div class="empty">Ranglisten kunne ikke hentes. Kør app-integrationens SQL-query og kontrollér Supabase API-adgangen.</div>'}
- $("#leaderboard7").classList.toggle("active",leaderboardDays===7);$("#leaderboard30").classList.toggle("active",leaderboardDays===30);
-}
-$("#leaderboard7").addEventListener("click",()=>{leaderboardDays=7;loadLeaderboard()});$("#leaderboard30").addEventListener("click",()=>{leaderboardDays=30;loadLeaderboard()});
-$("#loginForm").addEventListener("submit",async e=>{e.preventDefault();if(!supabaseClient){showAuthMessage("Supabase-klienten kunne ikke indlæses. Tjek internetforbindelsen.",true);return}const button=$("#loginButton");button.disabled=true;showAuthMessage("Logger ind…");const {error}=await supabaseClient.auth.signInWithPassword({email:$("#loginEmail").value.trim(),password:$("#loginPassword").value});button.disabled=false;if(error)showAuthMessage("Login mislykkedes. Kontrollér e-mail og adgangskode.",true);else showAuthMessage("")});
+$("#loginForm").addEventListener("submit",async e=>{e.preventDefault();if(!supabaseClient){showAuthMessage("Supabase-klienten kunne ikke indlæses. Tjek internetforbindelsen.",true);return}const button=$("#loginButton");button.disabled=true;showAuthMessage("Logger ind…");let timer;try{const result=await Promise.race([supabaseClient.auth.signInWithPassword({email:$("#loginEmail").value.trim(),password:$("#loginPassword").value}),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error("timeout")),20000)})]);if(result.error)throw result.error;if(result.data?.session)await applySession(result.data.session);else showAuthMessage("Der kom ingen aktiv session tilbage. Kontrollér om e-mailen er bekræftet.",true)}catch(err){const m=String(err?.message||"").toLowerCase();showAuthMessage(m==="timeout"?"Login tog for lang tid. Tjek forbindelsen til Supabase, og prøv igen.":m.includes("not confirmed")?"E-mailen er ikke bekræftet endnu. Bekræft den via Supabase Auth.":"Login fejlede: "+(err?.message||"ukendt fejl"),true)}finally{clearTimeout(timer);button.disabled=false}});
 $("#signOut").addEventListener("click",async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert("Kunne ikke logge ud.")});
 async function applySession(session){
  const authScreen=$("#authScreen"),appShell=$("#appShell");
- if(!session?.user){currentUser=null;appShell.hidden=true;authScreen.hidden=false;$("#loginPassword").value="";return}
+ if(!session?.user){sessionUserLoadedId=null;sessionLoadingUserId=null;sessionLoadingPromise=null;currentUser=null;appShell.hidden=true;authScreen.hidden=false;$("#loginPassword").value="";return}
+ const userId=session.user.id;if(sessionUserLoadedId===userId&&!appShell.hidden)return;if(sessionLoadingUserId===userId&&sessionLoadingPromise)return sessionLoadingPromise;
  authScreen.hidden=true;appShell.hidden=false;
- try{await loadCloudData();showAuthMessage("")}catch(e){appShell.hidden=true;authScreen.hidden=false;showAuthMessage("Appens databasetabeller mangler eller adgangsreglerne afviste forbindelsen. Kør app-integrationens SQL-query i Supabase.",true)}
+ sessionLoadingUserId=userId;const pending=(async()=>{try{await loadCloudData();sessionUserLoadedId=userId;showAuthMessage("")}catch(e){appShell.hidden=true;authScreen.hidden=false;showAuthMessage("Login lykkedes, men data kunne ikke hentes: "+(e?.message||"ukendt databasefejl"),true)}finally{if(sessionLoadingPromise===pending){sessionLoadingPromise=null;sessionLoadingUserId=null}}})();sessionLoadingPromise=pending;return pending;
 }
 async function boot(){
  if(!supabaseClient){showAuthMessage("Supabase-klienten er ikke konfigureret.",true);return}
