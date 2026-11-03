@@ -68,7 +68,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .modal-actions{display:flex;justify-content:space-between;gap:8px;margin-top:14px}.danger{color:#d86c6c;background:transparent;border:0;font-size:12px;padding:8px}
 .empty{color:var(--muted);font-size:12px;padding:9px 0}
 @media(min-width:650px){.app{padding:24px}.daily-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.task{font-size:14px;min-height:42px}.week-list{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:360px){.app{padding:12px}.task{font-size:12px;min-height:35px}.group{padding:9px}.daily-grid{gap:7px}}
+@media(max-width:360px){.app{padding:12px}.task{font-size:12px;min-height:35px}.group{padding:9px}.daily-grid{gap:7px}.reminders{right:10px;bottom:calc(10px + env(safe-area-inset-bottom));width:164px;max-height:38vh}}
 
 .nutrition-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
 .nutri-card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px}
@@ -84,10 +84,10 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .food-entry .entrymacros{font-size:11px;color:var(--muted);text-align:right;white-space:nowrap}
 .meal-title{font-size:13px;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 6px}
 .goal-edit{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.goal-edit input{width:90px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:9px;padding:8px;font-size:13px}
-.food-empty{font-size:12px;color:var(--muted);padding:12px 2px}
+.food-empty{font-size:12px;color:var(--muted);padding:12px 2px}.camera-panel{margin-top:14px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:13px}.camera-button{display:inline-flex;align-items:center;justify-content:center;margin:4px 0 8px;cursor:pointer}.camera-panel img{display:block;width:100%;max-height:240px;object-fit:cover;border-radius:10px;margin-top:8px}.camera-panel .food-empty{padding:6px 0}
 .food-result{align-items:flex-start}.food-result .food-meta{min-width:0;flex:1}.food-result .grams-control{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;color:var(--muted)}.food-result .grams-control input{width:76px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:7px;font-size:13px}.food-result button{align-self:center}
 .goal-feedback{font-size:11px;color:var(--green);font-weight:700;min-width:76px;text-align:right;opacity:0;transition:opacity .2s}.goal-feedback.show{opacity:1}
-.reminders{margin-top:14px;background:color-mix(in srgb,#7189c7 11%,var(--surface));border:1px solid color-mix(in srgb,#7189c7 42%,var(--line));border-radius:15px;padding:12px}.reminders h3{font-size:13px;color:#9aaddf;font-weight:750;margin:0 0 6px;text-transform:uppercase;letter-spacing:.55px}:root.light .reminders{background:#edf1fa;border-color:#cbd5ec}:root.light .reminders h3{color:#536b9d}.reminders .reminder-row{border-top-color:color-mix(in srgb,#7189c7 22%,var(--line))}.reminders .reminder-add input{background:color-mix(in srgb,#7189c7 5%,var(--bg));border-color:color-mix(in srgb,#7189c7 28%,var(--line))}.reminders .reminder-row input:checked{background:#7189c7;border-color:#7189c7}.reminder-list{display:grid}.reminder-row{display:flex;align-items:center;gap:9px;min-height:39px;border-top:1px solid var(--line);padding:6px 0;font-size:13px}.reminder-row input{appearance:none;width:19px;height:19px;flex:0 0 19px;border:1.7px solid var(--muted);border-radius:50%;margin:0;display:grid;place-items:center}.reminder-row input:checked{background:var(--green);border-color:var(--green)}.reminder-row input:checked:after{content:"✓";font-size:12px;font-weight:900;color:white}.reminder-row span{flex:1;overflow-wrap:anywhere}.reminder-row.done span{color:var(--muted);text-decoration:line-through}.reminder-add{display:flex;gap:7px;margin-top:8px}.reminder-add input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:9px;font-size:13px}.reminder-add button{white-space:nowrap}
+.reminders{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:4;width:min(190px,46vw);max-height:42vh;overflow:auto;background:color-mix(in srgb,#7189c7 11%,var(--surface));border:1px solid color-mix(in srgb,#7189c7 42%,var(--line));border-radius:15px;padding:11px;box-shadow:0 12px 32px #0004}.reminders h3{font-size:13px;color:#9aaddf;font-weight:750;margin:0 0 6px;text-transform:uppercase;letter-spacing:.55px}:root.light .reminders{background:#edf1fa;border-color:#cbd5ec}:root.light .reminders h3{color:#536b9d}.reminders .reminder-row{border-top-color:color-mix(in srgb,#7189c7 22%,var(--line))}.reminders .reminder-add input{background:color-mix(in srgb,#7189c7 5%,var(--bg));border-color:color-mix(in srgb,#7189c7 28%,var(--line))}.reminders .reminder-row input:checked{background:#7189c7;border-color:#7189c7}.reminder-list{display:grid}.reminder-row{display:flex;align-items:center;gap:9px;min-height:39px;border-top:1px solid var(--line);padding:6px 0;font-size:13px}.reminder-row input{appearance:none;width:19px;height:19px;flex:0 0 19px;border:1.7px solid var(--muted);border-radius:50%;margin:0;display:grid;place-items:center}.reminder-row input:checked{background:var(--green);border-color:var(--green)}.reminder-row input:checked:after{content:"✓";font-size:12px;font-weight:900;color:white}.reminder-row span{flex:1;overflow-wrap:anywhere}.reminder-row.done span{color:var(--muted);text-decoration:line-through}.reminder-add{display:grid;gap:6px;margin-top:8px}.reminder-add button{width:100%;padding:7px}.reminder-add input{width:100%;font-size:12px;padding:8px}.reminders .reminder-row{font-size:12px;min-height:34px}.reminders .reminder-row input{width:17px;height:17px;flex-basis:17px}.reminder-add input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:9px;font-size:13px}.reminder-add button{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -130,7 +130,14 @@ button,input,textarea{font:inherit}button{cursor:pointer}
   <div class="settings"><span>Dine daglige mål</span><div class="goal-edit"><label><input id="kcalGoal" type="number" min="0" step="50"> <small>kcal</small></label><label><input id="proteinGoal" type="number" min="0" step="5"> <small>protein g</small></label><button class="secondary" id="saveGoals">Gem</button><span class="goal-feedback" id="goalFeedback" role="status" aria-live="polite">✓ Gemt</span></div></div>
   <div class="meal-title">Tilføj det, du har spist</div>
   <div class="food-search"><input id="foodSearch" placeholder="Søg fx skyr, havregryn, banan"><button class="primary" id="searchFood">Søg</button></div>
-  <div class="food-results" id="foodResults"><div class="food-empty">Søg efter en fødevare eller et mærkevareprodukt.</div></div>
+  <div class="food-results" id="foodResults"><div class="food-empty">Søg efter en fødevare, ret eller et mærkevareprodukt på dansk eller engelsk.</div></div>
+  <div class="camera-panel">
+   <div class="meal-title">Tag et billede af din mad</div>
+   <label class="secondary camera-button" for="foodPhoto">▣ Åbn kamera / vælg billede</label>
+   <input id="foodPhoto" type="file" accept="image/*" capture="environment" hidden>
+   <img id="foodPhotoPreview" alt="Forhåndsvisning af madfoto" hidden>
+   <div class="food-empty" id="photoStatus">Du kan tage et billede direkte med kameraet. Automatisk genkendelse kræver en sikker AI-forbindelse, som ikke kan lægges direkte i en offentlig GitHub-side.</div>
+  </div>
   <div class="meal-title">Dagens registrering</div>
   <div class="food-log" id="foodLog"></div>
   <div class="bottomnote">Næringsværdier er estimater fra fødevaredatabasen. Tjek emballagen ved mærkevarer.</div>
@@ -286,7 +293,7 @@ $("#importFile").addEventListener("change",async e=>{
  }catch(err){alert("Filen kunne ikke gendannes. Vælg en backup fra Min rutine.");}e.target.value="";
 });
 
-// Nutrition tracker: USDA FoodData Central. Foundation/SR Legacy/FNDDS only; English descriptions.
+// Nutrition tracker: USDA FoodData Central + Open Food Facts. Search accepts Danish and English.
 const nutritionKey="mr2-nutrition", goalsKey="mr2-nutrition-goals";
 let searchBusy=false;
 const defaultGoals={kcal:2200,protein:130};
@@ -304,32 +311,32 @@ function renderNutrition(){
  if(!items.length){log.innerHTML='<div class="food-empty">Intet registreret endnu i dag.</div>';return}
  items.forEach((item,i)=>{let row=document.createElement("div");row.className="food-entry";let info=document.createElement("div");info.className="entryinfo";let name=document.createElement("strong");name.textContent=item.name;let detail=document.createElement("small");detail.textContent=item.grams+" g";info.append(name,detail);let macros=document.createElement("div");macros.className="entrymacros";macros.textContent=Math.round(item.kcal)+" kcal · "+Math.round(item.protein)+" g protein";let del=document.createElement("button");del.className="remove";del.textContent="×";del.addEventListener("click",()=>{let a=nutritionLog();a.splice(i,1);saveNutritionLog(a)});row.append(info,macros,del);log.append(row)});
 }
-function nutrient(food,id){const n=(food.foodNutrients||[]).find(x=>Number(x.nutrientId??x.nutrient?.id)===id);return n&&Number.isFinite(Number(n.value??n.amount))?Number(n.value??n.amount):null}
-function validFood(food){
- const kcal=nutrient(food,1008),protein=nutrient(food,1003),carbs=nutrient(food,1005),fat=nutrient(food,1004);
- // Reject incomplete or implausible records rather than displaying guessed zeros.
- if(!food.description||[kcal,protein,carbs,fat].some(v=>v===null))return null;
- if(kcal<0||kcal>900||protein<0||protein>100||carbs<0||carbs>100||fat<0||fat>100)return null;
- return {name:food.description,kcal,protein,carbs,fat,fdcId:food.fdcId};
-}
+const danishFoodTerms={"kyllingebryst":"chicken breast","kylling":"chicken","havregryn":"oats","havre":"oats","banan":"banana","æg":"egg","aeg":"egg","skyr":"skyr","hytteost":"cottage cheese","kartoffel":"potato","kartofler":"potatoes","ris":"rice","laks":"salmon","oksekød":"beef","svinekød":"pork","rugbrød":"rye bread","brød":"bread","mælk":"milk","ost":"cheese","yoghurt":"yogurt","græsk yoghurt":"greek yogurt","pasta":"pasta","lasagne":"lasagna","frikadeller":"meatballs","kødsovs":"bolognese sauce","havregrød":"oatmeal","risengrød":"rice pudding","kylling i karry":"chicken curry","smørrebrød":"open sandwich","pizza":"pizza","burger":"burger","suppe":"soup","salat":"salad","havremælk":"oat milk","mandler":"almonds","jordbær":"strawberries","blåbær":"blueberries","avocado":"avocado","tun":"tuna","rejer":"shrimp","broccoli":"broccoli","gulerod":"carrot","tomat":"tomato","agurk":"cucumber","bønner":"beans","linser":"lentils"};
+function translatedQueries(q){let low=q.toLocaleLowerCase("da");let terms=[q];for(const [da,en] of Object.entries(danishFoodTerms)){if(low.includes(da))terms.push(low.replace(da,en))}return [...new Set(terms)].slice(0,3)}
+function validNutrients(kcal,protein,carbs,fat){return [kcal,protein,carbs,fat].every(v=>Number.isFinite(v)&&v>=0&&v<=900)&&protein<=100&&carbs<=100&&fat<=100}
+function validUSDA(food){const ns=food.foodNutrients||[];const get=id=>{let n=ns.find(x=>Number(x.nutrientId??x.nutrient?.id)===id);return n?Number(n.value??n.amount):NaN};let kcal=get(1008),protein=get(1003),carbs=get(1005),fat=get(1004);if(!food.description||!validNutrients(kcal,protein,carbs,fat)||kcal>900)return null;return {name:food.description,kcal,protein,carbs,fat,fdcId:food.fdcId,source:"USDA FoodData Central"}}
+function validOFF(p){const n=p.nutriments||{};let kcal=Number(n['energy-kcal_100g']);if(!Number.isFinite(kcal)&&Number.isFinite(Number(n.energy_100g)))kcal=Number(n.energy_100g)/4.184;let protein=Number(n.proteins_100g),carbs=Number(n.carbohydrates_100g),fat=Number(n.fat_100g);if(!p.product_name||!validNutrients(kcal,protein,carbs,fat)||kcal>900)return null;let name=p.product_name_da||p.product_name||p.product_name_en;if(!name||name.length<2)return null;return {name,kcal,protein,carbs,fat,barcode:p.code,source:"Open Food Facts"}}
+async function searchUSDA(q){const params=new URLSearchParams({api_key:"DEMO_KEY",query:q,pageSize:"20"});["Foundation","SR Legacy","Survey (FNDDS)","Branded"].forEach(t=>params.append("dataType",t));const r=await fetch("https://api.nal.usda.gov/fdc/v1/foods/search?"+params);if(!r.ok)throw new Error("USDA unavailable");const d=await r.json();return (d.foods||[]).map(validUSDA).filter(Boolean)}
+async function searchOFF(q){const params=new URLSearchParams({search_terms:q,page_size:"20",fields:"code,product_name,product_name_da,product_name_en,nutriments,brands"});const r=await fetch("https://world.openfoodfacts.org/cgi/search.pl?"+params+"&json=1");if(!r.ok)throw new Error("Open Food Facts unavailable");const d=await r.json();return (d.products||[]).map(validOFF).filter(Boolean)}
 async function searchFoods(){
- const q=$("#foodSearch").value.trim();if(!q||searchBusy)return;searchBusy=true;const root=$("#foodResults");root.innerHTML='<div class="food-empty">Søger i USDA FoodData Central…</div>';
+ const q=$("#foodSearch").value.trim();if(!q||searchBusy)return;searchBusy=true;const root=$("#foodResults");root.innerHTML='<div class="food-empty">Søger efter fødevarer, retter og mærkevarer…</div>';
  try{
-  const params=new URLSearchParams({api_key:"DEMO_KEY",query:q,pageSize:"20"});["Foundation","SR Legacy","Survey (FNDDS)"].forEach(t=>params.append("dataType",t));const url="https://api.nal.usda.gov/fdc/v1/foods/search?"+params;
-  const response=await fetch(url,{headers:{"Accept":"application/json"}});if(!response.ok)throw new Error("USDA search failed");
-  const data=await response.json(),seen=new Set(),products=(data.foods||[]).map(validFood).filter(x=>{if(!x||seen.has(x.name))return false;seen.add(x.name);return true}).slice(0,8);root.innerHTML="";
-  if(!products.length){root.innerHTML='<div class="food-empty">Ingen resultater med komplette og plausible næringsdata. Prøv et engelsk søgeord, fx “chicken breast”, “oats” eller “banana”.</div>';return}
-  products.forEach(food=>{
-   const row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.className="food-meta";const title=document.createElement("strong");title.textContent=food.name;const sub=document.createElement("small");sub.textContent=`USDA · pr. 100 g: ${Math.round(food.kcal)} kcal · ${food.protein} g protein`;const gramsWrap=document.createElement("label");gramsWrap.className="grams-control";gramsWrap.textContent="Mængde";const grams=document.createElement("input");grams.type="number";grams.min="1";grams.max="5000";grams.step="1";grams.value="100";grams.inputMode="numeric";grams.setAttribute("aria-label","Mængde i gram");const unit=document.createElement("span");unit.textContent="gram";gramsWrap.append(grams,unit);info.append(title,sub,gramsWrap);const btn=document.createElement("button");btn.className="primary";btn.textContent="Tilføj";btn.addEventListener("click",()=>addFood(food,grams.value));row.append(info,btn);root.append(row);
-  });
- }catch(e){root.innerHTML='<div class="food-empty">USDA-databasen kunne ikke kontaktes. Prøv igen senere.</div>'}
+  const queries=translatedQueries(q),results=await Promise.allSettled(queries.map(async term=>{const [u,o]=await Promise.allSettled([searchUSDA(term),searchOFF(term)]);return [...(u.status==="fulfilled"?u.value:[]),...(o.status==="fulfilled"?o.value:[])]}));
+  const all=results.flatMap(x=>x.status==="fulfilled"?x.value:[]),seen=new Set(),products=all.filter(f=>{const k=(f.name+"|"+Math.round(f.kcal)+"|"+Math.round(f.protein)).toLowerCase();if(seen.has(k))return false;seen.add(k);return true}).slice(0,12);root.innerHTML="";
+  if(!products.length){root.innerHTML='<div class="food-empty">Ingen match med komplette næringsværdier. Prøv et andet dansk eller engelsk søgeord, eller søg på mærkevaren.</div>';return}
+  products.forEach(food=>{const row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.className="food-meta";const title=document.createElement("strong");title.textContent=food.name;const sub=document.createElement("small");sub.textContent=`${food.source} · pr. 100 g: ${Math.round(food.kcal)} kcal · ${food.protein.toFixed(1)} g protein`;const gramsWrap=document.createElement("label");gramsWrap.className="grams-control";gramsWrap.textContent="Mængde";const grams=document.createElement("input");grams.type="number";grams.min="1";grams.max="5000";grams.step="1";grams.value="100";grams.inputMode="numeric";grams.setAttribute("aria-label","Mængde i gram");const unit=document.createElement("span");unit.textContent="gram";gramsWrap.append(grams,unit);info.append(title,sub,gramsWrap);const btn=document.createElement("button");btn.className="primary";btn.textContent="Tilføj";btn.addEventListener("click",()=>addFood(food,grams.value));row.append(info,btn);root.append(row)});
+ }catch(e){root.innerHTML='<div class="food-empty">Fødevaredatabaserne kunne ikke kontaktes lige nu. Prøv igen senere.</div>'}
  finally{searchBusy=false}
 }
 function addFood(food,rawGrams){
  const grams=Number(rawGrams);if(!Number.isFinite(grams)||grams<=0||grams>5000){alert("Indtast en mængde mellem 1 og 5000 gram.");return}
- const factor=grams/100,items=nutritionLog();items.push({name:food.name,grams,kcal:food.kcal*factor,protein:food.protein*factor,carbs:food.carbs*factor,fat:food.fat*factor,source:"USDA FoodData Central",fdcId:food.fdcId});
+ const factor=grams/100,items=nutritionLog();items.push({name:food.name,grams,kcal:food.kcal*factor,protein:food.protein*factor,carbs:food.carbs*factor,fat:food.fat*factor,source:food.source||"Fødevaredatabase",fdcId:food.fdcId,barcode:food.barcode});
  saveNutritionLog(items);$("#foodResults").innerHTML='<div class="food-empty">Tilføjet til dagens registrering.</div>';
 }
+
+const foodPhotoInput=$("#foodPhoto");
+foodPhotoInput.addEventListener("change",()=>{const file=foodPhotoInput.files?.[0];if(!file)return;const preview=$("#foodPhotoPreview");if(preview.dataset.url)URL.revokeObjectURL(preview.dataset.url);const url=URL.createObjectURL(file);preview.src=url;preview.dataset.url=url;preview.hidden=false;$("#photoStatus").textContent="Billedet er klar. Automatisk identifikation er endnu ikke aktiveret; det kræver en sikker AI-backend, så billedet ikke sendes til en ubeskyttet tredjepart.";});
+
 $("#searchFood").addEventListener("click",searchFoods);$("#foodSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchFoods()});
 $("#saveGoals").addEventListener("click",()=>{let kcal=Number($("#kcalGoal").value),protein=Number($("#proteinGoal").value),feedback=$("#goalFeedback");if(kcal>0&&protein>0){localStorage.setItem(goalsKey,JSON.stringify({kcal,protein}));renderNutrition();feedback.classList.add("show");feedback.textContent="✓ Mål gemt";setTimeout(()=>feedback.classList.remove("show"),2600)}else{feedback.classList.add("show");feedback.textContent="Indtast gyldige mål";setTimeout(()=>feedback.classList.remove("show"),2600)}});
 
