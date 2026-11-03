@@ -185,6 +185,11 @@ body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(-
 .top-actions{gap:7px}.account-email{max-width:100px}
 .tabs{padding:5px;border-radius:16px;background:var(--surface2);border:1px solid var(--line);box-shadow:none}
 .tab{border-radius:12px;font-size:13px}.tab.active{background:var(--surface);color:var(--text);box-shadow:inset 0 -2px var(--accent),0 3px 10px #07130e14}
+.tabs{gap:4px}
+.tab{min-height:58px;flex-direction:column;gap:3px;padding:6px 3px;font-size:10px;line-height:1.1}
+.tab-icon{width:21px;height:21px;flex:none;color:var(--muted)}
+.tab.active .tab-icon{color:var(--green)}
+@media(max-width:360px){.tab{font-size:9px;min-height:55px}.tab-icon{width:19px;height:19px}}
 .group,.stat,.history,.weekrow{border-radius:var(--radius-card);box-shadow:var(--shadow);background:var(--surface)}
 .group{padding:14px 14px 9px}.group h3{letter-spacing:1px}
 .daily-grid{gap:11px}.week-list{gap:9px}
@@ -222,10 +227,10 @@ body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(-
   <div class="top-actions"><span class="account-email" id="accountEmail"></span><button class="iconbtn" type="button" id="signOut" aria-label="Sign out" title="Sign out"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button><button class="iconbtn" type="button" id="themeBtn" aria-label="Change theme">☼</button></div>
  </header>
  <nav class="tabs" aria-label="Main navigation">
-  <button class="tab active" type="button" data-view="daily" aria-current="page">Routine</button>
-  <button class="tab" type="button" data-view="weekly">Week</button>
-  <button class="tab" type="button" data-view="overview">Overview</button>
-  <button class="tab" type="button" data-view="leaderboard">Leaderboard</button>
+  <button class="tab active" type="button" data-view="daily" aria-current="page" aria-label="Routine" title="Routine"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="m8 12 2.5 2.5L16 9"/></svg><span>Routine</span></button>
+  <button class="tab" type="button" data-view="weekly" aria-label="Week" title="Week"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M7.5 3.5v3M16.5 3.5v3M4 9.5h16M8 13h2M13 13h2M8 17h2"/></svg><span>Week</span></button>
+  <button class="tab" type="button" data-view="overview" aria-label="Overview" title="Overview"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span>Overview</span></button>
+  <button class="tab" type="button" data-view="leaderboard" aria-label="Leaderboard" title="Leaderboard"><svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4M4 20h16M7 17h4v-4h4V9h4V5"/><path d="m15 5 4 0 0 4"/></svg><span>Board</span></button>
  </nav>
  <section class="view" id="leaderboardView" hidden>
   <div class="headline"><h2>Leaderboard</h2></div>
@@ -249,14 +254,14 @@ body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(-
    <div class="stat"><strong id="avgStat">0%</strong><span>Average daily completion</span></div>
    <div class="stat"><strong id="daysStat">0/7</strong><span>Days with all habits done</span></div>
    <div class="stat"><strong id="weekStat">0</strong><span>Weekly activities completed</span></div>
-   <div class="stat streak-stat"><svg class="streak-stat-icon" viewBox="0 0 48 56" role="img" aria-label="Streak: 0 days"><path fill="#147a4d" d="M24 3c-2.8 6.7.8 10.9-2.4 16.8-.8-3.1-3-6-5.8-8.4.9 6.2-6.1 10.3-6.1 19.9a14.3 14.3 0 1 0 28.6 0c0-5.5-2.9-10.7-7.4-15.3.1 4.7-1.6 7.1-4.3 9.1C28 17.3 27.8 9.5 24 3z"/><path fill="#73d69a" d="M24 45c-4.1 0-7.1-3-6.3-7.1.5-2.4 2.3-4.4 4.1-6.6.3 2.4 1.4 3.8 2.8 5.1 2.2-2.1 2.9-4.4 2.8-7 3 3.2 4.2 6.3 3.2 9.9-.8 3.3-3.4 5.7-6.6 5.7z"/><text id="streakStat" x="24" y="38" text-anchor="middle" fill="#fff" font-size="18" font-weight="900" font-family="Arial,sans-serif">0</text></svg><div class="streak-stat-copy"><strong>Streak</strong></div></div>
+   <div class="stat streak-stat"><svg class="streak-stat-icon" viewBox="0 0 48 56" role="img" aria-label="Streak: 0 days"><path fill="#147a4d" d="M24 2C19 11 26 14 20 22c-1-4-3-6-6-8 1 7-8 11-8 20a18 18 0 0 0 36 0c0-8-5-16-12-24 0 7-2 11-5 14C27 16 28 9 24 2Z"/><path fill="#73d69a" d="M24 45c-5 0-8-4-7-9 .6-3 2.4-5.2 4.5-8 .3 3 1.5 4.8 3.1 6.2 2-2 2.6-4.5 2.4-7.2 3.1 3.3 4.8 6.4 3.8 10.4-.8 4.7-3.8 7.6-8.8 7.6z"/><text id="streakStat" x="24" y="38" text-anchor="middle" fill="#fff" font-size="18" font-weight="900" font-family="Arial,sans-serif">0</text></svg><div class="streak-stat-copy"><strong>Streak</strong></div></div>
   </div>
   <div class="history"><h3>Day by day</h3><div class="days" id="historyDays"></div></div>
   <div class="settings"><span>Appearance</span><div class="switch"><button type="button" id="darkChoice">Dark</button><button type="button" id="lightChoice">Light</button></div></div>
   <div class="settings"><span>Confirmation sound</span><button class="secondary" type="button" id="soundChoice" aria-pressed="true">Sound on</button></div>
   <div class="settings"><span>Your data is saved to your account</span><button class="secondary" type="button" id="resetToday">Reset today</button></div>
-  <div class="settings"><span>Keep your routines and history safe</span><div style="display:flex;gap:6px"><button class="secondary" type="button" id="exportData">Back up</button><button class="secondary" type="button" id="importData">Restore</button><input id="importFile" type="file" accept="application/json" hidden></div></div>
-  <div class="bottomnote">Tip: Back up your data before changing phones or clearing browser data.</div>
+  
+  
  </section>
 </div>
 <div class="modal-back" id="modalBack">
@@ -459,41 +464,10 @@ function renderDailyComparison(data,mode=leaderboardMode){
  try{if(!supabaseClient||!currentUser)throw new Error("Sign in to view the leaderboard.");const {data:comps,error}=await supabaseClient.rpc("get_my_routine_competitions");if(error)throw error;if(!comps?.length){title.textContent="Competition not set up";copy.textContent="Join a competition to see who leads.";return}let result;if(leaderboardMode==="month"){const now=new Date(),start=new Date(now.getFullYear(),now.getMonth(),1);result=await supabaseClient.rpc("get_routine_daily_comparison_since",{p_competition_id:comps[0].competition_id,p_start_date:weekDateKey(start)})}else result=await supabaseClient.rpc("get_routine_daily_comparison",{p_competition_id:comps[0].competition_id});if(result.error)throw result.error;renderDailyComparison(result.data||[],leaderboardMode)}catch(e){title.textContent="Leaderboard unavailable";copy.textContent=e?.message||"Check your connection and try again.";console.error("Leaderboard load failed",e)}
 }
 function setLeaderboardMode(mode){leaderboardMode=mode;const month=mode==="month";$("#weekModeButton").classList.toggle("active",!month);$("#monthModeButton").classList.toggle("active",month);$("#weekModeButton").setAttribute("aria-pressed",String(!month));$("#monthModeButton").setAttribute("aria-pressed",String(month));$("#weekTitle").textContent=month?"Full month":"This week";$("#weekSubtitle").textContent=month?"Daily winners this month":"Daily winners";$("#weekDays").setAttribute("aria-label",month?"Daily leaderboard winners for this month":"Daily leaderboard winners for this week");loadLeaderboard()}
-$("#weekModeButton").addEventListener("click",()=>setLeaderboardMode("week"));$("#monthModeButton").addEventListener("click",()=>setLeaderboardMode("month"));document.querySelectorAll("button.tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("button.tab").forEach(x=>x.classList.toggle("active",x===b));const view=b.dataset.view;["daily","weekly","overview","leaderboard"].forEach(v=>$("#"+v+"View").hidden=v!==view);if(view==="leaderboard")loadLeaderboard()}));
+ $("#weekModeButton").addEventListener("click",()=>setLeaderboardMode("week"));$("#monthModeButton").addEventListener("click",()=>setLeaderboardMode("month"));document.querySelectorAll("button.tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("button.tab").forEach(x=>{x.classList.toggle("active",x===b);if(x===b)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});const view=b.dataset.view;["daily","weekly","overview","leaderboard"].forEach(v=>$("#"+v+"View").hidden=v!==view);if(view==="leaderboard")loadLeaderboard()}));
 $("#resetToday").addEventListener("click",async()=>{const {error}=await supabaseClient.from("habit_checks").delete().eq("user_id",currentUser.id).eq("check_date",dateKey());if(error){alert("Today could not be reset.");return}historyCache[dateKey()]={done:{},weekDone:{}};renderDaily();renderOverview()});
 $("#period7").addEventListener("click",()=>{overviewDays=7;renderOverview()});
 $("#period30").addEventListener("click",()=>{overviewDays=30;renderOverview()});
-$("#exportData").addEventListener("click",()=>{
- const backup={app:"Min rutine",version:2,createdAt:new Date().toISOString(),data:{habits:allHabits,trainingPlans:weekly,history:historyCache,weeklyDone:weeklyDoneCache,reminders:remindersCache,theme:load("mr2-theme","dark")}};
- const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="min-rutine-backup.json";a.click();URL.revokeObjectURL(url);
-});
-$("#importData").addEventListener("click",()=>$("#importFile").click());
-$("#importFile").addEventListener("change",async e=>{
- const file=e.target.files?.[0];if(!file)return;
- try{
-  const backup=JSON.parse(await file.text());if(backup.app!=="Min rutine"||!backup.data)throw new Error("invalid");const d=backup.data;
-  if(backup.version===2){
-   const habitRows=(d.habits||[]).map(x=>({id:x.id,user_id:currentUser.id,title:x.title,category:x.category,position:x.position,created_at:x.created_at,archived_at:x.archived_at}));if(habitRows.length){const {error}=await supabaseClient.from("habits").upsert(habitRows,{onConflict:"id"});if(error)throw error}
-   const planRows=(d.trainingPlans||[]).map(x=>({id:x.id,user_id:currentUser.id,weekday:weekdayNumber(x.day),title:x.training,details:x.purpose}));if(planRows.length){const {error}=await supabaseClient.from("training_plans").upsert(planRows,{onConflict:"id"});if(error)throw error}
-   const checkRows=[];for(const [day,value] of Object.entries(d.history||{}))for(const id of Object.keys(value.done||{}))checkRows.push({user_id:currentUser.id,habit_id:id,check_date:day,completed:true});if(checkRows.length){const {error}=await supabaseClient.from("habit_checks").upsert(checkRows,{onConflict:"user_id,habit_id,check_date"});if(error)throw error}
-   const reminderRows=(d.reminders||[]).map(x=>({id:x.id,user_id:currentUser.id,title:x.text,completed:!!x.done}));if(reminderRows.length){const {error}=await supabaseClient.from("reminders").upsert(reminderRows,{onConflict:"id"});if(error)throw error}
-   const weeklyChecks=Object.keys(d.weeklyDone||{}).filter(id=>d.weeklyDone[id]).map(id=>({user_id:currentUser.id,training_plan_id:id,week_start:mondayKey(),completed:true}));if(weeklyChecks.length){const {error}=await supabaseClient.from("training_checks").upsert(weeklyChecks,{onConflict:"user_id,training_plan_id,week_start"});if(error)throw error}
-   if(d.theme)setTheme(d.theme);
-  }else if(backup.version===1){
-   const oldHabits=d["mr2-daily"]||[],oldPlans=d["mr2-weekly"]||[],habitIds=new Map(),planIds=new Map(),oldDays=Object.keys(d["mr2-history"]||{}).sort(),legacyStart=oldDays[0]||dateKey();
-   const habitRows=oldHabits.map((x,i)=>{const id=crypto.randomUUID();habitIds.set(x.id,id);return{id,user_id:currentUser.id,title:x.text,category:x.group,position:i,created_at:new Date(legacyStart+"T12:00:00").toISOString()}});
-   const planRows=oldPlans.map(x=>{const id=crypto.randomUUID();planIds.set(x.id,id);return{id,user_id:currentUser.id,weekday:weekdayNumber(x.day),title:x.training,details:x.purpose}});
-   if(habitRows.length){const {error}=await supabaseClient.from("habits").insert(habitRows);if(error)throw error}if(planRows.length){const {error}=await supabaseClient.from("training_plans").insert(planRows);if(error)throw error}
-   const checkRows=[];for(const [day,value] of Object.entries(d["mr2-history"]||{}))for(const oldId of Object.keys(value.done||{}))if(habitIds.has(oldId))checkRows.push({user_id:currentUser.id,habit_id:habitIds.get(oldId),check_date:day,completed:true});if(checkRows.length){const {error}=await supabaseClient.from("habit_checks").upsert(checkRows,{onConflict:"user_id,habit_id,check_date"});if(error)throw error}
-   const reminderRows=(d["mr2-reminders"]||[]).map(x=>({id:crypto.randomUUID(),user_id:currentUser.id,title:x.text,completed:!!x.done}));if(reminderRows.length){const {error}=await supabaseClient.from("reminders").insert(reminderRows);if(error)throw error}
-   const weekChecks=[];for(const [week,done] of Object.entries(d["mr2-weekdone"]||{}))for(const oldId of Object.keys(done||{}))if(done[oldId]&&planIds.has(oldId))weekChecks.push({user_id:currentUser.id,training_plan_id:planIds.get(oldId),week_start:week,completed:true});if(weekChecks.length){const {error}=await supabaseClient.from("training_checks").upsert(weekChecks,{onConflict:"user_id,training_plan_id,week_start"});if(error)throw error}
-   if(d["mr2-theme"])setTheme(d["mr2-theme"]);
-  }else throw new Error("unsupported-version");
-  await loadCloudData();alert("Backup restored to your account.");
- }catch(err){alert("Could not restore backup. Check the file and ensure the app database setup has been completed.");}e.target.value="";
-});
-
 function showAuthMessage(message,isError=false){const el=$("#authStatus");el.textContent=message||"";el.classList.toggle("error",!!isError)}
 async function loadRows(query){const {data,error}=await query;if(error)throw error;return data||[]}
 async function loadCloudData(){
