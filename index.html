@@ -85,6 +85,9 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .meal-title{font-size:13px;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 6px}
 .goal-edit{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.goal-edit input{width:90px;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:9px;padding:8px;font-size:13px}
 .food-empty{font-size:12px;color:var(--muted);padding:12px 2px}
+.food-result{align-items:flex-start}.food-result .food-meta{min-width:0;flex:1}.food-result .grams-control{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;color:var(--muted)}.food-result .grams-control input{width:76px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:7px;font-size:13px}.food-result button{align-self:center}
+.goal-feedback{font-size:11px;color:var(--green);font-weight:700;min-width:76px;text-align:right;opacity:0;transition:opacity .2s}.goal-feedback.show{opacity:1}
+.reminders{margin-top:14px;background:color-mix(in srgb,#7189c7 11%,var(--surface));border:1px solid color-mix(in srgb,#7189c7 42%,var(--line));border-radius:15px;padding:12px}.reminders h3{font-size:13px;color:#9aaddf;font-weight:750;margin:0 0 6px;text-transform:uppercase;letter-spacing:.55px}:root.light .reminders{background:#edf1fa;border-color:#cbd5ec}:root.light .reminders h3{color:#536b9d}.reminders .reminder-row{border-top-color:color-mix(in srgb,#7189c7 22%,var(--line))}.reminders .reminder-add input{background:color-mix(in srgb,#7189c7 5%,var(--bg));border-color:color-mix(in srgb,#7189c7 28%,var(--line))}.reminders .reminder-row input:checked{background:#7189c7;border-color:#7189c7}.reminder-list{display:grid}.reminder-row{display:flex;align-items:center;gap:9px;min-height:39px;border-top:1px solid var(--line);padding:6px 0;font-size:13px}.reminder-row input{appearance:none;width:19px;height:19px;flex:0 0 19px;border:1.7px solid var(--muted);border-radius:50%;margin:0;display:grid;place-items:center}.reminder-row input:checked{background:var(--green);border-color:var(--green)}.reminder-row input:checked:after{content:"✓";font-size:12px;font-weight:900;color:white}.reminder-row span{flex:1;overflow-wrap:anywhere}.reminder-row.done span{color:var(--muted);text-decoration:line-through}.reminder-add{display:flex;gap:7px;margin-top:8px}.reminder-add input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:9px;font-size:13px}.reminder-add button{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -103,6 +106,11 @@ button,input,textarea{font:inherit}button{cursor:pointer}
   <div class="headline"><h2>I dag</h2><div class="counter" id="counter">0/8</div></div>
   <div class="progress"><div class="fill" id="dailyFill"></div></div>
   <div class="daily-grid" id="dailyGrid"></div>
+  <div class="reminders">
+   <h3>Huskeliste</h3>
+   <div class="reminder-list" id="reminderList"></div>
+   <div class="reminder-add"><input id="reminderInput" maxlength="100" placeholder="Fx vask tøj, køb ind…"><button class="secondary" id="addReminder">Tilføj</button></div>
+  </div>
   <div class="bottomnote">Små skridt tæller. Brug rutinen som støtte – ikke som et krav.</div>
  </section>
  <section class="view" id="weeklyView" hidden>
@@ -119,7 +127,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
    <div class="nutri-card"><strong id="carbTotal">0 g</strong><span>Kulhydrat</span></div>
    <div class="nutri-card"><strong id="fatTotal">0 g</strong><span>Fedt</span></div>
   </div>
-  <div class="settings"><span>Dine daglige mål</span><div class="goal-edit"><label><input id="kcalGoal" type="number" min="0" step="50"> <small>kcal</small></label><label><input id="proteinGoal" type="number" min="0" step="5"> <small>protein g</small></label><button class="secondary" id="saveGoals">Gem</button></div></div>
+  <div class="settings"><span>Dine daglige mål</span><div class="goal-edit"><label><input id="kcalGoal" type="number" min="0" step="50"> <small>kcal</small></label><label><input id="proteinGoal" type="number" min="0" step="5"> <small>protein g</small></label><button class="secondary" id="saveGoals">Gem</button><span class="goal-feedback" id="goalFeedback" role="status" aria-live="polite">✓ Gemt</span></div></div>
   <div class="meal-title">Tilføj det, du har spist</div>
   <div class="food-search"><input id="foodSearch" placeholder="Søg fx skyr, havregryn, banan"><button class="primary" id="searchFood">Søg</button></div>
   <div class="food-results" id="foodResults"><div class="food-empty">Søg efter en fødevare eller et mærkevareprodukt.</div></div>
@@ -199,6 +207,17 @@ function renderDaily(){
  });
  let total=daily.length;$("#counter").textContent=count+"/"+total;$("#dailyFill").style.width=(total?count/total*100:0)+"%";
 }
+const reminderKey="mr2-reminders";
+function getReminders(){return load(reminderKey,[])}
+function saveReminders(items){localStorage.setItem(reminderKey,JSON.stringify(items));renderReminders()}
+function renderReminders(){
+ const root=$("#reminderList"),items=getReminders();root.innerHTML="";
+ if(!items.length){root.innerHTML='<div class="empty">Ingen huskepunkter endnu.</div>';return}
+ items.forEach((item,i)=>{let row=document.createElement("label");row.className="reminder-row"+(item.done?" done":"");let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!item.done;cb.addEventListener("change",()=>{let a=getReminders();a[i].done=cb.checked;saveReminders(a)});let text=document.createElement("span");text.textContent=item.text;let del=document.createElement("button");del.className="mini";del.type="button";del.textContent="×";del.setAttribute("aria-label","Slet huskepunkt");del.addEventListener("click",e=>{e.preventDefault();let a=getReminders();a.splice(i,1);saveReminders(a)});row.append(cb,text,del);root.append(row)})
+}
+function addReminder(){let input=$("#reminderInput"),text=input.value.trim();if(!text)return;let items=getReminders();items.push({id:"r"+Date.now(),text,done:false});saveReminders(items);input.value="";input.focus()}
+$("#addReminder").addEventListener("click",addReminder);$("#reminderInput").addEventListener("keydown",e=>{if(e.key==="Enter")addReminder()});
+
 function renderWeekly(){
  let list=$("#weekList"),done=weekDone();list.innerHTML="";
  weekly.forEach(item=>{
@@ -252,7 +271,7 @@ $("#resetToday").addEventListener("click",()=>{let h=getHistory();h[dateKey()]={
 $("#period7").addEventListener("click",()=>{overviewDays=7;renderOverview()});
 $("#period30").addEventListener("click",()=>{overviewDays=30;renderOverview()});
 $("#exportData").addEventListener("click",()=>{
- const keys=["mr2-daily","mr2-weekly","mr2-history","mr2-weekdone","mr2-theme","mr2-nutrition","mr2-nutrition-goals"];
+ const keys=["mr2-daily","mr2-weekly","mr2-history","mr2-weekdone","mr2-theme","mr2-nutrition","mr2-nutrition-goals","mr2-reminders"];
  const backup={app:"Min rutine",version:1,createdAt:new Date().toISOString(),data:{}};
  keys.forEach(k=>{let v=localStorage.getItem(k);if(v!==null)backup.data[k]=JSON.parse(v)});
  const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
@@ -262,19 +281,18 @@ $("#importData").addEventListener("click",()=>$("#importFile").click());
 $("#importFile").addEventListener("change",async e=>{
  const file=e.target.files?.[0];if(!file)return;
  try{const backup=JSON.parse(await file.text());if(backup.app!=="Min rutine"||!backup.data)throw new Error("invalid");
- Object.entries(backup.data).forEach(([k,v])=>{if(["mr2-daily","mr2-weekly","mr2-history","mr2-weekdone","mr2-theme","mr2-nutrition","mr2-nutrition-goals"].includes(k))localStorage.setItem(k,JSON.stringify(v))});
+ Object.entries(backup.data).forEach(([k,v])=>{if(["mr2-daily","mr2-weekly","mr2-history","mr2-weekdone","mr2-theme","mr2-nutrition","mr2-nutrition-goals","mr2-reminders"].includes(k))localStorage.setItem(k,JSON.stringify(v))});
  daily=load("mr2-daily",clone(defaultsDaily));weekly=load("mr2-weekly",clone(defaultsWeek));renderDaily();renderWeekly();renderOverview();setTheme(load("mr2-theme","dark"));alert("Din backup er gendannet.");
  }catch(err){alert("Filen kunne ikke gendannes. Vælg en backup fra Min rutine.");}e.target.value="";
 });
 
-// Nutrition tracker: local daily log + Open Food Facts product lookup.
+// Nutrition tracker: USDA FoodData Central. Foundation/SR Legacy/FNDDS only; English descriptions.
 const nutritionKey="mr2-nutrition", goalsKey="mr2-nutrition-goals";
-let selectedFood=null, searchBusy=false;
+let searchBusy=false;
 const defaultGoals={kcal:2200,protein:130};
 function nutritionGoals(){return load(goalsKey,defaultGoals)}
 function nutritionLog(){let all=load(nutritionKey,{});return all[dateKey()]||[]}
 function saveNutritionLog(items){let all=load(nutritionKey,{});all[dateKey()]=items;localStorage.setItem(nutritionKey,JSON.stringify(all));renderNutrition()}
-function nval(obj,keys){for(const k of keys){let v=obj?.[k];if(v!==undefined&&v!==null&&v!==""&&Number.isFinite(Number(v)))return Number(v)}return 0}
 function renderNutrition(){
  const items=nutritionLog(),tot=items.reduce((a,x)=>({kcal:a.kcal+x.kcal,protein:a.protein+x.protein,carbs:a.carbs+x.carbs,fat:a.fat+x.fat}),{kcal:0,protein:0,carbs:0,fat:0});
  const goals=nutritionGoals();
@@ -286,35 +304,37 @@ function renderNutrition(){
  if(!items.length){log.innerHTML='<div class="food-empty">Intet registreret endnu i dag.</div>';return}
  items.forEach((item,i)=>{let row=document.createElement("div");row.className="food-entry";let info=document.createElement("div");info.className="entryinfo";let name=document.createElement("strong");name.textContent=item.name;let detail=document.createElement("small");detail.textContent=item.grams+" g";info.append(name,detail);let macros=document.createElement("div");macros.className="entrymacros";macros.textContent=Math.round(item.kcal)+" kcal · "+Math.round(item.protein)+" g protein";let del=document.createElement("button");del.className="remove";del.textContent="×";del.addEventListener("click",()=>{let a=nutritionLog();a.splice(i,1);saveNutritionLog(a)});row.append(info,macros,del);log.append(row)});
 }
+function nutrient(food,id){const n=(food.foodNutrients||[]).find(x=>Number(x.nutrientId??x.nutrient?.id)===id);return n&&Number.isFinite(Number(n.value??n.amount))?Number(n.value??n.amount):null}
+function validFood(food){
+ const kcal=nutrient(food,1008),protein=nutrient(food,1003),carbs=nutrient(food,1005),fat=nutrient(food,1004);
+ // Reject incomplete or implausible records rather than displaying guessed zeros.
+ if(!food.description||[kcal,protein,carbs,fat].some(v=>v===null))return null;
+ if(kcal<0||kcal>900||protein<0||protein>100||carbs<0||carbs>100||fat<0||fat>100)return null;
+ return {name:food.description,kcal,protein,carbs,fat,fdcId:food.fdcId};
+}
 async function searchFoods(){
- const q=$("#foodSearch").value.trim();if(!q||searchBusy)return;searchBusy=true;const root=$("#foodResults");root.innerHTML='<div class="food-empty">Søger i fødevaredatabasen…</div>';
+ const q=$("#foodSearch").value.trim();if(!q||searchBusy)return;searchBusy=true;const root=$("#foodResults");root.innerHTML='<div class="food-empty">Søger i USDA FoodData Central…</div>';
  try{
-  const url="https://world.openfoodfacts.org/cgi/search.pl?"+new URLSearchParams({search_terms:q,search_simple:"1",action:"process",json:"1",page_size:"8",fields:"product_name,brands,nutriments,code"});
-  const response=await fetch(url,{headers:{"Accept":"application/json"}});
-  if(!response.ok)throw new Error("Search failed");
-  const data=await response.json();root.innerHTML="";
-  const products=(data.products||[]).filter(p=>p.product_name&&p.nutriments);
-  if(!products.length){root.innerHTML='<div class="food-empty">Ingen resultater. Prøv et andet søgeord, eller brug manuel registrering senere.</div>';return}
-  products.forEach(product=>{
-   const n=product.nutriments||{},name=[product.product_name,product.brands].filter(Boolean).join(" · ");
-   const kcal=nval(n,["energy-kcal_100g"])||nval(n,["energy-kj_100g"])/4.184;
-   const protein=nval(n,["proteins_100g"]),carbs=nval(n,["carbohydrates_100g"]),fat=nval(n,["fat_100g"]);
-   const row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.style.minWidth="0";const title=document.createElement("strong");title.textContent=name;const sub=document.createElement("small");sub.textContent=`Pr. 100 g: ${Math.round(kcal)} kcal · ${protein} g protein`;info.append(title,sub);const btn=document.createElement("button");btn.className="primary";btn.textContent="Tilføj";btn.addEventListener("click",()=>addFoodPrompt({name,kcal,protein,carbs,fat}));row.append(info,btn);root.append(row);
+  const params=new URLSearchParams({api_key:"DEMO_KEY",query:q,pageSize:"20"});["Foundation","SR Legacy","Survey (FNDDS)"].forEach(t=>params.append("dataType",t));const url="https://api.nal.usda.gov/fdc/v1/foods/search?"+params;
+  const response=await fetch(url,{headers:{"Accept":"application/json"}});if(!response.ok)throw new Error("USDA search failed");
+  const data=await response.json(),seen=new Set(),products=(data.foods||[]).map(validFood).filter(x=>{if(!x||seen.has(x.name))return false;seen.add(x.name);return true}).slice(0,8);root.innerHTML="";
+  if(!products.length){root.innerHTML='<div class="food-empty">Ingen resultater med komplette og plausible næringsdata. Prøv et engelsk søgeord, fx “chicken breast”, “oats” eller “banana”.</div>';return}
+  products.forEach(food=>{
+   const row=document.createElement("div");row.className="food-result";const info=document.createElement("div");info.className="food-meta";const title=document.createElement("strong");title.textContent=food.name;const sub=document.createElement("small");sub.textContent=`USDA · pr. 100 g: ${Math.round(food.kcal)} kcal · ${food.protein} g protein`;const gramsWrap=document.createElement("label");gramsWrap.className="grams-control";gramsWrap.textContent="Mængde";const grams=document.createElement("input");grams.type="number";grams.min="1";grams.max="5000";grams.step="1";grams.value="100";grams.inputMode="numeric";grams.setAttribute("aria-label","Mængde i gram");const unit=document.createElement("span");unit.textContent="gram";gramsWrap.append(grams,unit);info.append(title,sub,gramsWrap);const btn=document.createElement("button");btn.className="primary";btn.textContent="Tilføj";btn.addEventListener("click",()=>addFood(food,grams.value));row.append(info,btn);root.append(row);
   });
- }catch(e){root.innerHTML='<div class="food-empty">Kunne ikke hente fødevarer lige nu. Kontrollér internetforbindelsen, eller prøv igen senere.</div>'}
+ }catch(e){root.innerHTML='<div class="food-empty">USDA-databasen kunne ikke kontaktes. Prøv igen senere.</div>'}
  finally{searchBusy=false}
 }
-function addFoodPrompt(food){
- const raw=prompt(`Hvor mange gram ${food.name} har du spist?`, "100");
- if(raw===null)return;const grams=Number(raw);if(!Number.isFinite(grams)||grams<=0){alert("Indtast en mængde i gram.");return}
- const factor=grams/100,items=nutritionLog();items.push({name:food.name,grams,kcal:food.kcal*factor,protein:food.protein*factor,carbs:food.carbs*factor,fat:food.fat*factor});
+function addFood(food,rawGrams){
+ const grams=Number(rawGrams);if(!Number.isFinite(grams)||grams<=0||grams>5000){alert("Indtast en mængde mellem 1 og 5000 gram.");return}
+ const factor=grams/100,items=nutritionLog();items.push({name:food.name,grams,kcal:food.kcal*factor,protein:food.protein*factor,carbs:food.carbs*factor,fat:food.fat*factor,source:"USDA FoodData Central",fdcId:food.fdcId});
  saveNutritionLog(items);$("#foodResults").innerHTML='<div class="food-empty">Tilføjet til dagens registrering.</div>';
 }
 $("#searchFood").addEventListener("click",searchFoods);$("#foodSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchFoods()});
-$("#saveGoals").addEventListener("click",()=>{let kcal=Number($("#kcalGoal").value),protein=Number($("#proteinGoal").value);if(kcal>0&&protein>0){localStorage.setItem(goalsKey,JSON.stringify({kcal,protein}));renderNutrition()}});
+$("#saveGoals").addEventListener("click",()=>{let kcal=Number($("#kcalGoal").value),protein=Number($("#proteinGoal").value),feedback=$("#goalFeedback");if(kcal>0&&protein>0){localStorage.setItem(goalsKey,JSON.stringify({kcal,protein}));renderNutrition();feedback.classList.add("show");feedback.textContent="✓ Mål gemt";setTimeout(()=>feedback.classList.remove("show"),2600)}else{feedback.classList.add("show");feedback.textContent="Indtast gyldige mål";setTimeout(()=>feedback.classList.remove("show"),2600)}});
 
 $("#today").textContent=new Intl.DateTimeFormat("da-DK",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
-setTheme(load("mr2-theme","dark"));renderDaily();renderWeekly();renderNutrition();renderOverview();
+setTheme(load("mr2-theme","dark"));renderDaily();renderReminders();renderWeekly();renderNutrition();renderOverview();
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js");
 </script>
 </body></html>
