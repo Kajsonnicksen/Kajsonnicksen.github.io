@@ -3,8 +3,8 @@
   "short_name": "Habit Ladder",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#080908",
-  "theme_color": "#080908",
+  "background_color": "#14201d",
+  "theme_color": "#14201d",
   "lang": "da",
   "icons": [
     {
@@ -15,3 +15,4 @@
     }
   ]
 }
+
