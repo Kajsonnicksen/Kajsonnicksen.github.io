@@ -30,7 +30,11 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .counter{color:var(--green);font-weight:800;font-size:20px}
 .progress{height:5px;background:var(--surface2);border-radius:9px;overflow:hidden;margin:0 0 13px}.fill{height:100%;background:var(--green);width:0%;transition:width .2s}
 .daily-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.group{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:11px 11px 7px;min-width:0}\n.group.kost{background:color-mix(in srgb,#b18b55 9%,var(--surface));border-color:color-mix(in srgb,#b18b55 35%,var(--line))}\n.group.kost h3{color:#c49b63}\n:root.light .group.kost{background:#f5eee3;border-color:#e4d3b7}\n:root.light .group.kost h3{color:#8c6737}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:11px 11px 7px;min-width:0}
+.group.kost{background:color-mix(in srgb,#b18b55 9%,var(--surface));border-color:color-mix(in srgb,#b18b55 35%,var(--line))}
+.group.kost h3{color:#c49b63}
+:root.light .group.kost{background:#f5eee3;border-color:#e4d3b7}
+:root.light .group.kost h3{color:#8c6737}
 .group h3{font-size:13px;color:var(--muted);font-weight:700;margin:0 0 5px;text-transform:uppercase;letter-spacing:.55px}
 .task{display:flex;align-items:center;gap:8px;min-height:38px;border-top:1px solid var(--line);font-size:13px;line-height:1.22;padding:5px 0}
 .task:first-of-type{border-top:0}
@@ -68,7 +72,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .modal-actions{display:flex;justify-content:space-between;gap:8px;margin-top:14px}.danger{color:#d86c6c;background:transparent;border:0;font-size:12px;padding:8px}
 .empty{color:var(--muted);font-size:12px;padding:9px 0}
 @media(min-width:650px){.app{padding:24px}.daily-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.task{font-size:14px;min-height:42px}.week-list{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:360px){.app{padding:12px}.task{font-size:12px;min-height:35px}.group{padding:9px}.daily-grid{gap:7px}.reminders{right:10px;bottom:calc(10px + env(safe-area-inset-bottom));width:164px;max-height:38vh}}
+@media(max-width:360px){.app{padding:12px}.task{font-size:12px;min-height:35px}.group{padding:9px}.daily-grid{gap:7px}}
 
 .nutrition-top{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
 .nutri-card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px}
@@ -87,34 +91,147 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .food-empty{font-size:12px;color:var(--muted);padding:12px 2px}.camera-panel{margin-top:14px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:13px}.camera-button{display:inline-flex;align-items:center;justify-content:center;margin:4px 0 8px;cursor:pointer}.camera-panel img{display:block;width:100%;max-height:240px;object-fit:cover;border-radius:10px;margin-top:8px}.camera-panel .food-empty{padding:6px 0}
 .food-result{align-items:flex-start}.food-result .food-meta{min-width:0;flex:1}.food-result .grams-control{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;color:var(--muted)}.food-result .grams-control input{width:76px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:7px;font-size:13px}.food-result button{align-self:center}
 .goal-feedback{font-size:11px;color:var(--green);font-weight:700;min-width:76px;text-align:right;opacity:0;transition:opacity .2s}.goal-feedback.show{opacity:1}
-.reminders{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:4;width:min(190px,46vw);max-height:42vh;overflow:auto;background:color-mix(in srgb,#7189c7 11%,var(--surface));border:1px solid color-mix(in srgb,#7189c7 42%,var(--line));border-radius:15px;padding:11px;box-shadow:0 12px 32px #0004}.reminders h3{font-size:13px;color:#9aaddf;font-weight:750;margin:0 0 6px;text-transform:uppercase;letter-spacing:.55px}:root.light .reminders{background:#edf1fa;border-color:#cbd5ec}:root.light .reminders h3{color:#536b9d}.reminders .reminder-row{border-top-color:color-mix(in srgb,#7189c7 22%,var(--line))}.reminders .reminder-add input{background:color-mix(in srgb,#7189c7 5%,var(--bg));border-color:color-mix(in srgb,#7189c7 28%,var(--line))}.reminders .reminder-row input:checked{background:#7189c7;border-color:#7189c7}.reminder-list{display:grid}.reminder-row{display:flex;align-items:center;gap:9px;min-height:39px;border-top:1px solid var(--line);padding:6px 0;font-size:13px}.reminder-row input{appearance:none;width:19px;height:19px;flex:0 0 19px;border:1.7px solid var(--muted);border-radius:50%;margin:0;display:grid;place-items:center}.reminder-row input:checked{background:var(--green);border-color:var(--green)}.reminder-row input:checked:after{content:"✓";font-size:12px;font-weight:900;color:white}.reminder-row span{flex:1;overflow-wrap:anywhere}.reminder-row.done span{color:var(--muted);text-decoration:line-through}.reminder-add{display:grid;gap:6px;margin-top:8px}.reminder-add button{width:100%;padding:7px}.reminder-add input{width:100%;font-size:12px;padding:8px}.reminders .reminder-row{font-size:12px;min-height:34px}.reminders .reminder-row input{width:17px;height:17px;flex-basis:17px}.reminder-add input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:9px;font-size:13px}.reminder-add button{white-space:nowrap}
+.group.reminders{background:color-mix(in srgb,#7189c7 11%,var(--surface));border-color:color-mix(in srgb,#7189c7 42%,var(--line))}.group.reminders h3{color:#9aaddf}:root.light .group.reminders{background:#edf1fa;border-color:#cbd5ec}:root.light .group.reminders h3{color:#536b9d}.group.reminders .reminder-row{border-top-color:color-mix(in srgb,#7189c7 22%,var(--line))}.group.reminders .reminder-add input{background:color-mix(in srgb,#7189c7 5%,var(--bg));border-color:color-mix(in srgb,#7189c7 28%,var(--line))}.group.reminders .reminder-row input:checked{background:#7189c7;border-color:#7189c7}.reminder-list{display:grid}.reminder-row{display:flex;align-items:center;gap:8px;min-height:38px;border-top:1px solid var(--line);padding:5px 0;font-size:13px;line-height:1.22}.reminder-row input{appearance:none;width:19px;height:19px;flex:0 0 19px;border:1.7px solid var(--muted);border-radius:50%;margin:0;display:grid;place-items:center}.reminder-row input:checked{background:#7189c7;border-color:#7189c7}.reminder-row input:checked:after{content:"✓";font-size:12px;font-weight:900;color:white}.reminder-row span{flex:1;overflow-wrap:anywhere}.reminder-row.done span{color:var(--muted);text-decoration:line-through}.reminder-add{display:grid;gap:6px;margin-top:8px}.reminder-add input{width:100%;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:9px;font-size:12px}.reminder-add button{width:100%;white-space:nowrap;padding:8px}
+
+/* Responsive safeguards: content grows naturally without covering neighboring cards. */
+.app,.view,.daily-grid,.week-list,.food-results,.food-log,.history,.group,.stat,.nutri-card{min-width:0;max-width:100%}
+.daily-grid{align-items:stretch;grid-auto-rows:minmax(min-content,auto)}
+.group{height:auto;align-self:stretch;overflow-wrap:anywhere}
+.group h3,.task span,.reminder-row span,.weekday,.workout,.purpose,.food-result strong,.food-entry strong,.food-empty{min-width:0;overflow-wrap:anywhere;word-break:normal}
+.task,.reminder-row{min-width:0;align-items:flex-start}
+.task input,.reminder-row input{margin-top:1px;flex-shrink:0}
+.task .mini,.reminder-row .mini{flex-shrink:0}
+.week-list{align-items:stretch;grid-auto-rows:minmax(min-content,auto)}
+.weekrow{min-width:0;grid-template-columns:minmax(58px,76px) minmax(0,1fr) 22px;align-items:start}
+.weekrow>*{min-width:0;overflow-wrap:anywhere}
+.food-result,.food-entry{min-width:0;align-items:flex-start}
+.food-result .food-meta,.food-entry .entryinfo{min-width:0;overflow-wrap:anywhere}
+.food-result button,.food-entry .remove{flex-shrink:0}
+.food-entry .entrymacros{white-space:normal;max-width:38%;overflow-wrap:anywhere}
+.food-search{min-width:0}.food-search input{width:0}
+.goal-edit>*{min-width:0;max-width:100%}
+.camera-panel,.camera-panel img{max-width:100%;min-width:0}
+.tabs{min-width:0}.tab{min-width:0;overflow-wrap:anywhere}
+@media(max-width:420px){
+ .app{padding-left:12px;padding-right:12px}
+ .daily-grid{gap:7px}
+ .group{padding:9px 9px 7px;border-radius:13px}
+ .task,.reminder-row{gap:6px;font-size:12px}
+ .task input,.reminder-row input{width:18px;height:18px;flex-basis:18px}
+ .weekrow{grid-template-columns:minmax(52px,64px) minmax(0,1fr) 20px;gap:7px;padding:9px}
+ .food-entry{flex-wrap:wrap}
+ .food-entry .entryinfo{flex:1 1 55%}
+ .food-entry .entrymacros{flex:1 1 100%;max-width:none;text-align:left;padding-left:0}
+ .food-result{flex-wrap:wrap}
+ .food-result .food-meta{flex:1 1 100%}
+ .food-result button{margin-left:auto}
+ .headline h2{font-size:18px}
+}
+@media(max-width:330px){
+ .app{padding-left:9px;padding-right:9px}
+ .daily-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .group{padding:8px 7px 6px}
+ .task,.reminder-row{font-size:11px}
+ .tab{font-size:12px;padding:9px 3px}
+ .brand h1{font-size:23px}
+}
+
+
+/* v13 visual system: consistent rhythm, hierarchy, states and accessible controls. */
+:root{
+ --radius-card:15px;
+ --radius-control:11px;
+ --space-card:12px;
+ --focus:color-mix(in srgb,var(--green) 72%,white);
+}
+html{scroll-behavior:smooth}
+body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.app{padding-top:max(16px,env(safe-area-inset-top));padding-bottom:max(28px,env(safe-area-inset-bottom))}
+.top{margin-bottom:16px}
+.brand h1{font-size:25px;letter-spacing:-.9px;line-height:1.1}
+.sub{letter-spacing:.01em}
+.tabs{position:relative;gap:3px;padding:4px;border:1px solid var(--line);box-shadow:inset 0 1px 0 #ffffff08}
+.tab{min-height:40px;transition:background .18s ease,color .18s ease,box-shadow .18s ease}
+.tab:focus-visible,.iconbtn:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+ outline:2px solid var(--focus);outline-offset:2px
+}
+.headline{min-height:30px;margin-bottom:11px}
+.headline h2{font-size:18px;font-weight:760;letter-spacing:-.45px}
+.progress{height:6px;margin-bottom:15px}
+.group,.stat,.history,.nutri-card,.weekrow,.food-result,.food-entry,.camera-panel{
+ border-radius:var(--radius-card);
+ box-shadow:0 1px 0 #ffffff05;
+}
+.group{padding:12px 12px 8px}
+.group h3{font-size:11px;letter-spacing:.8px;margin-bottom:7px}
+.task,.reminder-row{min-height:40px;line-height:1.35;padding:7px 0}
+.task input,.reminder-row input,.weekdone input{cursor:pointer}
+.task input:focus-visible,.reminder-row input:focus-visible,.weekdone input:focus-visible{outline-offset:3px}
+.addline{min-height:32px;font-weight:650;transition:color .15s ease}
+.addline:hover,.mini:hover{color:var(--text)}
+.group.reminders{background:color-mix(in srgb,#7189c7 10%,var(--surface));border-color:color-mix(in srgb,#7189c7 38%,var(--line))}
+.group.reminders h3{color:#9aaddf}
+:root.light .group.reminders{background:#edf1fa;border-color:#cbd5ec}
+:root.light .group.reminders h3{color:#536b9d}
+.weekrow{padding:12px;transition:border-color .15s ease,background .15s ease}
+.weekrow:active{background:var(--surface2)}
+.weekday{line-height:1.25}
+.workout{line-height:1.35}
+.purpose{line-height:1.35}
+.primary,.secondary{min-height:38px;transition:transform .12s ease,filter .12s ease,background .15s ease}
+.primary:active,.secondary:active,.iconbtn:active{transform:scale(.98)}
+.primary:hover{filter:brightness(1.06)}
+.secondary:hover,.iconbtn:hover{border-color:var(--muted)}
+.stat{padding:14px}
+.stat strong{line-height:1.1;margin-bottom:5px}
+.history{padding:14px}
+.daydot{width:min(30px,100%);height:auto;aspect-ratio:1}
+.food-search input,.field input,.field textarea,.field select,.goal-edit input,.reminder-add input{
+ min-height:42px;border-radius:var(--radius-control)
+}
+.food-result,.food-entry{padding:12px;line-height:1.35}
+.food-result strong,.food-entry strong{line-height:1.35}
+.nutri-card{padding:13px}
+.nutri-card strong{line-height:1.15;margin-bottom:4px}
+.camera-panel{padding:14px}
+.goal-feedback{transition:opacity .2s ease}
+.modal{padding:18px}
+.modal-head{position:sticky;top:-18px;background:var(--surface);padding:4px 0 10px;z-index:1}
+.empty,.food-empty{line-height:1.45}
+.bottomnote{line-height:1.5;max-width:65ch}
+@media(max-width:420px){
+ .brand h1{font-size:24px}
+ .group{padding:10px 10px 7px}
+ .task,.reminder-row{min-height:39px}
+ .tab{font-size:13px}
+ .bottomnote{font-size:10.5px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
  <header class="top">
   <div class="brand"><h1>Min rutine</h1><div class="sub" id="today"></div></div>
-  <div class="top-actions"><button class="iconbtn" id="themeBtn" aria-label="Skift tema">☼</button></div>
+  <div class="top-actions"><button class="iconbtn" type="button" id="themeBtn" aria-label="Skift tema">☼</button></div>
  </header>
- <nav class="tabs">
-  <button class="tab active" data-view="daily">Rutine</button>
-  <button class="tab" data-view="weekly">Uge</button>
-  <button class="tab" data-view="nutrition">Kost</button>
-  <button class="tab" data-view="overview">Overblik</button>
+ <nav class="tabs" aria-label="Hovednavigation">
+  <button class="tab active" type="button" data-view="daily" aria-current="page">Rutine</button>
+  <button class="tab" type="button" data-view="weekly">Uge</button>
+  <button class="tab" type="button" data-view="nutrition">Kost</button>
+  <button class="tab" type="button" data-view="overview">Overblik</button>
  </nav>
  <section class="view" id="dailyView">
   <div class="headline"><h2>I dag</h2><div class="counter" id="counter">0/8</div></div>
   <div class="progress"><div class="fill" id="dailyFill"></div></div>
   <div class="daily-grid" id="dailyGrid"></div>
-  <div class="reminders">
-   <h3>Huskeliste</h3>
-   <div class="reminder-list" id="reminderList"></div>
-   <div class="reminder-add"><input id="reminderInput" maxlength="100" placeholder="Fx vask tøj, køb ind…"><button class="secondary" id="addReminder">Tilføj</button></div>
-  </div>
   <div class="bottomnote">Små skridt tæller. Brug rutinen som støtte – ikke som et krav.</div>
  </section>
  <section class="view" id="weeklyView" hidden>
-  <div class="headline"><h2>Ugens træning</h2><button class="primary" id="addWeek">＋ Tilføj</button></div>
+  <div class="headline"><h2>Ugens træning</h2><button class="primary" type="button" id="addWeek">＋ Tilføj</button></div>
   <div class="week-list" id="weekList"></div>
   <div class="bottomnote">Tilpas planen efter energi og restitution.</div>
  </section>
@@ -127,9 +244,9 @@ button,input,textarea{font:inherit}button{cursor:pointer}
    <div class="nutri-card"><strong id="carbTotal">0 g</strong><span>Kulhydrat</span></div>
    <div class="nutri-card"><strong id="fatTotal">0 g</strong><span>Fedt</span></div>
   </div>
-  <div class="settings"><span>Dine daglige mål</span><div class="goal-edit"><label><input id="kcalGoal" type="number" min="0" step="50"> <small>kcal</small></label><label><input id="proteinGoal" type="number" min="0" step="5"> <small>protein g</small></label><button class="secondary" id="saveGoals">Gem</button><span class="goal-feedback" id="goalFeedback" role="status" aria-live="polite">✓ Gemt</span></div></div>
+  <div class="settings"><span>Dine daglige mål</span><div class="goal-edit"><label><input id="kcalGoal" type="number" min="0" step="50"> <small>kcal</small></label><label><input id="proteinGoal" type="number" min="0" step="5"> <small>protein g</small></label><button class="secondary" type="button" id="saveGoals">Gem</button><span class="goal-feedback" id="goalFeedback" role="status" aria-live="polite">✓ Gemt</span></div></div>
   <div class="meal-title">Tilføj det, du har spist</div>
-  <div class="food-search"><input id="foodSearch" placeholder="Søg fx skyr, havregryn, banan"><button class="primary" id="searchFood">Søg</button></div>
+  <div class="food-search"><input id="foodSearch" placeholder="Søg fx skyr, havregryn, banan"><button class="primary" type="button" id="searchFood">Søg</button></div>
   <div class="food-results" id="foodResults"><div class="food-empty">Søg efter en fødevare, ret eller et mærkevareprodukt på dansk eller engelsk.</div></div>
   <div class="camera-panel">
    <div class="meal-title">Tag et billede af din mad</div>
@@ -143,7 +260,7 @@ button,input,textarea{font:inherit}button{cursor:pointer}
   <div class="bottomnote">Næringsværdier er estimater fra fødevaredatabasen. Tjek emballagen ved mærkevarer.</div>
  </section>
  <section class="view" id="overviewView" hidden>
-  <div class="headline"><h2>Dit overblik</h2><div class="switch"><button id="period7" class="active">7 dage</button><button id="period30">30 dage</button></div></div>
+  <div class="headline"><h2>Dit overblik</h2><div class="switch"><button type="button" id="period7" class="active">7 dage</button><button type="button" id="period30">30 dage</button></div></div>
   <div class="stats">
    <div class="stat"><strong id="avgStat">0%</strong><span>Daglig rutine i snit</span></div>
    <div class="stat"><strong id="daysStat">0/7</strong><span>Dage med alle vaner</span></div>
@@ -151,17 +268,17 @@ button,input,textarea{font:inherit}button{cursor:pointer}
    <div class="stat"><strong id="streakStat">0</strong><span>Dages fuld rutine i træk</span></div>
   </div>
   <div class="history"><h3>Dag for dag</h3><div class="days" id="historyDays"></div></div>
-  <div class="settings"><span>Udseende</span><div class="switch"><button id="darkChoice">Dark</button><button id="lightChoice">Light</button></div></div>
-  <div class="settings"><span>Data gemmes lokalt på denne enhed</span><button class="secondary" id="resetToday">Nulstil i dag</button></div>
-  <div class="settings"><span>Pas på dine rutiner og din historik</span><div style="display:flex;gap:6px"><button class="secondary" id="exportData">Backup</button><button class="secondary" id="importData">Gendan</button><input id="importFile" type="file" accept="application/json" hidden></div></div>
+  <div class="settings"><span>Udseende</span><div class="switch"><button type="button" id="darkChoice">Dark</button><button type="button" id="lightChoice">Light</button></div></div>
+  <div class="settings"><span>Data gemmes lokalt på denne enhed</span><button class="secondary" type="button" id="resetToday">Nulstil i dag</button></div>
+  <div class="settings"><span>Pas på dine rutiner og din historik</span><div style="display:flex;gap:6px"><button class="secondary" type="button" id="exportData">Backup</button><button class="secondary" type="button" id="importData">Gendan</button><input id="importFile" type="file" accept="application/json" hidden></div></div>
   <div class="bottomnote">Tip: Lav en backup, før du skifter telefon eller rydder browserdata.</div>
  </section>
 </div>
 <div class="modal-back" id="modalBack">
  <div class="modal">
-  <div class="modal-head"><h3 id="modalTitle">Redigér</h3><button class="iconbtn" id="closeModal" aria-label="Luk">×</button></div>
+  <div class="modal-head"><h3 id="modalTitle">Redigér</h3><button class="iconbtn" type="button" id="closeModal" aria-label="Luk">×</button></div>
   <div id="modalFields"></div>
-  <div class="modal-actions"><button class="danger" id="deleteItem">Slet</button><button class="primary" id="saveItem">Gem</button></div>
+  <div class="modal-actions"><button class="danger" type="button" id="deleteItem">Slet</button><button class="primary" type="button" id="saveItem">Gem</button></div>
  </div>
 </div>
 <script>
@@ -212,18 +329,22 @@ function renderDaily(){
   });
   let add=document.createElement("button");add.className="addline";add.textContent="+ Tilføj vane";add.addEventListener("click",()=>openEditor("daily",null,group));card.append(add);grid.append(card);
  });
- let total=daily.length;$("#counter").textContent=count+"/"+total;$("#dailyFill").style.width=(total?count/total*100:0)+"%";
+ let total=daily.length;$("#counter").textContent=count+"/"+total;$("#dailyFill").style.width=(total?count/total*100:0)+"%";renderReminders();
 }
 const reminderKey="mr2-reminders";
 function getReminders(){return load(reminderKey,[])}
 function saveReminders(items){localStorage.setItem(reminderKey,JSON.stringify(items));renderReminders()}
 function renderReminders(){
- const root=$("#reminderList"),items=getReminders();root.innerHTML="";
- if(!items.length){root.innerHTML='<div class="empty">Ingen huskepunkter endnu.</div>';return}
- items.forEach((item,i)=>{let row=document.createElement("label");row.className="reminder-row"+(item.done?" done":"");let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!item.done;cb.addEventListener("change",()=>{let a=getReminders();a[i].done=cb.checked;saveReminders(a)});let text=document.createElement("span");text.textContent=item.text;let del=document.createElement("button");del.className="mini";del.type="button";del.textContent="×";del.setAttribute("aria-label","Slet huskepunkt");del.addEventListener("click",e=>{e.preventDefault();let a=getReminders();a.splice(i,1);saveReminders(a)});row.append(cb,text,del);root.append(row)})
+ const grid=$("#dailyGrid"),old=$("#reminderCard");if(old)old.remove();
+ const card=document.createElement("div");card.className="group reminders";card.id="reminderCard";
+ const heading=document.createElement("h3");heading.textContent="Huskeliste";card.append(heading);
+ const list=document.createElement("div");list.className="reminder-list";list.id="reminderList";card.append(list);
+ const items=getReminders();
+ if(!items.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="Ingen huskepunkter endnu.";list.append(empty)}
+ items.forEach((item,i)=>{let row=document.createElement("label");row.className="reminder-row"+(item.done?" done":"");let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!item.done;cb.addEventListener("change",()=>{let a=getReminders();a[i].done=cb.checked;saveReminders(a)});let text=document.createElement("span");text.textContent=item.text;let del=document.createElement("button");del.className="mini";del.type="button";del.textContent="×";del.setAttribute("aria-label","Slet huskepunkt");del.addEventListener("click",e=>{e.preventDefault();let a=getReminders();a.splice(i,1);saveReminders(a)});row.append(cb,text,del);list.append(row)});
+ const add=document.createElement("div");add.className="reminder-add";const input=document.createElement("input");input.id="reminderInput";input.maxLength=100;input.placeholder="Fx vask tøj, køb ind…";const button=document.createElement("button");button.className="secondary";button.id="addReminder";button.type="button";button.textContent="Tilføj";button.addEventListener("click",addReminder);input.addEventListener("keydown",e=>{if(e.key==="Enter")addReminder()});add.append(input,button);card.append(add);grid.append(card);
 }
-function addReminder(){let input=$("#reminderInput"),text=input.value.trim();if(!text)return;let items=getReminders();items.push({id:"r"+Date.now(),text,done:false});saveReminders(items);input.value="";input.focus()}
-$("#addReminder").addEventListener("click",addReminder);$("#reminderInput").addEventListener("keydown",e=>{if(e.key==="Enter")addReminder()});
+function addReminder(){let input=$("#reminderInput"),text=input.value.trim();if(!text)return;let items=getReminders();items.push({id:"r"+Date.now(),text,done:false});saveReminders(items);const next=$("#reminderInput");if(next)next.focus()}
 
 function renderWeekly(){
  let list=$("#weekList"),done=weekDone();list.innerHTML="";
