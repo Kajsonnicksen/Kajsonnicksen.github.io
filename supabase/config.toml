@@ -1,0 +1,3 @@
+[functions.analyze-food]
+verify_jwt = true
+
