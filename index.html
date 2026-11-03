@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 18725)
+Total output lines: 537
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -229,7 +232,7 @@ body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(-
  <section class="view" id="leaderboardView" hidden>
   <div class="headline"><div><h2>Leaderboard</h2><div class="sub">Build habits. Climb together.</div></div></div>
   <section class="leader-hero" id="leaderHero" aria-live="polite"><div><span class="leader-kicker" id="leaderHeroKicker">THIS WEEK</span><h3 id="leaderboardHeroTitle">The race is on</h3><p id="leaderboardHeroText">Complete habits to win the day and climb the ladder.</p></div><svg class="hero-icon" viewBox="0 0 72 72" fill="none" aria-hidden="true"><path d="M20 58V14M52 58V14M20 48H52M20 36H52M20 24H52" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M52 14V5M45 12L52 5L59 12" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></section>
-  <section class="week-card" aria-labelledby="weekTitle"><div class="week-head"><div><h3 id="weekTitle">This week</h3><p id="weekSubtitle">Daily winners</p></div><div class="leader-period-switch" aria-label="Leaderboard period"><button class="leader-period active" id="weekModeButton" type="button" aria-pressed="true">This week</button><button class="leader-period" id="monthModeButton" type="button" aria-pressed="false">Full month</button></div></div><div id="weekDaysCount" class="week-days-count">This week</div><div id="weekDays" class="week-chart" aria-label="Daily leaderboard winners for this week"></div><div class="week-legend" id="weekLegend" aria-label="Participants"></div><button class="week-detail-toggle" id="weekDetailToggle" type="button" aria-expanded="false" aria-controls="weekDetailPanel">＋ Full week overview</button><div class="week-detail-panel" id="weekDetailPanel" hidden><div class="week-detail-scroll" id="weekDetailTable"></div><p class="week-detail-note">Percentages compare completed habits with habits planned for that day. Days ahead are not counted yet.</p></div></section>
+  <section class="week-card" aria-labelledby="weekTitle"><div class="week-head"><div><h3 id="weekTitle">This week</h3><p id="weekSubtitle">Daily winners</p></div><div class="leader-period-switch" aria-label="Leaderboard period"><button class="leader-period active" id="weekModeButton" type="button" aria-pressed="true">This week</button><button class="leader-period" id="monthModeButton" type="button" aria-pressed="false">Full month</button></div></div><div id="weekDaysCount" class="week-days-count">This week</div><div id="weekDays" class="week-chart" aria-label="Daily leaderboard winners for this week"></div><div class="week-legend" id="weekLegend" aria-label="Participants"></div></section>
  </section> <section class="view" id="dailyView">
   <div class="headline"><h2>Today</h2><div class="counter" id="counter">0/0</div></div>
   <div class="progress"><div class="fill" id="dailyFill"></div></div>
@@ -260,49 +263,7 @@ body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(-
 </div>
 <div class="modal-back" id="modalBack">
  <div class="modal">
-  <div class="modal-head"><h3 id="modalTitle">Edit</h3><button class="iconbtn" type="button" id="closeModal" aria-label="Close">×</button></div>
-  <div id="modalFields"></div>
-  <div class="modal-actions"><button class="danger" type="button" id="deleteItem">Delete</button><button class="primary" type="button" id="saveItem">Save</button></div>
- </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase-config.js"></script>
-<script>
-const $=s=>document.querySelector(s), clone=x=>JSON.parse(JSON.stringify(x));
-const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
-let completionAudioContext=null;
-function playCompletionSound(){
- if(!load("habit-ladder-sounds",true))return;
- try{
-  const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)return;
-  completionAudioContext=completionAudioContext||new AudioContextClass();
-  if(completionAudioContext.state==="suspended")completionAudioContext.resume();
-  const now=completionAudioContext.currentTime;
-  [[880,0],[1174.66,.09]].forEach(([frequency,delay])=>{
-   const oscillator=completionAudioContext.createOscillator(),gain=completionAudioContext.createGain();
-   oscillator.type="sine";oscillator.frequency.setValueAtTime(frequency,now+delay);
-   gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(.13,now+delay+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+.24);
-   oscillator.connect(gain);gain.connect(completionAudioContext.destination);oscillator.start(now+delay);oscillator.stop(now+delay+.25);
-  });
- }catch(e){}
-}
-const supabaseConfig=window.MIN_RUTINE_SUPABASE||{};
-const supabaseClient=window.supabase?.createClient(supabaseConfig.url,supabaseConfig.publishableKey);
-let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],routineStreak=0,sessionUserLoadedId=null,sessionLoadingUserId=null,sessionLoadingPromise=null,reminderResetTimer=null;
-let activeEditor=null;
-const dateKey=(d=new Date())=>{let x=new Date(d);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,"0"),String(x.getDate()).padStart(2,"0")].join("-")};
-const mondayKey=()=>{let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return dateKey(d)};
-const getHistory=()=>historyCache;
-const getToday=()=>{let h=getHistory(),k=dateKey();if(!h[k])h[k]={done:{},weekDone:{}};return h[k]};
-async function persistRoutines(){
- if(!currentUser)return;
- for(let i=0;i<daily.length;i++){
-  const item=daily[i],row={id:item.id,user_id:currentUser.id,title:item.text,category:item.group,position:i};
-  const {error}=await supabaseClient.from("habits").upsert(row,{onConflict:"id"});if(error)throw error;
-  const old=allHabits.find(x=>x.id===item.id);if(old)Object.assign(old,row);else allHabits.push({...row,created_at:new Date().toISOString(),archived_at:null});
- }
- for(let i=0;i<weekly.length;i++){
-  const item=weekly[i],row={id:item.id,user_id:currentUser.id,weekday:weekdayNumber(item.day),title:item.training,details:item.purpose};
+  <div class="modal-head"><h3 id="modalTitle">Edit</h3><button class="iconbtn" type="button" …725 tokens truncated…[i],row={id:item.id,user_id:currentUser.id,weekday:weekdayNumber(item.day),title:item.training,details:item.purpose};
   const {error}=await supabaseClient.from("training_plans").upsert(row,{onConflict:"id"});if(error)throw error;
  }
 }
@@ -453,12 +414,6 @@ function renderDailyComparison(data,mode=leaderboardMode){
  const title=$("#leaderboardHeroTitle"),copy=$("#leaderboardHeroText"),hero=$("#leaderHero");hero.classList.remove("is-tied");
  if(!scored.length){title.textContent="The race is on";copy.textContent="Add habits to start earning day wins together.";$("#leaderHeroKicker").textContent=monthMode?"THIS MONTH":"THIS WEEK"}
  else{const top=Math.max(...members.map(n=>wins[n])),leaders=members.filter(n=>Math.abs(wins[n]-top)<.001),count=top.toFixed(top%1?1:0),period=monthMode?"month":"week";if(leaders.length===1){title.textContent=leaders[0]+" leads";copy.textContent=count+" day wins this "+period+". Keep climbing.";$("#leaderHeroKicker").textContent=monthMode?"MONTH LEADER":"WEEKLY LEADER"}else{title.textContent="It's a tie";copy.textContent=leaders.join(", ")+" are level with "+count+" day wins this "+period+".";$("#leaderHeroKicker").textContent="CLOSE RACE";hero.classList.add("is-tied")}}
- $("#weekDetailToggle").hidden=monthMode;$("#weekDetailPanel").hidden=monthMode||$("#weekDetailPanel").hidden;if(monthMode){$("#weekDetailToggle").setAttribute("aria-expanded","false");$("#weekDetailToggle").textContent="＋ Full week overview"}
- if(!monthMode){
-  const table=$("#weekDetailTable");table.innerHTML="";
-  if(!members.length){const empty=document.createElement("p");empty.className="week-detail-note";empty.textContent="No participants found.";table.append(empty)}
-  else{const t=document.createElement("table");t.className="week-detail-table";const thead=document.createElement("thead"),headRow=document.createElement("tr"),participantHead=document.createElement("th");participantHead.scope="col";participantHead.textContent="Participant";headRow.append(participantHead);for(const d of days){const th=document.createElement("th");th.scope="col";th.textContent=weekday.format(d.date);headRow.append(th)}thead.append(headRow);const tbody=document.createElement("tbody");for(const n of members){const tr=document.createElement("tr"),nameHead=document.createElement("th");nameHead.scope="row";const nameWrap=document.createElement("span");nameWrap.className="detail-name";const badge=document.createElement("span");badge.className="winner-avatar detail-avatar";badge.style.setProperty("--person-color",colors[n]);badge.textContent=Array.from(n.trim())[0]?.toUpperCase()||"?";const name=document.createElement("span");name.textContent=n;nameWrap.append(badge,name);nameHead.append(nameWrap);tr.append(nameHead);for(const d of days){const td=document.createElement("td"),x=byDate[d.key][n];if(d.date>today){td.className="future-cell";td.textContent="—"}else if(!x||!Number(x.total_habits)){td.textContent="—"}else{td.append(document.createTextNode(Math.round(Number(x.completion_percent)||0)+"%"));const small=document.createElement("small");small.textContent=Number(x.completed_habits)+"/"+Number(x.total_habits);td.append(small)}tr.append(td)}tbody.append(tr)}t.append(thead,tbody);table.append(t)}
- }
 }async function loadLeaderboard(){
  const hero=$("#leaderHero");hero.classList.remove("animate-in");void hero.offsetWidth;hero.classList.add("animate-in");const title=$("#leaderboardHeroTitle"),copy=$("#leaderboardHeroText");
  try{if(!supabaseClient||!currentUser)throw new Error("Sign in to view the leaderboard.");const {data:comps,error}=await supabaseClient.rpc("get_my_routine_competitions");if(error)throw error;if(!comps?.length){title.textContent="Competition not set up";copy.textContent="Join a competition to see who leads.";return}let result;if(leaderboardMode==="month"){const now=new Date(),start=new Date(now.getFullYear(),now.getMonth(),1);result=await supabaseClient.rpc("get_routine_daily_comparison_since",{p_competition_id:comps[0].competition_id,p_start_date:weekDateKey(start)})}else result=await supabaseClient.rpc("get_routine_daily_comparison",{p_competition_id:comps[0].competition_id});if(result.error)throw result.error;renderDailyComparison(result.data||[],leaderboardMode)}catch(e){title.textContent="Leaderboard unavailable";copy.textContent=e?.message||"Check your connection and try again.";console.error("Leaderboard load failed",e)}
