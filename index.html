@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 18725)
-Total output lines: 537
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -230,7 +227,7 @@ body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(-
   <button class="tab" type="button" data-view="leaderboard">Leaderboard</button>
  </nav>
  <section class="view" id="leaderboardView" hidden>
-  <div class="headline"><div><h2>Leaderboard</h2><div class="sub">Build habits. Climb together.</div></div></div>
+  <div class="headline"><h2>Leaderboard</h2></div>
   <section class="leader-hero" id="leaderHero" aria-live="polite"><div><span class="leader-kicker" id="leaderHeroKicker">THIS WEEK</span><h3 id="leaderboardHeroTitle">The race is on</h3><p id="leaderboardHeroText">Complete habits to win the day and climb the ladder.</p></div><svg class="hero-icon" viewBox="0 0 72 72" fill="none" aria-hidden="true"><path d="M20 58V14M52 58V14M20 48H52M20 36H52M20 24H52" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M52 14V5M45 12L52 5L59 12" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></section>
   <section class="week-card" aria-labelledby="weekTitle"><div class="week-head"><div><h3 id="weekTitle">This week</h3><p id="weekSubtitle">Daily winners</p></div><div class="leader-period-switch" aria-label="Leaderboard period"><button class="leader-period active" id="weekModeButton" type="button" aria-pressed="true">This week</button><button class="leader-period" id="monthModeButton" type="button" aria-pressed="false">Full month</button></div></div><div id="weekDaysCount" class="week-days-count">This week</div><div id="weekDays" class="week-chart" aria-label="Daily leaderboard winners for this week"></div><div class="week-legend" id="weekLegend" aria-label="Participants"></div></section>
  </section> <section class="view" id="dailyView">
@@ -263,7 +260,49 @@ body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(-
 </div>
 <div class="modal-back" id="modalBack">
  <div class="modal">
-  <div class="modal-head"><h3 id="modalTitle">Edit</h3><button class="iconbtn" type="button" …725 tokens truncated…[i],row={id:item.id,user_id:currentUser.id,weekday:weekdayNumber(item.day),title:item.training,details:item.purpose};
+  <div class="modal-head"><h3 id="modalTitle">Edit</h3><button class="iconbtn" type="button" id="closeModal" aria-label="Close">×</button></div>
+  <div id="modalFields"></div>
+  <div class="modal-actions"><button class="danger" type="button" id="deleteItem">Delete</button><button class="primary" type="button" id="saveItem">Save</button></div>
+ </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
+<script>
+const $=s=>document.querySelector(s), clone=x=>JSON.parse(JSON.stringify(x));
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+let completionAudioContext=null;
+function playCompletionSound(){
+ if(!load("habit-ladder-sounds",true))return;
+ try{
+  const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)return;
+  completionAudioContext=completionAudioContext||new AudioContextClass();
+  if(completionAudioContext.state==="suspended")completionAudioContext.resume();
+  const now=completionAudioContext.currentTime;
+  [[880,0],[1174.66,.09]].forEach(([frequency,delay])=>{
+   const oscillator=completionAudioContext.createOscillator(),gain=completionAudioContext.createGain();
+   oscillator.type="sine";oscillator.frequency.setValueAtTime(frequency,now+delay);
+   gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(.13,now+delay+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+.24);
+   oscillator.connect(gain);gain.connect(completionAudioContext.destination);oscillator.start(now+delay);oscillator.stop(now+delay+.25);
+  });
+ }catch(e){}
+}
+const supabaseConfig=window.MIN_RUTINE_SUPABASE||{};
+const supabaseClient=window.supabase?.createClient(supabaseConfig.url,supabaseConfig.publishableKey);
+let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],routineStreak=0,sessionUserLoadedId=null,sessionLoadingUserId=null,sessionLoadingPromise=null,reminderResetTimer=null;
+let activeEditor=null;
+const dateKey=(d=new Date())=>{let x=new Date(d);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,"0"),String(x.getDate()).padStart(2,"0")].join("-")};
+const mondayKey=()=>{let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return dateKey(d)};
+const getHistory=()=>historyCache;
+const getToday=()=>{let h=getHistory(),k=dateKey();if(!h[k])h[k]={done:{},weekDone:{}};return h[k]};
+async function persistRoutines(){
+ if(!currentUser)return;
+ for(let i=0;i<daily.length;i++){
+  const item=daily[i],row={id:item.id,user_id:currentUser.id,title:item.text,category:item.group,position:i};
+  const {error}=await supabaseClient.from("habits").upsert(row,{onConflict:"id"});if(error)throw error;
+  const old=allHabits.find(x=>x.id===item.id);if(old)Object.assign(old,row);else allHabits.push({...row,created_at:new Date().toISOString(),archived_at:null});
+ }
+ for(let i=0;i<weekly.length;i++){
+  const item=weekly[i],row={id:item.id,user_id:currentUser.id,weekday:weekdayNumber(item.day),title:item.training,details:item.purpose};
   const {error}=await supabaseClient.from("training_plans").upsert(row,{onConflict:"id"});if(error)throw error;
  }
 }
