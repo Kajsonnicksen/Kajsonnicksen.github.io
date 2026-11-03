@@ -25,6 +25,10 @@ button,input,textarea{font:inherit}button{cursor:pointer}
 .tab{flex:1;border:0;background:transparent;color:var(--muted);padding:10px 8px;border-radius:10px;font-size:14px;font-weight:650}
 .tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
 .view[hidden]{display:none!important}
+.app[hidden],.auth-screen[hidden]{display:none!important}
+.auth-screen{width:min(100% - 28px,420px);margin:12vh auto 0;padding:22px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.auth-screen h1{font-size:24px;margin:0 0 6px}.auth-screen p{color:var(--muted);font-size:13px;margin:0 0 16px}.auth-screen form{display:grid;gap:10px}.auth-screen label{display:grid;gap:5px;font-size:12px;color:var(--muted)}.auth-screen input{min-height:42px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:10px;padding:10px;font:inherit}.auth-status{min-height:18px;color:var(--muted);font-size:12px}.auth-status.error{color:#d86c6c}.account-email{font-size:11px;color:var(--muted);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.leaderboard{display:grid;gap:8px}.leaderboard-row{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:13px}.leaderboard-rank{color:var(--muted);font-weight:800}.leaderboard-row strong{font-size:14px}.leaderboard-percent{font-size:18px;font-weight:800;color:var(--green)}
 .headline{display:flex;justify-content:space-between;align-items:center;margin:3px 1px 10px}
 .headline h2{font-size:19px;letter-spacing:-.4px;margin:0}
 .counter{color:var(--green);font-weight:800;font-size:20px}
@@ -213,22 +217,38 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
 </style>
 </head>
 <body>
-<div class="app">
+<section class="auth-screen" id="authScreen">
+ <h1>Min rutine</h1>
+ <p>Log ind med den Supabase-bruger, du allerede har fået oprettet.</p>
+ <form id="loginForm">
+  <label>E-mail<input id="loginEmail" type="email" autocomplete="username" required></label>
+  <label>Adgangskode<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+  <button class="primary" type="submit" id="loginButton">Log ind</button>
+  <div class="auth-status" id="authStatus" role="status" aria-live="polite"></div>
+ </form>
+</section>
+<div class="app" id="appShell" hidden>
  <header class="top">
   <div class="brand"><h1>Min rutine</h1><div class="sub" id="today"></div></div>
-  <div class="top-actions"><button class="iconbtn" type="button" id="themeBtn" aria-label="Skift tema">☼</button></div>
+  <div class="top-actions"><span class="account-email" id="accountEmail"></span><button class="secondary" type="button" id="signOut">Log ud</button><button class="iconbtn" type="button" id="themeBtn" aria-label="Skift tema">☼</button></div>
  </header>
  <nav class="tabs" aria-label="Hovednavigation">
   <button class="tab active" type="button" data-view="daily" aria-current="page">Rutine</button>
   <button class="tab" type="button" data-view="weekly">Uge</button>
   <button class="tab" type="button" data-view="nutrition">Kost</button>
   <button class="tab" type="button" data-view="overview">Overblik</button>
+  <button class="tab" type="button" data-view="leaderboard">Rangliste</button>
  </nav>
  <section class="view" id="dailyView">
   <div class="headline"><h2>I dag</h2><div class="counter" id="counter">0/8</div></div>
   <div class="progress"><div class="fill" id="dailyFill"></div></div>
   <div class="daily-grid" id="dailyGrid"></div>
   <div class="bottomnote">Små skridt tæller. Brug rutinen som støtte – ikke som et krav.</div>
+ </section>
+ <section class="view" id="leaderboardView" hidden>
+  <div class="headline"><h2>Jeres konkurrence</h2><div class="switch"><button type="button" id="leaderboard7" class="active">7 dage</button><button type="button" id="leaderboard30">30 dage</button></div></div>
+  <div class="leaderboard" id="leaderboardRows"><div class="empty">Henter ranglisten…</div></div>
+  <div class="bottomnote">Kun gennemførelsesprocenten deles. Jeres rutiner, kost og mål forbliver private.</div>
  </section>
  <section class="view" id="weeklyView" hidden>
   <div class="headline"><h2>Ugens træning</h2><button class="primary" type="button" id="addWeek">＋ Tilføj</button></div>
@@ -269,7 +289,7 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
   </div>
   <div class="history"><h3>Dag for dag</h3><div class="days" id="historyDays"></div></div>
   <div class="settings"><span>Udseende</span><div class="switch"><button type="button" id="darkChoice">Dark</button><button type="button" id="lightChoice">Light</button></div></div>
-  <div class="settings"><span>Data gemmes lokalt på denne enhed</span><button class="secondary" type="button" id="resetToday">Nulstil i dag</button></div>
+  <div class="settings"><span>Data gemmes på din konto</span><button class="secondary" type="button" id="resetToday">Nulstil i dag</button></div>
   <div class="settings"><span>Pas på dine rutiner og din historik</span><div style="display:flex;gap:6px"><button class="secondary" type="button" id="exportData">Backup</button><button class="secondary" type="button" id="importData">Gendan</button><input id="importFile" type="file" accept="application/json" hidden></div></div>
   <div class="bottomnote">Tip: Lav en backup, før du skifter telefon eller rydder browserdata.</div>
  </section>
@@ -281,6 +301,8 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
   <div class="modal-actions"><button class="danger" type="button" id="deleteItem">Slet</button><button class="primary" type="button" id="saveItem">Gem</button></div>
  </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
 <script>
 const defaultsDaily=[
  {id:"d1",group:"Morgen",text:"15–20 minutters meditation"},
@@ -303,16 +325,35 @@ const defaultsWeek=[
 ];
 const $=s=>document.querySelector(s), clone=x=>JSON.parse(JSON.stringify(x));
 const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
-let daily=load("mr2-daily",clone(defaultsDaily)),weekly=load("mr2-weekly",clone(defaultsWeek));
+const supabaseConfig=window.MIN_RUTINE_SUPABASE||{};
+const supabaseClient=window.supabase?.createClient(supabaseConfig.url,supabaseConfig.publishableKey);
+let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],foodEntriesCache=[],nutritionGoalsCache={kcal:2200,protein:130},leaderboardDays=7;
 let activeEditor=null;
 const dateKey=(d=new Date())=>{let x=new Date(d);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,"0"),String(x.getDate()).padStart(2,"0")].join("-")};
 const mondayKey=()=>{let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return dateKey(d)};
-const getHistory=()=>load("mr2-history",{});
+const getHistory=()=>historyCache;
 const getToday=()=>{let h=getHistory(),k=dateKey();if(!h[k])h[k]={done:{},weekDone:{}};return h[k]};
-function persistRoutines(){localStorage.setItem("mr2-daily",JSON.stringify(daily));localStorage.setItem("mr2-weekly",JSON.stringify(weekly))}
-function saveToday(){let h=getHistory();h[dateKey()]=getToday();localStorage.setItem("mr2-history",JSON.stringify(h))}
+async function persistRoutines(){
+ if(!currentUser)return;
+ for(let i=0;i<daily.length;i++){
+  const item=daily[i],row={id:item.id,user_id:currentUser.id,title:item.text,category:item.group,position:i};
+  const {error}=await supabaseClient.from("habits").upsert(row,{onConflict:"id"});if(error)throw error;
+  const old=allHabits.find(x=>x.id===item.id);if(old)Object.assign(old,row);else allHabits.push({...row,created_at:new Date().toISOString(),archived_at:null});
+ }
+ for(let i=0;i<weekly.length;i++){
+  const item=weekly[i],row={id:item.id,user_id:currentUser.id,weekday:weekdayNumber(item.day),title:item.training,details:item.purpose};
+  const {error}=await supabaseClient.from("training_plans").upsert(row,{onConflict:"id"});if(error)throw error;
+ }
+}
 function dailyDone(){return getToday().done||{}}
-function weekDone(){let s=load("mr2-weekdone",{});return s[mondayKey()]||{}}
+function weekDone(){return weeklyDoneCache}
+function weekdayNumber(day){const i=["mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag"].indexOf(String(day).toLocaleLowerCase("da"));return i<0?1:i+1}
+function weekdayName(n){return ["Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"][Number(n)-1]||"Mandag"}
+async function saveHabitCheck(habitId,completed){
+ const checkDate=dateKey(),row={user_id:currentUser.id,habit_id:habitId,check_date:checkDate,completed};
+ const {error}=await supabaseClient.from("habit_checks").upsert(row,{onConflict:"user_id,habit_id,check_date"});if(error)throw error;
+ const h=getHistory();h[checkDate]=h[checkDate]||{done:{},weekDone:{}};h[checkDate].done=h[checkDate].done||{};if(completed)h[checkDate].done[habitId]=true;else delete h[checkDate].done[habitId];
+}
 function renderDaily(){
  let done=dailyDone(),grid=$("#dailyGrid"),count=0;grid.innerHTML="";
  ["Morgen","Dag","Aften","Kost","Andet"].forEach(group=>{
@@ -322,7 +363,7 @@ function renderDaily(){
   items.forEach(item=>{
    let row=document.createElement("label");row.className="task"+(done[item.id]?" done":"");
    let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!done[item.id];
-   cb.addEventListener("change",()=>{let h=getHistory();h[dateKey()].done=h[dateKey()].done||{};h[dateKey()].done[item.id]=cb.checked;localStorage.setItem("mr2-history",JSON.stringify(h));renderDaily();renderOverview()});
+   cb.addEventListener("change",async()=>{cb.disabled=true;try{await saveHabitCheck(item.id,cb.checked);renderDaily();renderOverview();if(document.querySelector('[data-view="leaderboard"].active'))loadLeaderboard()}catch(e){cb.checked=!cb.checked;alert("Afkrydsningen kunne ikke gemmes. Tjek internetforbindelsen.")}finally{cb.disabled=false}});
    let span=document.createElement("span");span.textContent=item.text;
    let edit=document.createElement("button");edit.className="mini";edit.type="button";edit.textContent="···";edit.setAttribute("aria-label","Redigér vane");edit.addEventListener("click",()=>openEditor("daily",item.id));
    row.append(cb,span,edit);card.append(row);if(done[item.id])count++;
@@ -332,8 +373,13 @@ function renderDaily(){
  let total=daily.length;$("#counter").textContent=count+"/"+total;$("#dailyFill").style.width=(total?count/total*100:0)+"%";renderReminders();
 }
 const reminderKey="mr2-reminders";
-function getReminders(){return load(reminderKey,[])}
-function saveReminders(items){localStorage.setItem(reminderKey,JSON.stringify(items));renderReminders()}
+function getReminders(){return remindersCache}
+async function saveReminders(items){
+ const old=remindersCache,newIds=new Set(items.map(x=>x.id));
+ for(const item of items){const {error}=await supabaseClient.from("reminders").upsert({id:item.id,user_id:currentUser.id,title:item.text,completed:!!item.done},{onConflict:"id"});if(error)throw error}
+ for(const item of old){if(!newIds.has(item.id)){const {error}=await supabaseClient.from("reminders").delete().eq("id",item.id).eq("user_id",currentUser.id);if(error)throw error}}
+ remindersCache=items;renderReminders();
+}
 function renderReminders(){
  const grid=$("#dailyGrid"),old=$("#reminderCard");if(old)old.remove();
  const card=document.createElement("div");card.className="group reminders";card.id="reminderCard";
@@ -341,10 +387,10 @@ function renderReminders(){
  const list=document.createElement("div");list.className="reminder-list";list.id="reminderList";card.append(list);
  const items=getReminders();
  if(!items.length){const empty=document.createElement("div");empty.className="empty";empty.textContent="Ingen huskepunkter endnu.";list.append(empty)}
- items.forEach((item,i)=>{let row=document.createElement("label");row.className="reminder-row"+(item.done?" done":"");let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!item.done;cb.addEventListener("change",()=>{let a=getReminders();a[i].done=cb.checked;saveReminders(a)});let text=document.createElement("span");text.textContent=item.text;let del=document.createElement("button");del.className="mini";del.type="button";del.textContent="×";del.setAttribute("aria-label","Slet huskepunkt");del.addEventListener("click",e=>{e.preventDefault();let a=getReminders();a.splice(i,1);saveReminders(a)});row.append(cb,text,del);list.append(row)});
+ items.forEach((item,i)=>{let row=document.createElement("label");row.className="reminder-row"+(item.done?" done":"");let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!item.done;cb.addEventListener("change",()=>{let a=getReminders().map(x=>({...x}));a[i].done=cb.checked;saveReminders(a).catch(()=>alert("Huskelisten kunne ikke gemmes."))});let text=document.createElement("span");text.textContent=item.text;let del=document.createElement("button");del.className="mini";del.type="button";del.textContent="×";del.setAttribute("aria-label","Slet huskepunkt");del.addEventListener("click",e=>{e.preventDefault();let a=[...getReminders()];a.splice(i,1);saveReminders(a).catch(()=>alert("Huskelisten kunne ikke opdateres."))});row.append(cb,text,del);list.append(row)});
  const add=document.createElement("div");add.className="reminder-add";const input=document.createElement("input");input.id="reminderInput";input.maxLength=100;input.placeholder="Fx vask tøj, køb ind…";const button=document.createElement("button");button.className="secondary";button.id="addReminder";button.type="button";button.textContent="Tilføj";button.addEventListener("click",addReminder);input.addEventListener("keydown",e=>{if(e.key==="Enter")addReminder()});add.append(input,button);card.append(add);grid.append(card);
 }
-function addReminder(){let input=$("#reminderInput"),text=input.value.trim();if(!text)return;let items=getReminders();items.push({id:"r"+Date.now(),text,done:false});saveReminders(items);const next=$("#reminderInput");if(next)next.focus()}
+async function addReminder(){let input=$("#reminderInput"),text=input.value.trim();if(!text)return;let items=[...getReminders(),{id:crypto.randomUUID(),text,done:false}];try{await saveReminders(items);const next=$("#reminderInput");if(next)next.focus()}catch(e){alert("Huskelisten kunne ikke gemmes.")}}
 
 function renderWeekly(){
  let list=$("#weekList"),done=weekDone();list.innerHTML="";
@@ -353,7 +399,7 @@ function renderWeekly(){
   let day=document.createElement("div");day.className="weekday";day.textContent=item.day;
   let info=document.createElement("div");info.innerHTML='<div class="workout"></div><div class="purpose"></div>';info.querySelector(".workout").textContent=item.training;info.querySelector(".purpose").textContent=item.purpose;
   let check=document.createElement("label");check.className="weekdone";let cb=document.createElement("input");cb.type="checkbox";cb.checked=!!done[item.id];
-  cb.addEventListener("change",()=>{let all=load("mr2-weekdone",{});all[mondayKey()]=all[mondayKey()]||{};all[mondayKey()][item.id]=cb.checked;localStorage.setItem("mr2-weekdone",JSON.stringify(all));renderOverview()});
+  cb.addEventListener("change",async()=>{cb.disabled=true;try{const row={user_id:currentUser.id,training_plan_id:item.id,week_start:mondayKey(),completed:cb.checked};const {error}=await supabaseClient.from("training_checks").upsert(row,{onConflict:"user_id,training_plan_id,week_start"});if(error)throw error;if(cb.checked)weeklyDoneCache[item.id]=true;else delete weeklyDoneCache[item.id];renderOverview()}catch(e){cb.checked=!cb.checked;alert("Træningen kunne ikke gemmes.")}finally{cb.disabled=false}});
   check.append(cb);row.append(day,info,check);row.addEventListener("click",e=>{if(e.target!==cb)openEditor("weekly",item.id)});list.append(row);
  });
 }
@@ -361,10 +407,10 @@ let overviewDays=7;
 function renderOverview(){
  let h=getHistory(),keys=[];for(let i=overviewDays-1;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);keys.push(dateKey(d))}
  let percentages=[],full=0,streak=0;
- keys.forEach(k=>{let n=daily.filter(x=>h[k]?.done?.[x.id]).length;let p=daily.length?n/daily.length:0;percentages.push(p);if(p===1)full++});
+ keys.forEach(k=>{let habits=allHabits.filter(x=>dateKey(new Date(x.created_at))<=k&&(!x.archived_at||dateKey(new Date(x.archived_at))>=k));let n=habits.filter(x=>h[k]?.done?.[x.id]).length;let p=habits.length?n/habits.length:0;percentages.push(p);if(habits.length&&p===1)full++});
  let avg=percentages.reduce((a,b)=>a+b,0)/Math.max(1,percentages.length);
  $("#avgStat").textContent=Math.round(avg*100)+"%";$("#daysStat").textContent=full+"/"+overviewDays;
- let wd=load("mr2-weekdone",{}),thisWeek=wd[mondayKey()]||{};$("#weekStat").textContent=weekly.filter(x=>thisWeek[x.id]).length;
+ $("#weekStat").textContent=weekly.filter(x=>weeklyDoneCache[x.id]).length;
  for(let i=keys.length-1;i>=0;i--){if(percentages[i]===1)streak++;else break}
  $("#streakStat").textContent=streak;
  $("#period7").classList.toggle("active",overviewDays===7);$("#period30").classList.toggle("active",overviewDays===30);
@@ -382,45 +428,70 @@ function openEditor(type,id,group){
  $("#deleteItem").style.visibility=item?"visible":"hidden";$("#modalBack").classList.add("open");
 }
 function closeEditor(){$("#modalBack").classList.remove("open");activeEditor=null}
-$("#saveItem").addEventListener("click",()=>{
+$("#saveItem").addEventListener("click",async()=>{
  if(!activeEditor)return;let {type,id,group}=activeEditor,fields=$("#modalFields");
  let val=n=>fields.querySelector(`[name="${n}"]`)?.value.trim()||"";
- if(type==="daily"){if(!val("text"))return;let obj={id:id||"d"+Date.now(),group:val("group"),text:val("text")};if(id)daily=daily.map(x=>x.id===id?obj:x);else daily.push(obj)}
- else{if(!val("day")||!val("training"))return;let obj={id:id||"w"+Date.now(),day:val("day"),training:val("training"),purpose:val("purpose")};if(id)weekly=weekly.map(x=>x.id===id?obj:x);else weekly.push(obj)}
- persistRoutines();closeEditor();renderDaily();renderWeekly();renderOverview();
+ const oldDaily=clone(daily),oldWeekly=clone(weekly);
+ if(type==="daily"){if(!val("text"))return;let obj={id:id||crypto.randomUUID(),group:val("group"),text:val("text")};if(id)daily=daily.map(x=>x.id===id?obj:x);else daily.push(obj)}
+ else{if(!val("day")||!val("training"))return;let day=val("day"),n=weekdayNumber(day);if(!/^(mandag|tirsdag|onsdag|torsdag|fredag|lørdag|søndag)$/i.test(day)){alert("Vælg en ugedag fra mandag til søndag.");return}let obj={id:id||crypto.randomUUID(),day:weekdayName(n),training:val("training"),purpose:val("purpose")};if(id)weekly=weekly.map(x=>x.id===id?obj:x);else weekly.push(obj)}
+ try{await persistRoutines();closeEditor();renderDaily();renderWeekly();renderOverview()}catch(e){daily=oldDaily;weekly=oldWeekly;alert("Ændringen kunne ikke gemmes. Tjek om app-integrationens SQL-query er kørt.")}
 });
-$("#deleteItem").addEventListener("click",()=>{if(!activeEditor?.id)return;let {type,id}=activeEditor;if(type==="daily")daily=daily.filter(x=>x.id!==id);else weekly=weekly.filter(x=>x.id!==id);persistRoutines();closeEditor();renderDaily();renderWeekly();renderOverview()});
+$("#deleteItem").addEventListener("click",async()=>{if(!activeEditor?.id)return;let {type,id}=activeEditor;try{if(type==="daily"){const {error}=await supabaseClient.from("habits").update({archived_at:new Date().toISOString()}).eq("id",id).eq("user_id",currentUser.id);if(error)throw error;const h=allHabits.find(x=>x.id===id);if(h)h.archived_at=new Date().toISOString();daily=daily.filter(x=>x.id!==id)}else{const {error}=await supabaseClient.from("training_plans").delete().eq("id",id).eq("user_id",currentUser.id);if(error)throw error;weekly=weekly.filter(x=>x.id!==id);delete weeklyDoneCache[id]}closeEditor();renderDaily();renderWeekly();renderOverview()}catch(e){alert("Elementet kunne ikke slettes eller arkiveres.")}});
 $("#closeModal").addEventListener("click",closeEditor);$("#modalBack").addEventListener("click",e=>{if(e.target===$("#modalBack"))closeEditor()});
 $("#addWeek").addEventListener("click",()=>openEditor("weekly",null));
 function setTheme(t){document.documentElement.classList.toggle("light",t==="light");localStorage.setItem("mr2-theme",t);$("#darkChoice").classList.toggle("active",t==="dark");$("#lightChoice").classList.toggle("active",t==="light");$("#themeBtn").textContent=t==="dark"?"☼":"☾";document.querySelector('meta[name="theme-color"]').content=t==="dark"?"#080908":"#f4f5f1"}
 $("#themeBtn").addEventListener("click",()=>setTheme(document.documentElement.classList.contains("light")?"dark":"light"));$("#darkChoice").addEventListener("click",()=>setTheme("dark"));$("#lightChoice").addEventListener("click",()=>setTheme("light"));
-document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));["daily","weekly","nutrition","overview"].forEach(v=>$("#"+v+"View").hidden=v!==b.dataset.view)}));
-$("#resetToday").addEventListener("click",()=>{let h=getHistory();h[dateKey()]={done:{},weekDone:{}};localStorage.setItem("mr2-history",JSON.stringify(h));renderDaily();renderOverview()});
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));["daily","weekly","nutrition","overview","leaderboard"].forEach(v=>$("#"+v+"View").hidden=v!==b.dataset.view);if(b.dataset.view==="leaderboard")loadLeaderboard()}));
+$("#resetToday").addEventListener("click",async()=>{const {error}=await supabaseClient.from("habit_checks").delete().eq("user_id",currentUser.id).eq("check_date",dateKey());if(error){alert("Dagen kunne ikke nulstilles.");return}historyCache[dateKey()]={done:{},weekDone:{}};renderDaily();renderOverview();loadLeaderboard()});
 $("#period7").addEventListener("click",()=>{overviewDays=7;renderOverview()});
 $("#period30").addEventListener("click",()=>{overviewDays=30;renderOverview()});
 $("#exportData").addEventListener("click",()=>{
- const keys=["mr2-daily","mr2-weekly","mr2-history","mr2-weekdone","mr2-theme","mr2-nutrition","mr2-nutrition-goals","mr2-reminders"];
- const backup={app:"Min rutine",version:1,createdAt:new Date().toISOString(),data:{}};
- keys.forEach(k=>{let v=localStorage.getItem(k);if(v!==null)backup.data[k]=JSON.parse(v)});
+ const backup={app:"Min rutine",version:2,createdAt:new Date().toISOString(),data:{habits:allHabits,trainingPlans:weekly,history:historyCache,weeklyDone:weeklyDoneCache,reminders:remindersCache,foodEntries:foodEntriesCache,nutritionGoals:nutritionGoalsCache,theme:load("mr2-theme","dark")}};
  const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="min-rutine-backup.json";a.click();URL.revokeObjectURL(url);
 });
 $("#importData").addEventListener("click",()=>$("#importFile").click());
 $("#importFile").addEventListener("change",async e=>{
  const file=e.target.files?.[0];if(!file)return;
- try{const backup=JSON.parse(await file.text());if(backup.app!=="Min rutine"||!backup.data)throw new Error("invalid");
- Object.entries(backup.data).forEach(([k,v])=>{if(["mr2-daily","mr2-weekly","mr2-history","mr2-weekdone","mr2-theme","mr2-nutrition","mr2-nutrition-goals","mr2-reminders"].includes(k))localStorage.setItem(k,JSON.stringify(v))});
- daily=load("mr2-daily",clone(defaultsDaily));weekly=load("mr2-weekly",clone(defaultsWeek));renderDaily();renderWeekly();renderOverview();setTheme(load("mr2-theme","dark"));alert("Din backup er gendannet.");
- }catch(err){alert("Filen kunne ikke gendannes. Vælg en backup fra Min rutine.");}e.target.value="";
+ try{
+  const backup=JSON.parse(await file.text());if(backup.app!=="Min rutine"||!backup.data)throw new Error("invalid");const d=backup.data;
+  if(backup.version===2){
+   const habitRows=(d.habits||[]).map(x=>({id:x.id,user_id:currentUser.id,title:x.title,category:x.category,position:x.position,created_at:x.created_at,archived_at:x.archived_at}));if(habitRows.length){const {error}=await supabaseClient.from("habits").upsert(habitRows,{onConflict:"id"});if(error)throw error}
+   const planRows=(d.trainingPlans||[]).map(x=>({id:x.id,user_id:currentUser.id,weekday:weekdayNumber(x.day),title:x.training,details:x.purpose}));if(planRows.length){const {error}=await supabaseClient.from("training_plans").upsert(planRows,{onConflict:"id"});if(error)throw error}
+   const checkRows=[];for(const [day,value] of Object.entries(d.history||{}))for(const id of Object.keys(value.done||{}))checkRows.push({user_id:currentUser.id,habit_id:id,check_date:day,completed:true});if(checkRows.length){const {error}=await supabaseClient.from("habit_checks").upsert(checkRows,{onConflict:"user_id,habit_id,check_date"});if(error)throw error}
+   const reminderRows=(d.reminders||[]).map(x=>({id:x.id,user_id:currentUser.id,title:x.text,completed:!!x.done}));if(reminderRows.length){const {error}=await supabaseClient.from("reminders").upsert(reminderRows,{onConflict:"id"});if(error)throw error}
+   const foodRows=(d.foodEntries||[]).map(x=>({id:x.id,user_id:currentUser.id,food_name:x.name,amount_grams:x.grams,calories:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat,entry_date:dateKey()}));if(foodRows.length){const {error}=await supabaseClient.from("food_entries").upsert(foodRows,{onConflict:"id"});if(error)throw error}
+   if(d.nutritionGoals){const {error}=await supabaseClient.from("nutrition_goals").upsert({user_id:currentUser.id,calorie_goal:d.nutritionGoals.kcal,protein_goal:d.nutritionGoals.protein},{onConflict:"user_id"});if(error)throw error}
+   const weeklyChecks=Object.keys(d.weeklyDone||{}).filter(id=>d.weeklyDone[id]).map(id=>({user_id:currentUser.id,training_plan_id:id,week_start:mondayKey(),completed:true}));if(weeklyChecks.length){const {error}=await supabaseClient.from("training_checks").upsert(weeklyChecks,{onConflict:"user_id,training_plan_id,week_start"});if(error)throw error}
+   if(d.theme)setTheme(d.theme);
+  }else if(backup.version===1){
+   const oldHabits=d["mr2-daily"]||[],oldPlans=d["mr2-weekly"]||[],habitIds=new Map(),planIds=new Map(),oldDays=Object.keys(d["mr2-history"]||{}).sort(),legacyStart=oldDays[0]||dateKey();
+   const habitRows=oldHabits.map((x,i)=>{const id=crypto.randomUUID();habitIds.set(x.id,id);return{id,user_id:currentUser.id,title:x.text,category:x.group,position:i,created_at:new Date(legacyStart+"T12:00:00").toISOString()}});
+   const planRows=oldPlans.map(x=>{const id=crypto.randomUUID();planIds.set(x.id,id);return{id,user_id:currentUser.id,weekday:weekdayNumber(x.day),title:x.training,details:x.purpose}});
+   if(habitRows.length){const {error}=await supabaseClient.from("habits").insert(habitRows);if(error)throw error}if(planRows.length){const {error}=await supabaseClient.from("training_plans").insert(planRows);if(error)throw error}
+   const checkRows=[];for(const [day,value] of Object.entries(d["mr2-history"]||{}))for(const oldId of Object.keys(value.done||{}))if(habitIds.has(oldId))checkRows.push({user_id:currentUser.id,habit_id:habitIds.get(oldId),check_date:day,completed:true});if(checkRows.length){const {error}=await supabaseClient.from("habit_checks").upsert(checkRows,{onConflict:"user_id,habit_id,check_date"});if(error)throw error}
+   const reminderRows=(d["mr2-reminders"]||[]).map(x=>({id:crypto.randomUUID(),user_id:currentUser.id,title:x.text,completed:!!x.done}));if(reminderRows.length){const {error}=await supabaseClient.from("reminders").insert(reminderRows);if(error)throw error}
+   const foods=[];for(const [day,items] of Object.entries(d["mr2-nutrition"]||{}))for(const x of items)foods.push({id:crypto.randomUUID(),user_id:currentUser.id,food_name:x.name,amount_grams:x.grams,calories:x.kcal,protein:x.protein,carbs:x.carbs,fat:x.fat,entry_date:day});if(foods.length){const {error}=await supabaseClient.from("food_entries").insert(foods);if(error)throw error}
+   const goals=d["mr2-nutrition-goals"]||defaultGoals;const {error:goalError}=await supabaseClient.from("nutrition_goals").upsert({user_id:currentUser.id,calorie_goal:goals.kcal,protein_goal:goals.protein},{onConflict:"user_id"});if(goalError)throw goalError;
+   const weekChecks=[];for(const [week,done] of Object.entries(d["mr2-weekdone"]||{}))for(const oldId of Object.keys(done||{}))if(done[oldId]&&planIds.has(oldId))weekChecks.push({user_id:currentUser.id,training_plan_id:planIds.get(oldId),week_start:week,completed:true});if(weekChecks.length){const {error}=await supabaseClient.from("training_checks").upsert(weekChecks,{onConflict:"user_id,training_plan_id,week_start"});if(error)throw error}
+   if(d["mr2-theme"])setTheme(d["mr2-theme"]);
+  }else throw new Error("unsupported-version");
+  await loadCloudData();alert("Backup indlæst på din Supabase-konto.");
+ }catch(err){alert("Backup kunne ikke indlæses. Kontrollér filen og at app-integrationens SQL-query er kørt.");}e.target.value="";
 });
 
 // Nutrition tracker: USDA FoodData Central + Open Food Facts. Search accepts Danish and English.
 const nutritionKey="mr2-nutrition", goalsKey="mr2-nutrition-goals";
 let searchBusy=false;
 const defaultGoals={kcal:2200,protein:130};
-function nutritionGoals(){return load(goalsKey,defaultGoals)}
-function nutritionLog(){let all=load(nutritionKey,{});return all[dateKey()]||[]}
-function saveNutritionLog(items){let all=load(nutritionKey,{});all[dateKey()]=items;localStorage.setItem(nutritionKey,JSON.stringify(all));renderNutrition()}
+function nutritionGoals(){return nutritionGoalsCache}
+function nutritionLog(){return foodEntriesCache}
+async function saveNutritionLog(items){
+ const nextIds=new Set(items.map(x=>x.id));
+ for(const old of foodEntriesCache){if(!nextIds.has(old.id)){const {error}=await supabaseClient.from("food_entries").delete().eq("id",old.id).eq("user_id",currentUser.id);if(error)throw error}}
+ for(const item of items){const row={id:item.id,user_id:currentUser.id,food_name:item.name,amount_grams:item.grams,calories:item.kcal,protein:item.protein,carbs:item.carbs,fat:item.fat,entry_date:dateKey()};const {error}=await supabaseClient.from("food_entries").upsert(row,{onConflict:"id"});if(error)throw error}
+ foodEntriesCache=items;renderNutrition();
+}
 function renderNutrition(){
  const items=nutritionLog(),tot=items.reduce((a,x)=>({kcal:a.kcal+x.kcal,protein:a.protein+x.protein,carbs:a.carbs+x.carbs,fat:a.fat+x.fat}),{kcal:0,protein:0,carbs:0,fat:0});
  const goals=nutritionGoals();
@@ -430,7 +501,7 @@ function renderNutrition(){
  $("#nutritionDate").textContent=new Intl.DateTimeFormat("da-DK",{day:"numeric",month:"short"}).format(new Date());
  const log=$("#foodLog");log.innerHTML="";
  if(!items.length){log.innerHTML='<div class="food-empty">Intet registreret endnu i dag.</div>';return}
- items.forEach((item,i)=>{let row=document.createElement("div");row.className="food-entry";let info=document.createElement("div");info.className="entryinfo";let name=document.createElement("strong");name.textContent=item.name;let detail=document.createElement("small");detail.textContent=item.grams+" g";info.append(name,detail);let macros=document.createElement("div");macros.className="entrymacros";macros.textContent=Math.round(item.kcal)+" kcal · "+Math.round(item.protein)+" g protein";let del=document.createElement("button");del.className="remove";del.textContent="×";del.addEventListener("click",()=>{let a=nutritionLog();a.splice(i,1);saveNutritionLog(a)});row.append(info,macros,del);log.append(row)});
+ items.forEach((item,i)=>{let row=document.createElement("div");row.className="food-entry";let info=document.createElement("div");info.className="entryinfo";let name=document.createElement("strong");name.textContent=item.name;let detail=document.createElement("small");detail.textContent=item.grams+" g";info.append(name,detail);let macros=document.createElement("div");macros.className="entrymacros";macros.textContent=Math.round(item.kcal)+" kcal · "+Math.round(item.protein)+" g protein";let del=document.createElement("button");del.className="remove";del.textContent="×";del.addEventListener("click",()=>{let a=[...nutritionLog()];a.splice(i,1);saveNutritionLog(a).catch(()=>alert("Madregistreringen kunne ikke opdateres."))});row.append(info,macros,del);log.append(row)});
 }
 const danishFoodTerms={"kyllingebryst":"chicken breast","kylling":"chicken","havregryn":"oats","havre":"oats","banan":"banana","æg":"egg","aeg":"egg","skyr":"skyr","hytteost":"cottage cheese","kartoffel":"potato","kartofler":"potatoes","ris":"rice","laks":"salmon","oksekød":"beef","svinekød":"pork","rugbrød":"rye bread","brød":"bread","mælk":"milk","ost":"cheese","yoghurt":"yogurt","græsk yoghurt":"greek yogurt","pasta":"pasta","lasagne":"lasagna","frikadeller":"meatballs","kødsovs":"bolognese sauce","havregrød":"oatmeal","risengrød":"rice pudding","kylling i karry":"chicken curry","smørrebrød":"open sandwich","pizza":"pizza","burger":"burger","suppe":"soup","salat":"salad","havremælk":"oat milk","mandler":"almonds","jordbær":"strawberries","blåbær":"blueberries","avocado":"avocado","tun":"tuna","rejer":"shrimp","broccoli":"broccoli","gulerod":"carrot","tomat":"tomato","agurk":"cucumber","bønner":"beans","linser":"lentils"};
 function translatedQueries(q){let low=q.toLocaleLowerCase("da");let terms=[q];for(const [da,en] of Object.entries(danishFoodTerms)){if(low.includes(da))terms.push(low.replace(da,en))}return [...new Set(terms)].slice(0,3)}
@@ -451,18 +522,70 @@ async function searchFoods(){
 }
 function addFood(food,rawGrams){
  const grams=Number(rawGrams);if(!Number.isFinite(grams)||grams<=0||grams>5000){alert("Indtast en mængde mellem 1 og 5000 gram.");return}
- const factor=grams/100,items=nutritionLog();items.push({name:food.name,grams,kcal:food.kcal*factor,protein:food.protein*factor,carbs:food.carbs*factor,fat:food.fat*factor,source:food.source||"Fødevaredatabase",fdcId:food.fdcId,barcode:food.barcode});
- saveNutritionLog(items);$("#foodResults").innerHTML='<div class="food-empty">Tilføjet til dagens registrering.</div>';
+ const factor=grams/100,items=nutritionLog();items.push({id:crypto.randomUUID(),name:food.name,grams,kcal:food.kcal*factor,protein:food.protein*factor,carbs:food.carbs*factor,fat:food.fat*factor,source:food.source||"Fødevaredatabase",fdcId:food.fdcId,barcode:food.barcode});
+ saveNutritionLog(items).then(()=>{$("#foodResults").innerHTML='<div class="food-empty">Tilføjet til dagens registrering.</div>'}).catch(()=>alert("Fødevare kunne ikke gemmes."));
 }
 
 const foodPhotoInput=$("#foodPhoto");
 foodPhotoInput.addEventListener("change",()=>{const file=foodPhotoInput.files?.[0];if(!file)return;const preview=$("#foodPhotoPreview");if(preview.dataset.url)URL.revokeObjectURL(preview.dataset.url);const url=URL.createObjectURL(file);preview.src=url;preview.dataset.url=url;preview.hidden=false;$("#photoStatus").textContent="Billedet er klar. Automatisk identifikation er endnu ikke aktiveret; det kræver en sikker AI-backend, så billedet ikke sendes til en ubeskyttet tredjepart.";});
 
 $("#searchFood").addEventListener("click",searchFoods);$("#foodSearch").addEventListener("keydown",e=>{if(e.key==="Enter")searchFoods()});
-$("#saveGoals").addEventListener("click",()=>{let kcal=Number($("#kcalGoal").value),protein=Number($("#proteinGoal").value),feedback=$("#goalFeedback");if(kcal>0&&protein>0){localStorage.setItem(goalsKey,JSON.stringify({kcal,protein}));renderNutrition();feedback.classList.add("show");feedback.textContent="✓ Mål gemt";setTimeout(()=>feedback.classList.remove("show"),2600)}else{feedback.classList.add("show");feedback.textContent="Indtast gyldige mål";setTimeout(()=>feedback.classList.remove("show"),2600)}});
+$("#saveGoals").addEventListener("click",async()=>{let kcal=Number($("#kcalGoal").value),protein=Number($("#proteinGoal").value),feedback=$("#goalFeedback");if(kcal>0&&protein>0){const {error}=await supabaseClient.from("nutrition_goals").upsert({user_id:currentUser.id,calorie_goal:kcal,protein_goal:protein},{onConflict:"user_id"});if(error){feedback.classList.add("show");feedback.textContent="Kunne ikke gemme";return}nutritionGoalsCache={kcal,protein};renderNutrition();feedback.classList.add("show");feedback.textContent="✓ Mål gemt";setTimeout(()=>feedback.classList.remove("show"),2600)}else{feedback.classList.add("show");feedback.textContent="Indtast gyldige mål";setTimeout(()=>feedback.classList.remove("show"),2600)}});
 
-$("#today").textContent=new Intl.DateTimeFormat("da-DK",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
-setTheme(load("mr2-theme","dark"));renderDaily();renderReminders();renderWeekly();renderNutrition();renderOverview();
+function showAuthMessage(message,isError=false){const el=$("#authStatus");el.textContent=message||"";el.classList.toggle("error",!!isError)}
+async function loadRows(query){const {data,error}=await query;if(error)throw error;return data||[]}
+async function loadCloudData(){
+ const {data:{user},error:authError}=await supabaseClient.auth.getUser();if(authError)throw authError;currentUser=user;
+ let habitRows=await loadRows(supabaseClient.from("habits").select("id,user_id,title,category,position,created_at,archived_at").eq("user_id",user.id).order("position"));
+ if(!habitRows.length){const seed=defaultsDaily.map((x,i)=>({user_id:user.id,title:x.text,category:x.group,position:i}));const {error}=await supabaseClient.from("habits").insert(seed);if(error)throw error;habitRows=await loadRows(supabaseClient.from("habits").select("id,user_id,title,category,position,created_at,archived_at").eq("user_id",user.id).order("position"))}
+ allHabits=habitRows;daily=habitRows.filter(x=>!x.archived_at).map(x=>({id:x.id,group:x.category,text:x.title}));
+ let planRows=await loadRows(supabaseClient.from("training_plans").select("id,user_id,weekday,title,details,created_at").eq("user_id",user.id).order("weekday"));
+ if(!planRows.length){const seed=defaultsWeek.map(x=>({user_id:user.id,weekday:weekdayNumber(x.day),title:x.training,details:x.purpose}));const {error}=await supabaseClient.from("training_plans").insert(seed);if(error)throw error;planRows=await loadRows(supabaseClient.from("training_plans").select("id,user_id,weekday,title,details,created_at").eq("user_id",user.id).order("weekday"))}
+ weekly=planRows.map(x=>({id:x.id,day:weekdayName(x.weekday),training:x.title,purpose:x.details||""}));
+ const start=new Date();start.setDate(start.getDate()-29);const startKey=dateKey(start);
+ const [checkRows,weekRows,reminderRows,foodRows,goalRows]=await Promise.all([
+  loadRows(supabaseClient.from("habit_checks").select("habit_id,check_date,completed").eq("user_id",user.id).gte("check_date",startKey)),
+  loadRows(supabaseClient.from("training_checks").select("training_plan_id,completed").eq("user_id",user.id).eq("week_start",mondayKey())),
+  loadRows(supabaseClient.from("reminders").select("id,title,completed,created_at").eq("user_id",user.id).order("created_at")),
+  loadRows(supabaseClient.from("food_entries").select("id,food_name,amount_grams,calories,protein,carbs,fat,entry_date").eq("user_id",user.id).eq("entry_date",dateKey()).order("created_at")),
+  loadRows(supabaseClient.from("nutrition_goals").select("calorie_goal,protein_goal").eq("user_id",user.id).limit(1))
+ ]);
+ historyCache={};for(const row of checkRows){if(!historyCache[row.check_date])historyCache[row.check_date]={done:{},weekDone:{}};if(row.completed)historyCache[row.check_date].done[row.habit_id]=true}
+ weeklyDoneCache={};for(const row of weekRows)if(row.completed)weeklyDoneCache[row.training_plan_id]=true;
+ remindersCache=reminderRows.map(x=>({id:x.id,text:x.title,done:x.completed}));
+ foodEntriesCache=foodRows.map(x=>({id:x.id,name:x.food_name,grams:Number(x.amount_grams),kcal:Number(x.calories),protein:Number(x.protein),carbs:Number(x.carbs),fat:Number(x.fat)}));
+ if(goalRows.length)nutritionGoalsCache={kcal:goalRows[0].calorie_goal,protein:goalRows[0].protein_goal};else{const {error}=await supabaseClient.from("nutrition_goals").insert({user_id:user.id,calorie_goal:defaultGoals.kcal,protein_goal:defaultGoals.protein});if(error)throw error;nutritionGoalsCache={...defaultGoals}}
+ $("#today").textContent=new Intl.DateTimeFormat("da-DK",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
+ $("#accountEmail").textContent=user.email||"";setTheme(load("mr2-theme","dark"));renderDaily();renderWeekly();renderNutrition();renderOverview();
+}
+async function loadLeaderboard(){
+ const root=$("#leaderboardRows");root.innerHTML='<div class="empty">Henter ranglisten…</div>';
+ try{
+  const {data:competitions,error}=await supabaseClient.rpc("get_my_routine_competitions");if(error)throw error;
+  if(!competitions?.length){root.innerHTML='<div class="empty">Ingen konkurrence er knyttet til denne konto endnu. Kør app-integrationens SQL-query i Supabase.</div>';return}
+  const {data:score,error:scoreError}=await supabaseClient.rpc("get_routine_leaderboard",{p_competition_id:competitions[0].competition_id,p_days:leaderboardDays});if(scoreError)throw scoreError;
+  root.innerHTML="";for(const [i,row] of (score||[]).entries()){const item=document.createElement("div");item.className="leaderboard-row";const rank=document.createElement("span");rank.className="leaderboard-rank";rank.textContent=String(i+1)+".";const name=document.createElement("strong");name.textContent=row.display_name;const percent=document.createElement("span");percent.className="leaderboard-percent";percent.textContent=Number(row.completion_percent).toFixed(1)+"%";item.append(rank,name,percent);root.append(item)}
+  if(!score?.length)root.innerHTML='<div class="empty">Der er endnu ingen resultater for perioden.</div>';
+ }catch(e){root.innerHTML='<div class="empty">Ranglisten kunne ikke hentes. Kør app-integrationens SQL-query og kontrollér Supabase API-adgangen.</div>'}
+ $("#leaderboard7").classList.toggle("active",leaderboardDays===7);$("#leaderboard30").classList.toggle("active",leaderboardDays===30);
+}
+$("#leaderboard7").addEventListener("click",()=>{leaderboardDays=7;loadLeaderboard()});$("#leaderboard30").addEventListener("click",()=>{leaderboardDays=30;loadLeaderboard()});
+$("#loginForm").addEventListener("submit",async e=>{e.preventDefault();if(!supabaseClient){showAuthMessage("Supabase-klienten kunne ikke indlæses. Tjek internetforbindelsen.",true);return}const button=$("#loginButton");button.disabled=true;showAuthMessage("Logger ind…");const {error}=await supabaseClient.auth.signInWithPassword({email:$("#loginEmail").value.trim(),password:$("#loginPassword").value});button.disabled=false;if(error)showAuthMessage("Login mislykkedes. Kontrollér e-mail og adgangskode.",true);else showAuthMessage("")});
+$("#signOut").addEventListener("click",async()=>{const {error}=await supabaseClient.auth.signOut();if(error)alert("Kunne ikke logge ud.")});
+async function applySession(session){
+ const authScreen=$("#authScreen"),appShell=$("#appShell");
+ if(!session?.user){currentUser=null;appShell.hidden=true;authScreen.hidden=false;$("#loginPassword").value="";return}
+ authScreen.hidden=true;appShell.hidden=false;
+ try{await loadCloudData();showAuthMessage("")}catch(e){appShell.hidden=true;authScreen.hidden=false;showAuthMessage("Appens databasetabeller mangler eller adgangsreglerne afviste forbindelsen. Kør app-integrationens SQL-query i Supabase.",true)}
+}
+async function boot(){
+ if(!supabaseClient){showAuthMessage("Supabase-klienten er ikke konfigureret.",true);return}
+ const {data,error}=await supabaseClient.auth.getSession();if(error){showAuthMessage("Kunne ikke hente login-sessionen.",true);return}
+ await applySession(data.session);
+ supabaseClient.auth.onAuthStateChange((event,session)=>{if(event!=="INITIAL_SESSION")setTimeout(()=>applySession(session),0)});
+}
+boot();
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js");
 </script>
 </body></html>
+
