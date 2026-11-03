@@ -6,10 +6,10 @@
 <meta name="theme-color" content="#080908">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Min rutine">
+<meta name="apple-mobile-web-app-title" content="Habit Ladder">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<title>Min rutine</title>
+<title>Habit Ladder</title>
 <style>
 :root{color-scheme:dark;--bg:#080908;--surface:#101210;--surface2:#171a17;--line:#292d29;--text:#f4f5f2;--muted:#929891;--green:#24bd70;--green-soft:#14291d;--shadow:0 10px 30px #0002}
 :root.light{color-scheme:light;--bg:#f4f5f1;--surface:#fff;--surface2:#eef0eb;--line:#dfe3dc;--text:#20251f;--muted:#747d73;--green:#159957;--green-soft:#e3f4e9;--shadow:0 8px 25px #23301a0d}
@@ -214,11 +214,12 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
 
+ .tagline{font-size:10px;line-height:1.2;color:var(--muted);margin:2px 0 0;letter-spacing:.02em}
 </style>
 </head>
 <body>
 <section class="auth-screen" id="authScreen">
- <h1>Min rutine</h1>
+ <h1>Habit Ladder</h1>
  <p>Log ind med den Supabase-bruger, du allerede har fået oprettet.</p>
  <form id="loginForm">
   <label>E-mail<input id="loginEmail" type="email" autocomplete="username" required></label>
@@ -229,7 +230,7 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
 </section>
 <div class="app" id="appShell" hidden>
  <header class="top">
-  <div class="brand"><h1>Min rutine</h1><div class="sub" id="today"></div></div>
+  <div class="brand"><h1>Habit Ladder</h1><div class="tagline">Build habits. Climb together.</div><div class="sub" id="today"></div></div>
   <div class="top-actions"><span class="account-email" id="accountEmail"></span><button class="secondary" type="button" id="signOut">Log ud</button><button class="iconbtn" type="button" id="themeBtn" aria-label="Skift tema">☼</button></div>
  </header>
  <nav class="tabs" aria-label="Hovednavigation">
@@ -237,7 +238,7 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
   <button class="tab" type="button" data-view="weekly">Uge</button>
   <button class="tab" type="button" data-view="nutrition">Kost</button>
   <button class="tab" type="button" data-view="overview">Overblik</button>
-  <a class="tab" href="./leaderboard.html">Rangliste</a>
+  <a class="tab" href="./leaderboard.html">Leaderboard</a>
  </nav>
  <section class="view" id="dailyView">
   <div class="headline"><h2>I dag</h2><div class="counter" id="counter">0/8</div></div>
