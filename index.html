@@ -367,16 +367,18 @@ function renderWeekly(){
 }
 let overviewDays=7;
 function renderOverview(){
- let h=getHistory(),keys=[];for(let i=overviewDays-1;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);keys.push(dateKey(d))}
- let percentages=[],full=0;
- keys.forEach(k=>{let habits=allHabits.filter(x=>dateKey(new Date(x.created_at))<=k&&(!x.archived_at||dateKey(new Date(x.archived_at))>=k));let n=habits.filter(x=>h[k]?.done?.[x.id]).length;let p=habits.length?n/habits.length:0;percentages.push(p);if(habits.length&&p===1)full++});
- let avg=percentages.reduce((a,b)=>a+b,0)/Math.max(1,percentages.length);
- $("#avgStat").textContent=Math.round(avg*100)+"%";$("#daysStat").textContent=full+"/"+overviewDays;
+ let h=getHistory(),today=new Date();today.setHours(12,0,0,0);let dates=[];
+ if(overviewDays===7){let monday=new Date(today);monday.setDate(today.getDate()-((today.getDay()+6)%7));dates=Array.from({length:7},(_,i)=>{let d=new Date(monday);d.setDate(monday.getDate()+i);return d})}
+ else{for(let i=overviewDays-1;i>=0;i--){let d=new Date(today);d.setDate(today.getDate()-i);dates.push(d)}}
+ let keys=dates.map(dateKey),percentages=[],full=0,trackedDays=0;
+ keys.forEach(k=>{if(k>dateKey(today)){percentages.push(null);return}trackedDays++;let habits=allHabits.filter(x=>dateKey(new Date(x.created_at))<=k&&(!x.archived_at||dateKey(new Date(x.archived_at))>=k));let n=habits.filter(x=>h[k]?.done?.[x.id]).length;let p=habits.length?n/habits.length:0;percentages.push(p);if(habits.length&&p===1)full++});
+ let completedPercentages=percentages.filter(p=>p!==null),avg=completedPercentages.reduce((a,b)=>a+b,0)/Math.max(1,completedPercentages.length);
+ $("#avgStat").textContent=Math.round(avg*100)+"%";$("#daysStat").textContent=full+"/"+trackedDays;
  $("#weekStat").textContent=weekly.filter(x=>weeklyDoneCache[x.id]).length;
  $("#streakStat").textContent=routineStreak;
  $("#period7").classList.toggle("active",overviewDays===7);$("#period30").classList.toggle("active",overviewDays===30);
  let root=$("#historyDays");root.innerHTML="";
- keys.forEach((k,i)=>{let d=new Date(k+"T12:00:00"),wrap=document.createElement("div");wrap.className="daystat";wrap.textContent=overviewDays===7?new Intl.DateTimeFormat("en-US",{weekday:"short"}).format(d):d.getDate()+"/"+(d.getMonth()+1);let dot=document.createElement("div");dot.className="daydot"+(percentages[i]===1?" good":percentages[i]>0?" partial":"");dot.textContent=Math.round(percentages[i]*100)+"%";wrap.append(dot);root.append(wrap)});
+ keys.forEach((k,i)=>{let d=new Date(k+"T12:00:00"),wrap=document.createElement("div");wrap.className="daystat";wrap.textContent=overviewDays===7?new Intl.DateTimeFormat("en-US",{weekday:"short"}).format(d):d.getDate()+"/"+(d.getMonth()+1);let dot=document.createElement("div"),percentage=percentages[i];dot.className="daydot"+(percentage===null?" future":percentage===1?" good":percentage>0?" partial":"");dot.textContent=percentage===null?"—":Math.round(percentage*100)+"%";wrap.append(dot);root.append(wrap)});
  root.style.gridTemplateColumns=overviewDays===7?"repeat(7,1fr)":"repeat(10,1fr)";
 }
 function renderStreak(){const count=$("#streakCount"),badge=$("#streakBadge"),overviewIcon=$(".streak-stat-icon");if(count)count.textContent=String(routineStreak);if(badge)badge.setAttribute("aria-label",`Streak: ${routineStreak} ${routineStreak===1?"day":"days"}`);if(overviewIcon)overviewIcon.setAttribute("aria-label",`Streak: ${routineStreak} ${routineStreak===1?"day":"days"}`);const stat=$("#streakStat");if(stat)stat.textContent=String(routineStreak)}
