@@ -215,11 +215,12 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
 }
 
  .tagline{font-size:10px;line-height:1.2;color:var(--muted);margin:2px 0 0;letter-spacing:.02em}
+.brandline{display:flex;align-items:center;gap:10px}.brandmark{width:40px;height:40px;flex:0 0 40px;border-radius:14px;background:var(--green-soft);padding:5px}.auth-title{display:flex;align-items:center;gap:10px}
 </style>
 </head>
 <body>
 <section class="auth-screen" id="authScreen">
- <h1>Habit Ladder</h1>
+ <h1 class="auth-title"><svg class="brandmark" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(-1 2)" fill="none" stroke="var(--green)" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 37V15M34 37V15M12 27H34M12 20H34M12 34H34"/><path d="M34 27V7M29 13L34 7L39 13"/></g></svg>Habit Ladder</h1>
  <p>Log ind med den Supabase-bruger, du allerede har fået oprettet.</p>
  <form id="loginForm">
   <label>E-mail<input id="loginEmail" type="email" autocomplete="username" required></label>
@@ -230,7 +231,7 @@ body{line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimize
 </section>
 <div class="app" id="appShell" hidden>
  <header class="top">
-  <div class="brand"><h1>Habit Ladder</h1><div class="tagline">Build habits. Climb together.</div><div class="sub" id="today"></div></div>
+  <div class="brand"><div class="brandline"><svg class="brandmark" viewBox="0 0 48 48" aria-hidden="true"><g transform="translate(-1 2)" fill="none" stroke="var(--green)" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 37V15M34 37V15M12 27H34M12 20H34M12 34H34"/><path d="M34 27V7M29 13L34 7L39 13"/></g></svg><h1>Habit Ladder</h1></div><div class="tagline">Build habits. Climb together.</div><div class="sub" id="today"></div></div>
   <div class="top-actions"><span class="account-email" id="accountEmail"></span><button class="secondary" type="button" id="signOut">Log ud</button><button class="iconbtn" type="button" id="themeBtn" aria-label="Skift tema">☼</button></div>
  </header>
  <nav class="tabs" aria-label="Hovednavigation">
