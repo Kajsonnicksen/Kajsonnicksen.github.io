@@ -1,6 +1,6 @@
 {
-  "name": "Min rutine",
-  "short_name": "Rutine",
+  "name": "Habit Ladder",
+  "short_name": "Habit Ladder",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#080908",
