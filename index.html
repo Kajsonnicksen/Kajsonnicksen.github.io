@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 19331)
-Total output lines: 543
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -257,7 +254,73 @@ body{background-image:radial-gradient(ellipse at 100% 0%,color-mix(in srgb,var(-
   <div class="settings"><span>Appearance</span><div class="switch"><button type="button" id="darkChoice">Dark</button><button type="button" id="lightChoice">Light</button></div></div>
   <div class="settings"><span>Confirmation sound</span><button class="secondary" type="button" id="soundChoice" aria-pressed="true">Sound on</button></div>
   <div class="settings"><span>Your data is saved to your account</span><button class="secondary" type="button" id="resetToday">Reset today</button></div>
-  <div class="settings"><span>Keep your routines and history safe</span><div style="display:flex;gap:6px"><button class="secondary" type="button" id="exportData">Back up</button><button class="s…1331 tokens truncated…ame="group";
+  <div class="settings"><span>Keep your routines and history safe</span><div style="display:flex;gap:6px"><button class="secondary" type="button" id="exportData">Back up</button><button class="secondary" type="button" id="importData">Restore</button><input id="importFile" type="file" accept="application/json" hidden></div></div>
+  <div class="bottomnote">Tip: Back up your data before changing phones or clearing browser data.</div>
+ </section>
+</div>
+<div class="modal-back" id="modalBack">
+ <div class="modal">
+  <div class="modal-head"><h3 id="modalTitle">Edit</h3><button class="iconbtn" type="button" id="closeModal" aria-label="Close">×</button></div>
+  <div id="modalFields"></div>
+  <div class="modal-actions"><button class="danger" type="button" id="deleteItem">Delete</button><button class="primary" type="button" id="saveItem">Save</button></div>
+ </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-config.js"></script>
+<script>
+const $=s=>document.querySelector(s), clone=x=>JSON.parse(JSON.stringify(x));
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+let completionAudioContext=null;
+function playCompletionSound(){
+ if(!load("habit-ladder-sounds",true))return;
+ try{
+  const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)return;
+  completionAudioContext=completionAudioContext||new AudioContextClass();
+  if(completionAudioContext.state==="suspended")completionAudioContext.resume();
+  const now=completionAudioContext.currentTime;
+  [[880,0],[1174.66,.09]].forEach(([frequency,delay])=>{
+   const oscillator=completionAudioContext.createOscillator(),gain=completionAudioContext.createGain();
+   oscillator.type="sine";oscillator.frequency.setValueAtTime(frequency,now+delay);
+   gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(.13,now+delay+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+.24);
+   oscillator.connect(gain);gain.connect(completionAudioContext.destination);oscillator.start(now+delay);oscillator.stop(now+delay+.25);
+  });
+ }catch(e){}
+}
+const supabaseConfig=window.MIN_RUTINE_SUPABASE||{};
+const supabaseClient=window.supabase?.createClient(supabaseConfig.url,supabaseConfig.publishableKey);
+let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],routineStreak=0,sessionUserLoadedId=null,sessionLoadingUserId=null,sessionLoadingPromise=null,reminderResetTimer=null;
+let activeEditor=null;
+const dateKey=(d=new Date())=>{let x=new Date(d);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,"0"),String(x.getDate()).padStart(2,"0")].join("-")};
+const mondayKey=()=>{let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return dateKey(d)};
+const getHistory=()=>historyCache;
+const getToday=()=>{let h=getHistory(),k=dateKey();if(!h[k])h[k]={done:{},weekDone:{}};return h[k]};
+async function persistRoutines(){
+ if(!currentUser)return;
+ for(let i=0;i<daily.length;i++){
+  const item=daily[i],row={id:item.id,user_id:currentUser.id,title:item.text,category:item.group,position:i};
+  const {error}=await supabaseClient.from("habits").upsert(row,{onConflict:"id"});if(error)throw error;
+  const old=allHabits.find(x=>x.id===item.id);if(old)Object.assign(old,row);else allHabits.push({...row,created_at:new Date().toISOString(),archived_at:null});
+ }
+ for(let i=0;i<weekly.length;i++){
+  const item=weekly[i],row={id:item.id,user_id:currentUser.id,weekday:weekdayNumber(item.day),title:item.training,details:item.purpose};
+  const {error}=await supabaseClient.from("training_plans").upsert(row,{onConflict:"id"});if(error)throw error;
+ }
+}
+function dailyDone(){return getToday().done||{}}
+function weekDone(){return weeklyDoneCache}
+const weekDays=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+function weekdayNumber(day){const value=String(day).trim().toLocaleLowerCase();const english=weekDays.findIndex(x=>x.toLowerCase()===value);if(english>=0)return english+1;const legacyDanish=["mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag"].indexOf(value);return legacyDanish<0?1:legacyDanish+1}
+function weekdayName(n){return weekDays[Number(n)-1]||"Monday"}
+async function saveHabitCheck(habitId,completed){
+ const checkDate=dateKey(),row={user_id:currentUser.id,habit_id:habitId,check_date:checkDate,completed};
+ const {error}=await supabaseClient.from("habit_checks").upsert(row,{onConflict:"user_id,habit_id,check_date"});if(error)throw error;
+ const h=getHistory();h[checkDate]=h[checkDate]||{done:{},weekDone:{}};h[checkDate].done=h[checkDate].done||{};if(completed)h[checkDate].done[habitId]=true;else delete h[checkDate].done[habitId];
+}
+function renderDaily(){
+ let done=dailyDone(),grid=$("#dailyGrid"),count=0;grid.innerHTML="";
+ [{value:"Morning",label:"Morning"},{value:"Daytime",label:"Daytime"},{value:"Evening",label:"Evening"}].forEach(({value:group,label})=>{
+  let items=daily.filter(x=>x.group===group);if(!items.length){let card=document.createElement("div");card.className="group";let h=document.createElement("h3");h.textContent=label;let empty=document.createElement("button");empty.className="addline addline-empty";empty.type="button";empty.textContent="Add a habit to get started";empty.addEventListener("click",()=>openEditor("daily",null,group));card.append(h,empty);grid.append(card);return;}
+  let card=document.createElement("div");card.className="group";
   let h=document.createElement("h3");h.textContent=label;card.append(h);
   items.forEach(item=>{
    let row=document.createElement("label");row.className="task"+(done[item.id]?" done":"");
@@ -366,7 +429,7 @@ function renderDailyComparison(data,mode=leaderboardMode){
  const wins=Object.fromEntries(members.map(n=>[n,0])),scored=[];const chart=$("#weekDays");chart.innerHTML="";chart.classList.toggle("month-chart",monthMode);const weekday=new Intl.DateTimeFormat("en-US",{weekday:"short"});
  if(monthMode){const firstOffset=(monthStart.getDay()+6)%7;for(let i=0;i<7;i++){const head=document.createElement("span");head.className="month-weekday-label";const d=new Date(2024,0,1+i);head.textContent=weekday.format(d);chart.append(head)}for(let i=0;i<firstOffset;i++){const spacer=document.createElement("span");spacer.className="month-empty";spacer.setAttribute("aria-hidden","true");chart.append(spacer)}}
  for(const day of days){
-  const values=members.map(n=>byDate[day.key][n]).filter(x=>x&&Number(x.total_habits)>0),comparable=values.length>=2,max=values.length?Math.max(...values.map(x=>Number(x.completion_percent)||0)):0,leaders=comparable?values.filter(x=>max-(Number(x.completion_percent)||0)<0.05):[],future=day.date>today;
+  const values=members.map(n=>byDate[day.key][n]).filter(x=>x&&Number(x.total_habits)>0),comparable=values.length>=2,max=values.length?Math.max(...values.map(x=>Number(x.completion_percent)||0)):0,leaders=comparable&&max>0?values.filter(x=>max-(Number(x.completion_percent)||0)<0.05):[],future=day.date>today;
   if(leaders.length){scored.push(day);for(const x of leaders)wins[x.display_name]+=1/leaders.length}
   if(monthMode){
    const cell=document.createElement("div");cell.className="month-day"+(day.key===weekDateKey(today)?" is-today":"")+(future?" is-future":"")+(leaders.length>1?" is-tie":"");
