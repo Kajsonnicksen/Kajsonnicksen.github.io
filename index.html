@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 16816)
-Total output lines: 538
-
 <!doctype html>
 <html lang="da">
 <head>
@@ -300,7 +297,53 @@ const defaultsWeek=[
  {id:"w3",day:"Onsdag",training:"Hvile + gåtur",purpose:"Restitution"},
  {id:"w4",day:"Torsdag",training:"Styrke, helkrop",purpose:"Fysisk robusthed"},
  {id:"w5",day:"Fredag",training:"Interval, 30–40 min.",purpose:"Kondition"},
- {id:"w6",day:"Lørdag",training:"Roligt langløb, 50–70 min.",purpose:"Udhol…816 tokens truncated…{user_id:currentUser.id,habit_id:habitId,check_date:checkDate,completed};
+ {id:"w6",day:"Lørdag",training:"Roligt langløb, 50–70 min.",purpose:"Udholdenhed"},
+ {id:"w7",day:"Søndag",training:"Hvile + let yoga",purpose:"Restitution"}
+];
+const $=s=>document.querySelector(s), clone=x=>JSON.parse(JSON.stringify(x));
+const load=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+let completionAudioContext=null;
+function playCompletionSound(){
+ if(!load("habit-ladder-sounds",true))return;
+ try{
+  const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)return;
+  completionAudioContext=completionAudioContext||new AudioContextClass();
+  if(completionAudioContext.state==="suspended")completionAudioContext.resume();
+  const now=completionAudioContext.currentTime;
+  [[880,0],[1174.66,.09]].forEach(([frequency,delay])=>{
+   const oscillator=completionAudioContext.createOscillator(),gain=completionAudioContext.createGain();
+   oscillator.type="sine";oscillator.frequency.setValueAtTime(frequency,now+delay);
+   gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(.13,now+delay+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+.24);
+   oscillator.connect(gain);gain.connect(completionAudioContext.destination);oscillator.start(now+delay);oscillator.stop(now+delay+.25);
+  });
+ }catch(e){}
+}
+const supabaseConfig=window.MIN_RUTINE_SUPABASE||{};
+const supabaseClient=window.supabase?.createClient(supabaseConfig.url,supabaseConfig.publishableKey);
+let currentUser=null,daily=[],weekly=[],allHabits=[],historyCache={},weeklyDoneCache={},remindersCache=[],routineStreak=0,sessionUserLoadedId=null,sessionLoadingUserId=null,sessionLoadingPromise=null;
+let activeEditor=null;
+const dateKey=(d=new Date())=>{let x=new Date(d);return [x.getFullYear(),String(x.getMonth()+1).padStart(2,"0"),String(x.getDate()).padStart(2,"0")].join("-")};
+const mondayKey=()=>{let d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);return dateKey(d)};
+const getHistory=()=>historyCache;
+const getToday=()=>{let h=getHistory(),k=dateKey();if(!h[k])h[k]={done:{},weekDone:{}};return h[k]};
+async function persistRoutines(){
+ if(!currentUser)return;
+ for(let i=0;i<daily.length;i++){
+  const item=daily[i],row={id:item.id,user_id:currentUser.id,title:item.text,category:item.group,position:i};
+  const {error}=await supabaseClient.from("habits").upsert(row,{onConflict:"id"});if(error)throw error;
+  const old=allHabits.find(x=>x.id===item.id);if(old)Object.assign(old,row);else allHabits.push({...row,created_at:new Date().toISOString(),archived_at:null});
+ }
+ for(let i=0;i<weekly.length;i++){
+  const item=weekly[i],row={id:item.id,user_id:currentUser.id,weekday:weekdayNumber(item.day),title:item.training,details:item.purpose};
+  const {error}=await supabaseClient.from("training_plans").upsert(row,{onConflict:"id"});if(error)throw error;
+ }
+}
+function dailyDone(){return getToday().done||{}}
+function weekDone(){return weeklyDoneCache}
+function weekdayNumber(day){const i=["mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag"].indexOf(String(day).toLocaleLowerCase("da"));return i<0?1:i+1}
+function weekdayName(n){return ["Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag","Søndag"][Number(n)-1]||"Mandag"}
+async function saveHabitCheck(habitId,completed){
+ const checkDate=dateKey(),row={user_id:currentUser.id,habit_id:habitId,check_date:checkDate,completed};
  const {error}=await supabaseClient.from("habit_checks").upsert(row,{onConflict:"user_id,habit_id,check_date"});if(error)throw error;
  const h=getHistory();h[checkDate]=h[checkDate]||{done:{},weekDone:{}};h[checkDate].done=h[checkDate].done||{};if(completed)h[checkDate].done[habitId]=true;else delete h[checkDate].done[habitId];
 }
@@ -410,6 +453,7 @@ function renderDailyComparison(data){
  const leader=$("#weekLeader");if(shared.length){const averages=names.map(name=>shared.reduce((sum,d)=>sum+Number(d[name].completion_percent||0),0)/shared.length);const diff=Math.abs(averages[0]-averages[1]);let wins=[0,0];for(const d of shared){const a=Number(d[names[0]].completion_percent||0),b=Number(d[names[1]].completion_percent||0);if(a>b)wins[0]++;else if(b>a)wins[1]++}if(diff<0.05)leader.textContent=`Kaj og Erik ligger lige på ${shared.length} fælles dage.`;else{const winner=averages[0]>averages[1]?0:1;leader.textContent=`${names[winner]} fører med ${diff.toFixed(1)} procentpoint. Bedst på ${wins[winner]} af ${shared.length} fælles dage.`}}else{const active=names.filter(name=>activeDays[name].length);leader.textContent=active.length===1?`${active[0]} har rutiner i perioden. Den anden profil har endnu ingen vaner at sammenligne med.`:active.length===0?"Der er endnu ingen rutiner at sammenligne i perioden.":"I har endnu ingen fælles dage med rutiner at sammenligne."} const hero=$("#leaderHero"),title=$("#leaderboardHeroTitle"),copy=$("#leaderboardHeroText"),kicker=$("#leaderHeroKicker");hero.classList.remove("is-tied");if(shared.length){const averages=names.map(name=>shared.reduce((sum,d)=>sum+Number(d[name].completion_percent||0),0)/shared.length);const gap=Math.abs(averages[0]-averages[1]);if(gap<0.05){title.textContent="I ligger helt lige";copy.textContent="Begge står på "+averages[0].toFixed(0)+"% over "+shared.length+" fælles dage. Næste vane kan afgøre det.";kicker.textContent="Tæt kamp";hero.classList.add("is-tied");document.querySelectorAll(".week-average").forEach(x=>x.classList.remove("is-leading"))}else{const winner=averages[0]>averages[1]?0:1;const loser=1-winner;title.textContent=names[winner]+" fører";copy.textContent=averages[winner].toFixed(0)+"% gennemført — "+gap.toFixed(0)+" procentpoint foran "+names[loser]+". Næste vane kan flytte stillingen.";kicker.textContent="Ugens føring";document.querySelectorAll(".week-average").forEach((x,i)=>x.classList.toggle("is-leading",i===winner))}}else{title.textContent="Kampen er i gang";copy.textContent="Gennemfør vaner begge to for at se, hvem der klatrer hurtigst.";kicker.textContent="Start jeres stige";document.querySelectorAll(".week-average").forEach(x=>x.classList.remove("is-leading"))}
 }
 async function loadLeaderboard(){
+ const hero=$("#leaderHero");hero.classList.remove("animate-in");void hero.offsetWidth;hero.classList.add("animate-in");
  const results=$("#leaderboardRows"),leader=$("#weekLeader");results.innerHTML='<div class="message loading"><span class="spinner"></span>Henter ranglisten…</div>';
  $("#leaderboardPeriod7").classList.toggle("active",leaderboardPeriod===7);$("#leaderboardPeriod30").classList.toggle("active",leaderboardPeriod===30);
  try{if(!supabaseClient||!currentUser)throw new Error("Log ind for at se leaderboardet.");const {data:competitions,error}=await supabaseClient.rpc("get_my_routine_competitions");if(error)throw error;if(!competitions?.length){results.textContent="Denne konto er ikke tilknyttet en konkurrence endnu.";leader.textContent="Konkurrencen er ikke sat op endnu.";return}const competitionId=competitions[0].competition_id;const [dailyResult,scoreResult]=await Promise.all([supabaseClient.rpc("get_routine_daily_comparison",{p_competition_id:competitionId}),supabaseClient.rpc("get_routine_leaderboard_v2",{p_competition_id:competitionId,p_days:leaderboardPeriod})]);if(dailyResult.error)leader.textContent="Ugeoversigten kunne ikke indlæses.";else renderDailyComparison(dailyResult.data||[]);if(scoreResult.error)throw scoreResult.error;results.innerHTML="";for(const [i,item] of (scoreResult.data||[]).entries()){const row=document.createElement("div");row.className="leaderboard-row";const rank=document.createElement("span");rank.className="leaderboard-rank";rank.textContent=String(i+1)+".";const person=document.createElement("div");const name=document.createElement("strong");name.textContent=item.display_name;const detail=document.createElement("small");detail.className="breakdown";detail.textContent=`Vaner ${Number(item.habit_percent).toFixed(1)}% · Træning ${item.training_total?`${item.training_completed}/${item.training_total} (${Number(item.training_percent).toFixed(0)}%)`:"ingen planlagt"}`;person.append(name,detail);const score=document.createElement("strong");score.className="leaderboard-percent";score.textContent=Number(item.overall_percent).toFixed(1)+"%";row.append(rank,person,score);results.append(row)}if(!scoreResult.data?.length)results.textContent="Der er endnu ingen resultater for perioden.";
